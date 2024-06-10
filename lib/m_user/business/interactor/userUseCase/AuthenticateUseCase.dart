@@ -1,10 +1,10 @@
 
 
-import '../model/Authenticate.dart';
-import '../model/AuthenticateResponse.dart';
-import '../model/User.dart';
-import '../service/userLocalService.dart';
-import '../service/userNetworkService.dart';
+import '../../model/Authenticate.dart';
+import '../../model/AuthenticateResponse.dart';
+import '../../model/User.dart';
+import '../../service/userLocalService.dart';
+import '../../service/userNetworkService.dart';
 
 class Authenticateusecase{
   UserNetworkService network;
