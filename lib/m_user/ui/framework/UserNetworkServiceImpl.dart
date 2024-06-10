@@ -2,6 +2,7 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:odc_mobile_project/m_user/business/model/Authenticate.dart';
+import 'package:odc_mobile_project/m_user/business/model/User.dart';
 import 'dart:convert';
 
 import '../../business/model/AuthenticateResponse.dart';
@@ -22,6 +23,12 @@ class UserNetworkServiceImpl implements UserNetworkService{
     print("responseMap $reponseMap");
     var reponseFinal=AuthenticateResponse.fromJson(reponseMap);
     return reponseFinal;
+  }
+
+  @override
+  Future<User> getUser() {
+    // TODO: implement getUser
+    throw UnimplementedError();
   }
 }
 
