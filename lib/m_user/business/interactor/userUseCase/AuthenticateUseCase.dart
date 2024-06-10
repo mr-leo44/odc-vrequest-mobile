@@ -2,6 +2,7 @@
 
 import '../model/Authenticate.dart';
 import '../model/AuthenticateResponse.dart';
+import '../model/User.dart';
 import '../service/userLocalService.dart';
 import '../service/userNetworkService.dart';
 
@@ -15,7 +16,8 @@ class Authenticateusecase{
      var res=await network.authenticate(data);
     if(res!=null){
       local.saveToken(res.token);
-      local.saveUser(res);
+      var user=User.fromJson(res.toJson());
+      local.saveUser(user);
     }
     return res;
   }
