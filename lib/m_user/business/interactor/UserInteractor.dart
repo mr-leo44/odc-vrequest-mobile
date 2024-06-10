@@ -1,21 +1,48 @@
+
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../service/userLocalService.dart';
 import '../service/userNetworkService.dart';
-import 'AuthenticateUseCase.dart';
+import 'user/AuthenticateUseCase.dart';
+import 'user/DisconnectUseCase.dart';
+import 'user/GetTokenUseCase.dart';
+import 'user/GetUserLocalUseCase.dart';
+import 'user/GetUserNetworkUseCase.dart';
+import 'user/SaveTokenUseCase.dart';
+import 'user/SaveUserUseCase.dart';
+
 part "UserInteractor.g.dart";
 
 class UserInteractor{
   Authenticateusecase authenticateusecase;
+  DisconnectUseCase  disconnectUseCase;
+  GetTokenUseCase getTokenUseCase;
+  GetUserLocalUseCase getUserLocalUseCase;
+  GetUserNetworkUseCase getUserNetworkUseCase;
+  SaveTokenUseCase saveTokenUseCase;
+  SaveUserUseCase saveUserUseCase;
+
 
   UserInteractor._(
-        this.authenticateusecase
+        this.authenticateusecase,
+      this.disconnectUseCase,
+      this.getTokenUseCase,
+      this.getUserNetworkUseCase,
+      this.getUserLocalUseCase,
+      this.saveTokenUseCase,
+      this.saveUserUseCase
       );
 
   static build(UserNetworkService network, UserLocalService local ){
     return UserInteractor._(
-        Authenticateusecase(network, local)
+        Authenticateusecase(network, local),
+        DisconnectUseCase(local),
+        GetTokenUseCase(local),
+        GetUserNetworkUseCase(network),
+        GetUserLocalUseCase(local),
+        SaveTokenUseCase(local),
+        SaveUserUseCase(local)
     );
   }
 }
