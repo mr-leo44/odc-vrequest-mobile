@@ -1,15 +1,14 @@
 // To parse this JSON data, do
 //
-//     final authenticateResponse = authenticateResponseFromJson(jsonString);
+//     final user = userFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
-AuthenticateResponse authenticateResponseFromJson(String str) => AuthenticateResponse.fromJson(json.decode(str));
+User userFromJson(String str) => User.fromJson(json.decode(str));
 
-String authenticateResponseToJson(AuthenticateResponse data) => json.encode(data.toJson());
+String userToJson(User data) => json.encode(data.toJson());
 
-class AuthenticateResponse {
+class User {
   int id;
   String prenom;
   String name;
@@ -21,10 +20,9 @@ class AuthenticateResponse {
   DateTime emailVerifiedAt;
   DateTime createdAt;
   DateTime updatedAt;
-  String token;
 
-  AuthenticateResponse({
-    required this.id,
+  User({
+   required this.id,
     this.prenom = "",
     this.name = "",
     this.postnom = "",
@@ -35,10 +33,9 @@ class AuthenticateResponse {
     required this.emailVerifiedAt,
     required this.createdAt,
     required this.updatedAt,
-    required this.token,
   });
 
-  factory AuthenticateResponse.fromJson(Map json) => AuthenticateResponse(
+  factory User.fromJson(Map json) => User(
     id: json["id"],
     prenom: json["prenom"] ?? "",
     name: json["name"] ?? "",
@@ -50,7 +47,6 @@ class AuthenticateResponse {
     emailVerifiedAt: json["email_verified_at"]!=null? DateTime.parse(json["email_verified_at"] ) : DateTime.now(),
     createdAt: json["created_at"]!=null? DateTime.parse(json["created_at"] ?? ""): DateTime.now(),
     updatedAt: json["updated_at"]!=null? DateTime.parse(json["updated_at"] ?? "") : DateTime.now(),
-    token: json["token"] ?? "",
   );
 
   Map<String, dynamic> toJson() => {
@@ -65,6 +61,5 @@ class AuthenticateResponse {
     "email_verified_at": emailVerifiedAt.toIso8601String(),
     "created_at": createdAt.toIso8601String(),
     "updated_at": updatedAt.toIso8601String(),
-    "token": token,
   };
 }
