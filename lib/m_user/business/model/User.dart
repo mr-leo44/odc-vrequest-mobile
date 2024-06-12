@@ -43,7 +43,7 @@ class User {
     sexe: json["sexe"] ?? "",
     email: json["email"] ?? "",
     telephone: json["telephone"] ?? "",
-    managerId: json["manager_id"]?? "",
+    managerId: json["manager_id"]?? 0,
     emailVerifiedAt: json["email_verified_at"]!=null? DateTime.parse(json["email_verified_at"] ) : DateTime.now(),
     createdAt: json["created_at"]!=null? DateTime.parse(json["created_at"] ?? ""): DateTime.now(),
     updatedAt: json["updated_at"]!=null? DateTime.parse(json["updated_at"] ?? "") : DateTime.now(),

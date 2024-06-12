@@ -7,8 +7,8 @@ class GetUserNetworkUseCase{
 
   GetUserNetworkUseCase(this.network);
 
-  Future<User?> run() async{
-    var res = await network.getUser();
+  Future<User?> run(String token) async{
+    var res = await network.getUser(token);
     return res;
   }
 
