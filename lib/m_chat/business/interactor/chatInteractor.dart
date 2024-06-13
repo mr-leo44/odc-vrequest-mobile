@@ -1,58 +1,57 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-//import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/creerMessageUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/recupererListMessageDetailUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/creerMessageUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/recupererListMessageGroupeUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/supprimerMessageDetailUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/lireLesGroupesUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/lireLesMessagesUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderLesGroupesUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderMessageEntrantUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderTousLesMessagesUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/lireListMessageDetailNetworkUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/creerMessageDetailNetworkUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/lireListMessageGroupeNetworkUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/supprimerMessageDetailNetworkUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/lireLesMessageGroupesLocalUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/lireLesMessageDetailsLocalUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderLesMessageGroupesLocalUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/sauvegarderMessageDetailEntrantLocalUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/sauvegarderTousLesMessageDetailsLocalUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageLocalService.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageNetworkService.dart';
-import 'package:odc_mobile_project/m_user/business/service/userNetworkService.dart';
+import 'package:odc_mobile_project/m_user/business/service/userLocalService.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chatInteractor.g.dart';
 
 class ChatInteractor {
-  CreerMessageUseCase creerMessageUseCase;
-  RecupererListMessageDetailUseCase recupererListMessageDetailUseCase;
-  RecupererListMessageGroupeUseCase recupererListMessageGroupeUseCase;
-  SupprimerMessageDetailUseCase supprimerMessageDetailUseCase;
+  CreerMessageDetailNetworkUseCase creerMessageDetailNetworkUseCase;
+  LireListMessageDetailNetworkUseCase recupererLaListMessageDetailUseCase;
+  LireListMessageGroupeNetworkUseCase lireListMessageGroupeUseCase;
+  SupprimerMessageDetailNetworkUseCase supprimerMessageDetailNetworkUseCase;
 
-  LireLesGroupesUseCase lireLesGroupesUseCase;
-  LireLesMessagesUseCase lireLesMessagesUseCase;
-  SauvegarderLesGroupesUseCase sauvegarderLesGroupesUseCase;
-  SauvegarderMessageEntrantUseCase sauvegarderMessageEntrantUseCase;
-  SauvegarderTousLesMessagesUseCase sauvegarderTousLesMessagesUseCase;
+  LireLesMessageGroupesLocalUseCase lireLesMessageGroupesLocalUseCase;
+  LireLesMessageDetailsLocalUseCase lireLesMessageDetailsLocalUseCase;
+  SauvegarderLesMessageGroupesLocalUseCase sauvegarderLesMessageGroupesLocalUseCase;
+  SauvegarderMessageDetailEntrantLocalUseCase sauvegarderMessageDetailEntrantLocalUseCase;
+  SauvegarderTousLesMessageDetailsLocalUseCase sauvegarderTousLesMessageDetailsLocalUseCase;
 
   //static UserNetworkService user;
 
   ChatInteractor._(
-      this.creerMessageUseCase,
-      this.recupererListMessageDetailUseCase,
-      this.recupererListMessageGroupeUseCase,
-      this.supprimerMessageDetailUseCase,
-      this.lireLesGroupesUseCase,
-      this.lireLesMessagesUseCase,
-      this.sauvegarderLesGroupesUseCase,
-      this.sauvegarderMessageEntrantUseCase,
-      this.sauvegarderTousLesMessagesUseCase);
+      this.creerMessageDetailNetworkUseCase,
+      this.recupererLaListMessageDetailUseCase,
+      this.lireListMessageGroupeUseCase,
+      this.supprimerMessageDetailNetworkUseCase,
+      this.lireLesMessageGroupesLocalUseCase,
+      this.lireLesMessageDetailsLocalUseCase,
+      this.sauvegarderLesMessageGroupesLocalUseCase,
+      this.sauvegarderMessageDetailEntrantLocalUseCase,
+      this.sauvegarderTousLesMessageDetailsLocalUseCase);
 
-  static build(UserNetworkService user,MessageNetworkService network, MessageLocalService local) {
+  static build(UserLocalService user,MessageNetworkService network, MessageLocalService local) {
 
     return ChatInteractor._(
-        CreerMessageUseCase(user, network, local),
-        RecupererListMessageDetailUseCase(network, local),
-        RecupererListMessageGroupeUseCase(network, local),
-        SupprimerMessageDetailUseCase(network, local),
-        LireLesGroupesUseCase(network, local),
-        LireLesMessagesUseCase(network, local),
-        SauvegarderLesGroupesUseCase(local, network),
-        SauvegarderMessageEntrantUseCase(network, local),
-        SauvegarderTousLesMessagesUseCase(network, local));
+        CreerMessageDetailNetworkUseCase(user, network, local),
+        LireListMessageDetailNetworkUseCase(network, user),
+        LireListMessageGroupeNetworkUseCase(network, user),
+        SupprimerMessageDetailNetworkUseCase(network, user),
+        LireLesMessageGroupesLocalUseCase(local),
+        LireLesMessageDetailsLocalUseCase(local),
+        SauvegarderLesMessageGroupesLocalUseCase(local),
+        SauvegarderMessageDetailEntrantLocalUseCase(local),
+        SauvegarderTousLesMessageDetailsLocalUseCase(local));
   }
 }
 
