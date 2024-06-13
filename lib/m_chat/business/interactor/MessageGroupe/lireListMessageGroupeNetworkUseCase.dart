@@ -1,17 +1,17 @@
-import 'package:odc_mobile_project/m_chat/business/service/messageLocalService.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageNetworkService.dart';
 
+import '../../../../m_user/business/service/userLocalService.dart';
 import '../../model/messageGroupe.dart';
 
-class SauvegarderMessageEntrantUseCase {
-  //Les services
+class LireListMessageGroupeNetworkUseCase{
   MessageNetworkService network;
-  MessageLocalService local;
+  UserLocalService user;
 
-  SauvegarderMessageEntrantUseCase(this.network, this.local);
+  LireListMessageGroupeNetworkUseCase(this.network, this.user);
 
-  Future<bool> run(MessageGroupe message) async {
-    var res = await local.sauvegarderMessageEntrant(message);
-    return res;
+  Future<List<MessageGroupe>>run(String token) async{
+    var token= await user.getToken();
+    return network.lireListMessageGroupeNetwork(token);
   }
+
 }

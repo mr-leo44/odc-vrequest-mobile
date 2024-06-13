@@ -1,19 +1,18 @@
 
 import 'package:odc_mobile_project/m_chat/business/service/messageLocalService.dart';
-import 'package:odc_mobile_project/m_chat/business/service/messageNetworkService.dart';
+import '../../model/messageGroupe.dart';
 
-class SauvegarderLesGroupesUseCase{
-    //Les Services
-    MessageLocalService local;
-    MessageNetworkService network;
+class LireLesMessageGroupesLocalUseCase{
 
-    SauvegarderLesGroupesUseCase(this.local, this.network);
-    //La fonction run
-    Future<bool>run(int groupId) async{
-      var res= await local.sauvegarderLesGroupes(groupId);
-      return res;
+  MessageLocalService local;
 
-    }
+  LireLesMessageGroupesLocalUseCase(this.local);
+
+  Future<List<MessageGroupe>>run() async{
+    var res= await local.lireLesMessageGroupesLocal();
+    return res;
+  }
+
 
 
 }
