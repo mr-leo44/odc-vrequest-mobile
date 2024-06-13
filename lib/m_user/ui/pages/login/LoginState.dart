@@ -3,6 +3,7 @@ class LoginState {
 
   LoginState({
     this.isLoading=false,
+    //chargement
   });
 
   LoginState copyWith({
