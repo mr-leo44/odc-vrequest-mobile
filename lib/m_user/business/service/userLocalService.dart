@@ -10,5 +10,5 @@ abstract class UserLocalService{
   Future<bool> saveUser(User data);
 
   Future<User?> getUser();
-  Future<dynamic> disconnect();
+  Future<bool> disconnect();
 }
