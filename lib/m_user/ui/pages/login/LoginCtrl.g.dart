@@ -13,6 +13,7 @@ String _$loginCtrlHash() => r'6f84ea5d59ec7b7bdc29dcd99c489cdb7f37d3d3';
 final loginCtrlProvider =
     AutoDisposeNotifierProvider<LoginCtrl, LoginState>.internal(
   LoginCtrl.new,
+  //le controlleur
   name: r'loginCtrlProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$loginCtrlHash,

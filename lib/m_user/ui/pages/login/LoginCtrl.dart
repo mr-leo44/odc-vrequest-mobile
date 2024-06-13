@@ -15,12 +15,13 @@ class LoginCtrl extends _$LoginCtrl {
   }
 
   // execution d'une action
-  void authenticate(String emailValue, String passwordValue) async {
+  Future<bool> authenticate(String emailValue, String passwordValue) async {
     var data =
         AuthenticateRequestBody(email: emailValue, password: passwordValue);
     var usecase = ref.watch(userInteractorProvider).authenticateusecase;
     state = state.copyWith(isLoading: true);
     var res = await usecase.run(data);
     state = state.copyWith(isLoading: false);
+    return true;
   }
 }
