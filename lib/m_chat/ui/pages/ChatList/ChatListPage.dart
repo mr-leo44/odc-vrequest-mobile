@@ -106,7 +106,8 @@ Widget _header(refresh) {
 Widget _searchBar() {
   return Padding(
     padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-    child: TextField(
+    child: TextFormField(
+      autovalidateMode: AutovalidateMode.always,
       decoration: InputDecoration(
         hintText: "Rechercher...",
         hintStyle: TextStyle(color: Colors.grey.shade600),
