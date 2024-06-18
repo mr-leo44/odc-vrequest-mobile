@@ -1,11 +1,10 @@
-import 'package:vrequest_mobile_test/chat/ui/pages/Chat/Chat.dart';
-import 'package:vrequest_mobile_test/chat/ui/pages/ChatList/ChatUsersModel.dart';
+import 'package:odc_mobile_project/chat/ui/pages/Chat/ChatModel.dart';
+import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatUsersModel.dart';
 
 class ChatState {
   bool isLoading;
-  List<Chat> chatList = [];
+  List<ChatModel> chatList = [];
   ChatUsersModel chatUsers ;
-
 
   ChatState({
     this.isLoading = false,
@@ -15,12 +14,12 @@ class ChatState {
 
   ChatState copyWith({
     bool? isLoading,
-    List<Chat>? chatList,
+    List<ChatModel>? chatList,
     required ChatUsersModel chatUsers
   }) =>
       ChatState(
         isLoading: isLoading ?? this.isLoading,
         chatList: chatList ?? this.chatList,
-        chatUsers: chatUsers ?? this.chatUsers,
+        chatUsers: chatUsers,
       );
 }

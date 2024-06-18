@@ -1,4 +1,4 @@
-import 'package:vrequest_mobile_test/chat/ui/pages/Chat/chat_message_type.dart';
+import 'package:odc_mobile_project/chat/ui/pages/Chat/chat_message_type.dart';
 
 class Chat {
   final String message;

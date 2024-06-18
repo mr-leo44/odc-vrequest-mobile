@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:vrequest_mobile_test/chat/ui/pages/Chat/Chat.dart';
-import 'package:vrequest_mobile_test/chat/ui/pages/Chat/Bubble.dart';
-import 'package:vrequest_mobile_test/chat/ui/pages/Chat/ChatCtrl.dart';
-import 'package:vrequest_mobile_test/chat/ui/pages/ChatList/ChatListPage.dart';
+import 'package:odc_mobile_project/chat/ui/pages/Chat/ChatModel.dart';
+import 'package:odc_mobile_project/chat/ui/pages/Chat/Bubble.dart';
+import 'package:odc_mobile_project/chat/ui/pages/Chat/ChatCtrl.dart';
+import 'package:odc_mobile_project/chat/ui/pages/ChatDetail/ChatDetailPage.dart';
+import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatListPage.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   @override
@@ -12,7 +13,6 @@ class ChatPage extends ConsumerStatefulWidget {
 }
 
 class _ChatPageState extends ConsumerState<ChatPage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late final ScrollController scrollController = ScrollController();
   late final TextEditingController newMessage = TextEditingController();
   late final FocusNode focusNode = FocusNode();
@@ -52,7 +52,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     // final width = MediaQuery.of(context).size.width;
     // final bool isLargeScreen = width > 800;
     var state = ref.watch(chatCtrlProvider);
-    List<Chat> chatList = state.chatList.reversed.toList();
+    List<ChatModel> chatList = state.chatList.reversed.toList();
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -205,28 +205,7 @@ AppBar _appBar(BuildContext context, WidgetRef ref) {
       ],
     ),
     actions: [
-      PopupMenuButton(onSelected: (Widget value) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => value),
-        );
-      }, itemBuilder: (BuildContext bc) {
-        return [
-          PopupMenuItem(
-            child: Row(
-              children: [
-                Icon(Icons.info),
-                SizedBox(
-                  width: 4,
-                ),
-                Text("Info"),
-              ],
-            ),
-            //value: CollapsingAppbarPage() ,
-            value: ChatPage(),
-          ),
-        ];
-      })
+      _PopupMenuButton(),
       // IconButton(
       //   onPressed: () {},
       //   icon: Icon(Icons.videocam_outlined),
@@ -238,12 +217,6 @@ AppBar _appBar(BuildContext context, WidgetRef ref) {
     ],
   );
 }
-
-// Widget _messages() {
-//   return Container(
-//     color: Colors.red,
-//   );
-// }
 
 // Widget _sendMessage() {
 //   return Container(
@@ -281,18 +254,30 @@ AppBar _appBar(BuildContext context, WidgetRef ref) {
 //   );
 // }
 
-// class _PopupMenuButton extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return PopupMenuButton(
-//         icon: Icon(Icons.person),
-//         offset: Offset(0, 40),
-//         onSelected: (item) {},
-//         itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-//               PopupMenuItem(
-//                 onTap: () {},
-//                 child: Text('Info'),
-//               ),
-//             ]);
-//   }
-// }
+class _PopupMenuButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(onSelected: (Widget value) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => value),
+        );
+      }, itemBuilder: (BuildContext bc) {
+        return [
+          PopupMenuItem(
+            child: Row(
+              children: [
+                Icon(Icons.info),
+                SizedBox(
+                  width: 4,
+                ),
+                Text("Info"),
+              ],
+            ),
+            //value: CollapsingAppbarPage() ,
+            value: ChatDetailPage(),
+          ),
+        ];
+      });
+  }
+}
