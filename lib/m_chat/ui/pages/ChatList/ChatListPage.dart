@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatListCtrl.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatPlaceholder.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ConversationListWidget.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListCtrl.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatPlaceholder.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ConversationListWidget.dart';
 
 class ChatListPage extends ConsumerStatefulWidget {
   @override
@@ -71,7 +70,7 @@ Widget _header(refresh) {
             ),
             child: ElevatedButton(
               style: ButtonStyle(
-                foregroundColor: MaterialStatePropertyAll(Colors.black),
+                foregroundColor: WidgetStatePropertyAll(Colors.black),
               ),
               onPressed: () {
                 refresh();
@@ -139,15 +138,8 @@ Widget _conversationList(BuildContext context, WidgetRef ref) {
     padding: EdgeInsets.only(top: 16),
     physics: NeverScrollableScrollPhysics(),
     itemBuilder: (context, index) {
-      return ConversationList(
-        avatar: state.chatsUsers[index].avatar,
-        ticket: state.chatsUsers[index].ticket,
-        lastSender: state.chatsUsers[index].lastSender,
-        lastMessage: state.chatsUsers[index].lastMessage,
-        isVideo: state.chatsUsers[index].isVideo,
-        time: state.chatsUsers[index].time,
-        isMessageRead: state.chatsUsers[index].isMessageRead,
-        unread: state.chatsUsers[index].unread,
+      return ConversationListWidget(
+        chatUsersModel: state.chatsUsers[index],
       );
     },
   );

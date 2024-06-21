@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:odc_mobile_project/chat/ui/pages/Chat/ChatModel.dart';
-import 'package:odc_mobile_project/chat/ui/pages/Chat/Bubble.dart';
-import 'package:odc_mobile_project/chat/ui/pages/Chat/ChatCtrl.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatDetail/ChatDetailPage.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatListPage.dart';
+import 'package:go_router/go_router.dart';
+import 'package:odc_mobile_project/m_chat/business/model/ChatModel.dart';
+import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
+import 'package:odc_mobile_project/m_chat/business/model/creerMessageRequete.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/Bubble.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatCtrl.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailPage.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListPage.dart';
+import 'package:odc_mobile_project/navigation/routers.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
+  ChatUsersModel chatUsersModel;
+
+  ChatPage({required this.chatUsersModel});
+
   @override
   ConsumerState<ChatPage> createState() => _ChatPageState();
 }
@@ -22,7 +30,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var ctrl = ref.read(chatCtrlProvider.notifier);
-      ctrl.getList();
+      ctrl.getList(widget.chatUsersModel);
     });
   }
 
@@ -43,7 +51,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   addMessage(String text) {
     setState(() {
       var ctrl = ref.read(chatCtrlProvider.notifier);
-      ctrl.addMessage(text);
+      ctrl.addMessage(CreerMessageRequete(
+        demandeId: widget.chatUsersModel.demandeId,
+        contenu: text,
+      ));
+      ctrl.getList(widget.chatUsersModel);
     });
   }
 
@@ -56,7 +68,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: _appBar(context, ref),
+      appBar: _appBar(context, widget, ref),
       body: Column(
         children: [
           Expanded(
@@ -157,7 +169,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   }
 }
 
-AppBar _appBar(BuildContext context, WidgetRef ref) {
+AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
   bool isOnline = true;
   var state = ref.watch(chatCtrlProvider);
 
@@ -170,21 +182,14 @@ AppBar _appBar(BuildContext context, WidgetRef ref) {
       children: [
         IconButton(
           padding: EdgeInsets.zero,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChatListPage(),
-              ),
-            );
-          },
+          onPressed: () => context.pushNamed(Urls.chatList.name),
           icon: Icon(Icons.arrow_back),
         ),
         ClipRRect(
           borderRadius: BorderRadius.circular(48),
           child: Container(
             width: 40,
-            child: Image.asset(state.chatUsers.avatar),
+            child: Image.asset(widget.chatUsersModel.avatar),
           ),
         ),
       ],
@@ -194,7 +199,7 @@ AppBar _appBar(BuildContext context, WidgetRef ref) {
     title: Column(
       children: [
         Text(
-          state.chatUsers.ticket,
+          widget.chatUsersModel.ticket,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         if (isOnline)
@@ -205,7 +210,7 @@ AppBar _appBar(BuildContext context, WidgetRef ref) {
       ],
     ),
     actions: [
-      _PopupMenuButton(),
+      _PopupMenuButton(widget: widget),
       // IconButton(
       //   onPressed: () {},
       //   icon: Icon(Icons.videocam_outlined),
@@ -255,29 +260,34 @@ AppBar _appBar(BuildContext context, WidgetRef ref) {
 // }
 
 class _PopupMenuButton extends StatelessWidget {
+  var widget;
+  _PopupMenuButton({this.widget});
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(onSelected: (Widget value) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => value),
-        );
-      }, itemBuilder: (BuildContext bc) {
-        return [
-          PopupMenuItem(
-            child: Row(
-              children: [
-                Icon(Icons.info),
-                SizedBox(
-                  width: 4,
-                ),
-                Text("Info"),
-              ],
-            ),
-            //value: CollapsingAppbarPage() ,
-            value: ChatDetailPage(),
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => value),
+      );
+    }, itemBuilder: (BuildContext bc) {
+      return [
+        PopupMenuItem(
+          child: Row(
+            children: [
+              Icon(Icons.info),
+              SizedBox(
+                width: 4,
+              ),
+              Text("Info"),
+            ],
           ),
-        ];
-      });
+          //value: CollapsingAppbarPage() ,
+          value: ChatDetailPage(
+            chatUsersModel: widget.chatUsersModel,
+          ),
+        ),
+      ];
+    });
   }
 }

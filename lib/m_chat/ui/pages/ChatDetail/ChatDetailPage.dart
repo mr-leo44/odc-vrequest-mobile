@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatDetail/ChatDetailCtrl.dart';
+import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailCtrl.dart';
 
 class ChatDetailPage extends ConsumerStatefulWidget {
+  ChatUsersModel chatUsersModel;
+
+  ChatDetailPage({
+    required this.chatUsersModel
+  });
+
   @override
   ConsumerState<ChatDetailPage> createState() => _ChatDetailPageState();
 }
@@ -13,14 +20,13 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var ctrl = ref.read(chatDetailCtrlProvider.notifier);
-      ctrl.getPassagers();
+      ctrl.getPassagers(widget.chatUsersModel);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     var state = ref.watch(chatDetailCtrlProvider);
-    print(state.passager?.initiateur);
 
     return Scaffold(
       body: NestedScrollView(
@@ -35,7 +41,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
               flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
                   collapseMode: CollapseMode.parallax,
-                  title: Text(state.chatDetail.ticket,
+                  title: Text(widget.chatUsersModel.ticket,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,

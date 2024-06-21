@@ -1,5 +1,6 @@
 class ChatUsersModel {
     String avatar;
+    int demandeId;
     String ticket;
     String lastSender;
     String lastMessage;
@@ -10,6 +11,7 @@ class ChatUsersModel {
 
     ChatUsersModel({
         required this.avatar,
+        required this.demandeId,
         required this.ticket,
         required this.lastSender,
         required this.lastMessage,
@@ -21,6 +23,7 @@ class ChatUsersModel {
 
     ChatUsersModel copyWith({
         String? avatar,
+        int? demandeId,
         String? ticket,
         String? lastSender,
         String? lastMessage,
@@ -31,6 +34,7 @@ class ChatUsersModel {
     }) => 
         ChatUsersModel(
             avatar: avatar ?? "assets/images/avatar.jpeg",
+            demandeId: demandeId ?? this.demandeId ,
             ticket: ticket ?? this.ticket,
             lastSender: lastSender ?? this.lastSender,
             lastMessage: lastMessage ?? this.lastMessage,

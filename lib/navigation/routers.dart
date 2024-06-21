@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatPage.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailPage.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListPage.dart';
 import 'package:odc_mobile_project/m_user/business/interactor/UserInteractor.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/TestPage.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/login/LoginPage.dart';
@@ -7,7 +10,7 @@ import 'package:go_router/go_router.dart';
 
 part "routers.g.dart";
 
-enum Urls { home, detailArticle, auth, login, test }
+enum Urls { home, detailArticle, auth, login, test, chatList, }
 
 @Riverpod(keepAlive: true)
 GoRouter router(RouterRef ref) {
@@ -27,7 +30,7 @@ GoRouter router(RouterRef ref) {
             GoRoute(
                 path: 'test',
                 name: Urls.test.name,
-                builder: (ctx, state) => Testpage()),
+                builder: (ctx, state) => ChatListPage()),
             GoRoute(
               path: "details/:id",
               name: Urls.detailArticle.name,
@@ -48,6 +51,12 @@ GoRouter router(RouterRef ref) {
                 name: Urls.login.name,
                 builder: (ctx, state) => LoginPage(),
               )
+            ]),
+        GoRoute(
+            path: "/chat",
+            name: Urls.chatList.name,
+            builder: (ctx, state) => ChatListPage(),
+            routes: <RouteBase>[
             ]),
       ],
       errorBuilder: (ctx, state) => LoginPage());
