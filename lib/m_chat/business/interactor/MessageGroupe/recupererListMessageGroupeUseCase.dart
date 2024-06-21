@@ -1,3 +1,4 @@
+import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageLocalService.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageNetworkService.dart';
 
@@ -9,8 +10,8 @@ class RecupererListMessageGroupeUseCase{
 
     RecupererListMessageGroupeUseCase(this.network, this.local);
 
-    Future<List<MessageGroupe>>run(int groupId) async{
-      var res= await network.recupererListMessageGroupe(groupId);
+    Future<List<ChatUsersModel>>run(String token) async{
+      var res= await network.recupererListMessageGroupe(token);
       return res;
     }
 
