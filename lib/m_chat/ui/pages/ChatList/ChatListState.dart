@@ -1,4 +1,4 @@
-import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatUsersModel.dart';
+import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
 
 class ChatListState {
   bool isLoading;
