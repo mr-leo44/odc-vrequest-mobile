@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatDetail/ChatDetailCtrl.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailCtrl.dart';
 
 class ChatDetailPage extends ConsumerStatefulWidget {
   @override

@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatDetail/ChatDetailModel.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatDetail/ChatDetailState.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatDetail/Passager.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailState.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/Passager.dart';
 
 part "ChatDetailCtrl.g.dart";
 

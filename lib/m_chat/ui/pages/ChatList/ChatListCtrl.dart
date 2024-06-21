@@ -1,6 +1,6 @@
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListState.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatListState.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatUsersModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatUsersModel.dart';
 
 part "ChatListCtrl.g.dart";
 

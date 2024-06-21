@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:odc_mobile_project/chat/ui/pages/Chat/ChatModel.dart';
-import 'package:odc_mobile_project/chat/ui/pages/Chat/Bubble.dart';
-import 'package:odc_mobile_project/chat/ui/pages/Chat/ChatCtrl.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatDetail/ChatDetailPage.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatListPage.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/Bubble.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatCtrl.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailPage.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListPage.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   @override

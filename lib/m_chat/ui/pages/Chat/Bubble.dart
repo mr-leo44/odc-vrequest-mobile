@@ -3,9 +3,9 @@ library flutter_chat_bubble;
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
-import 'package:odc_mobile_project/chat/ui/pages/Chat/Chat.dart';
-import 'package:odc_mobile_project/chat/ui/pages/Chat/Formatter.dart';
-import 'package:odc_mobile_project/chat/ui/pages/Chat/chat_message_type.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/Formatter.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/chat_message_type.dart';
 
 class Bubble extends StatelessWidget {
   final EdgeInsetsGeometry? margin;

@@ -1,5 +1,5 @@
-import 'package:odc_mobile_project/chat/ui/pages/Chat/ChatModel.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatUsersModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatUsersModel.dart';
 
 class ChatState {
   bool isLoading;

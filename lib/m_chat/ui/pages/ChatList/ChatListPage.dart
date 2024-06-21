@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatListCtrl.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ChatPlaceholder.dart';
-import 'package:odc_mobile_project/chat/ui/pages/ChatList/ConversationListWidget.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListCtrl.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatPlaceholder.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ConversationListWidget.dart';
 
 class ChatListPage extends ConsumerStatefulWidget {
   @override
@@ -71,7 +70,7 @@ Widget _header(refresh) {
             ),
             child: ElevatedButton(
               style: ButtonStyle(
-                foregroundColor: MaterialStatePropertyAll(Colors.black),
+                foregroundColor: WidgetStatePropertyAll(Colors.black),
               ),
               onPressed: () {
                 refresh();
