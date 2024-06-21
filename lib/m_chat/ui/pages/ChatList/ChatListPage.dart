@@ -138,15 +138,8 @@ Widget _conversationList(BuildContext context, WidgetRef ref) {
     padding: EdgeInsets.only(top: 16),
     physics: NeverScrollableScrollPhysics(),
     itemBuilder: (context, index) {
-      return ConversationList(
-        avatar: state.chatsUsers[index].avatar,
-        ticket: state.chatsUsers[index].ticket,
-        lastSender: state.chatsUsers[index].lastSender,
-        lastMessage: state.chatsUsers[index].lastMessage,
-        isVideo: state.chatsUsers[index].isVideo,
-        time: state.chatsUsers[index].time,
-        isMessageRead: state.chatsUsers[index].isMessageRead,
-        unread: state.chatsUsers[index].unread,
+      return ConversationListWidget(
+        chatUsersModel: state.chatsUsers[index],
       );
     },
   );
