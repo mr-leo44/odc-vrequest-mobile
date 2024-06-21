@@ -6,6 +6,8 @@ import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/recu
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/supprimerMessageDetailUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/lireLesGroupesUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/lireLesMessagesUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/recupererMessageGroupeUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/recupererPassagersUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderLesGroupesUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderMessageEntrantUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderTousLesMessagesUseCase.dart';
@@ -20,6 +22,8 @@ class ChatInteractor {
   CreerMessageUseCase creerMessageUseCase;
   RecupererListMessageDetailUseCase recupererListMessageDetailUseCase;
   RecupererListMessageGroupeUseCase recupererListMessageGroupeUseCase;
+  RecupererMessageGroupeUseCase recupererMessageGroupeUseCase;
+  RecupererPassagersUseCase recupererPassagersUseCase;
   SupprimerMessageDetailUseCase supprimerMessageDetailUseCase;
 
   LireLesGroupesUseCase lireLesGroupesUseCase;
@@ -34,6 +38,8 @@ class ChatInteractor {
       this.creerMessageUseCase,
       this.recupererListMessageDetailUseCase,
       this.recupererListMessageGroupeUseCase,
+      this.recupererMessageGroupeUseCase,
+      this.recupererPassagersUseCase,
       this.supprimerMessageDetailUseCase,
       this.lireLesGroupesUseCase,
       this.lireLesMessagesUseCase,
@@ -47,6 +53,8 @@ class ChatInteractor {
         CreerMessageUseCase(user, network, local),
         RecupererListMessageDetailUseCase(network, local),
         RecupererListMessageGroupeUseCase(network, local),
+        RecupererMessageGroupeUseCase(network, local),
+        RecupererPassagersUseCase(network,local),
         SupprimerMessageDetailUseCase(network, local),
         LireLesGroupesUseCase(network, local),
         LireLesMessagesUseCase(network, local),
