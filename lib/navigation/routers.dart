@@ -10,7 +10,14 @@ import 'package:go_router/go_router.dart';
 
 part "routers.g.dart";
 
-enum Urls { home, detailArticle, auth, login, test, chatList, }
+enum Urls {
+  home,
+  detailArticle,
+  auth,
+  login,
+  test,
+  chatList,
+}
 
 @Riverpod(keepAlive: true)
 GoRouter router(RouterRef ref) {
@@ -39,6 +46,11 @@ GoRouter router(RouterRef ref) {
                 return MaterialPage(key: state.pageKey, child: LoginPage());
               },
             ),
+            GoRoute(
+              path: "/chat",
+              name: Urls.chatList.name,
+              builder: (ctx, state) => ChatListPage(),
+            ),
           ],
         ),
         GoRoute(
@@ -51,12 +63,6 @@ GoRouter router(RouterRef ref) {
                 name: Urls.login.name,
                 builder: (ctx, state) => LoginPage(),
               )
-            ]),
-        GoRoute(
-            path: "/chat",
-            name: Urls.chatList.name,
-            builder: (ctx, state) => ChatListPage(),
-            routes: <RouteBase>[
             ]),
       ],
       errorBuilder: (ctx, state) => LoginPage());
