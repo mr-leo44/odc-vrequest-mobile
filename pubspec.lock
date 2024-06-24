@@ -360,10 +360,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.2.0"
-      sha256: abec47eb8c8c36ebf41d0a4c64dbbe7f956e39a012b3aafc530e951bdc12fe3f
-      url: "https://pub.dev"
-    source: hosted
-    version: "14.1.4"
   graphs:
     dependency: transitive
     description:
@@ -556,10 +552,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.6"
-      sha256: "9c96da072b421e98183f9ea7464898428e764bc0ce5567f27ec8693442e72514"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.5"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -608,10 +600,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.5"
-      sha256: "12220bb4b65720483f8fa9450b4332347737cf8213dd2840d8b2c823e47243ec"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.4"
   plugin_platform_interface:
     dependency: transitive
     description:
