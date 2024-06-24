@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_touch_ripple/components/behavior.dart';
+import 'package:flutter_touch_ripple/flutter_touch_ripple.dart';
 import 'package:go_router/go_router.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatModel.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
@@ -28,10 +31,19 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   void initState() {
     super.initState();
+    newMessage.addListener(() {
+      setState(() {}); // setState every time text changes
+    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var ctrl = ref.read(chatCtrlProvider.notifier);
       ctrl.getList(widget.chatUsersModel);
     });
+  }
+
+  @override
+  void dispose() {
+    newMessage.dispose();
+    super.dispose();
   }
 
   Future<void> onFieldSubmitted() async {
@@ -98,15 +110,11 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           SafeArea(
             bottom: true,
             child: Container(
+              color: Colors.transparent,
               constraints: const BoxConstraints(minHeight: 48),
+              margin: EdgeInsets.only(bottom: 5, top: 5),
+              padding: EdgeInsets.all(5),
               width: double.infinity,
-              decoration: const BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: Color(0xFFE5E5EA),
-                  ),
-                ),
-              ),
               child: Stack(
                 children: [
                   Form(
@@ -118,46 +126,40 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                       maxLines: null,
                       textAlignVertical: TextAlignVertical.top,
                       decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xFFE7E7ED),
                         border: InputBorder.none,
-                        contentPadding: const EdgeInsets.only(
-                          right: 42,
-                          left: 16,
-                          top: 18,
-                        ),
                         hintText: 'Message',
+                        contentPadding: EdgeInsets.all(15),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(color: Colors.grey.shade100),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(color: Colors.grey.shade100),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: SvgPicture.asset(
+                            "assets/icons/send.svg",
+                            colorFilter: ColorFilter.mode(
+                              (newMessage.text.isNotEmpty)
+                                  ? const Color(0xFF007AFF)
+                                  : const Color(0xFFBDBDC2),
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          onPressed: () {
+                            onFieldSubmitted();
+                          },
                         ),
                       ),
                       // validator: (String? value) {
-                      //   if (value == null || value.isEmpty) {
+                      //   if (value == null || value.isNotEmpty) {
+                          
                       //     return 'Le nom est obligatoire';
                       //   }
                       // },
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: IconButton(
-                      icon: SvgPicture.asset(
-                        "assets/icons/send.svg",
-                        // colorFilter: ColorFilter.mode(
-                        //   context.select<ChatController, bool>(
-                        //           (value) => value.isTextFieldEnable)
-                        //       ? const Color(0xFF007AFF)
-                        //       : const Color(0xFFBDBDC2),
-                        //   BlendMode.srcIn,
-                        // ),
-                      ),
-                      onPressed: () {
-                        onFieldSubmitted();
-                      },
                     ),
                   ),
                 ],
@@ -171,53 +173,79 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 }
 
 AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
-  bool isOnline = true;
   var state = ref.watch(chatCtrlProvider);
 
   return AppBar(
-    leadingWidth: 100,
+    leadingWidth: 80,
     automaticallyImplyLeading: true,
     leading: Row(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         IconButton(
           padding: EdgeInsets.zero,
           onPressed: () => context.pushNamed(Urls.chatList.name),
           icon: Icon(Icons.arrow_back),
         ),
-        // ClipRRect(
-        //   borderRadius: BorderRadius.circular(48),
-        //   child: Container(
-        //     width: 40,
-        //     child: Image.asset(widget.chatUsersModel.avatar),
-        //   ),
-        // ),
-        CircleAvatar(
-          backgroundColor: Colors.white,
-          child: ClipRRect(
-            borderRadius: BorderRadius.all(
-              Radius.circular(20),
+        Container(
+          width: 30,
+          child: CircleAvatar(
+            backgroundColor: Colors.white,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(
+                Radius.circular(20),
+              ),
+              child: Image.asset(widget.chatUsersModel.avatar),
             ),
-            child: Image.asset(widget.chatUsersModel.avatar),
           ),
         ),
       ],
     ),
     backgroundColor: Colors.amber[700],
-    centerTitle: true,
-    title: Column(
-      children: [
-        Text(
-          widget.chatUsersModel.demande.ticket,
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        if (isOnline)
-          Text(
-            "Online",
-            style: TextStyle(fontSize: 12),
+    title: TouchRipple(
+      onTap: () {
+        HapticFeedback.selectionClick();
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatDetailPage(
+              chatUsersModel: widget.chatUsersModel,
+            ),
           ),
-      ],
+        );
+      },
+      rippleColor: Colors.white.withAlpha(65),
+      tapBehavior: TouchRippleBehavior(
+        fadeInDuration: Duration(milliseconds: 250),
+        eventCallBackableMinPercent: 1,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.chatUsersModel.demande.ticket,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.chatUsersModel.demande.initiateur.name +
+                        ", " +
+                        widget.chatUsersModel.demande.chauffeur.name,
+                    style: TextStyle(fontSize: 12),
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     ),
     actions: [
       _PopupMenuButton(widget: widget),
