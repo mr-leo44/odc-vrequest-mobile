@@ -11,7 +11,7 @@ class Bubble extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
   final ChatModel chat;
 
-  const Bubble({
+  Bubble({
     super.key,
     this.margin,
     required this.chat,
@@ -24,8 +24,8 @@ class Bubble extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (chat.type == ChatMessageType.received)
-          const CircleAvatar(
-            backgroundImage: AssetImage("assets/images/avatar_1.png"),
+          CircleAvatar(
+            backgroundImage: AssetImage(chat.avatar),
           ),
         Container(
           margin: margin ?? EdgeInsets.zero,
@@ -42,11 +42,24 @@ class Bubble extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: crossAlignmentOnType,
                 children: [
-                  Text(
-                    chat.message,
-                    style: TextStyle(color: textColorOnType),
+                  if (chat.type.name == 'received')
+                    Text(
+                      chat.user.name,
+                      style: TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold),
+                    ),
+                  SizedBox(
+                    height: 3,
                   ),
-                  const SizedBox(
+                  Card(
+                    shadowColor: Colors.transparent,
+                    elevation: 30,
+                    color: Colors.transparent,
+                    child: Text(
+                      chat.message,
+                      style: TextStyle(color: textColorOnType),
+                    ),
+                  ),
+                  SizedBox(
                     height: 8,
                   ),
                   Text(
