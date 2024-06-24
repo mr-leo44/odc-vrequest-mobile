@@ -12,7 +12,7 @@ import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauv
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderTousLesMessagesUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageLocalService.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageNetworkService.dart';
-import 'package:odc_mobile_project/m_user/business/service/userNetworkService.dart';
+import 'package:odc_mobile_project/m_user/business/service/userLocalService.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chatInteractor.g.dart';
@@ -24,11 +24,11 @@ class ChatInteractor {
   RecupererMessageGroupeUseCase recupererMessageGroupeUseCase;
   SupprimerMessageDetailUseCase supprimerMessageDetailUseCase;
 
-  LireLesGroupesUseCase lireLesGroupesUseCase;
-  LireLesMessagesUseCase lireLesMessagesUseCase;
-  SauvegarderLesGroupesUseCase sauvegarderLesGroupesUseCase;
-  SauvegarderMessageEntrantUseCase sauvegarderMessageEntrantUseCase;
-  SauvegarderTousLesMessagesUseCase sauvegarderTousLesMessagesUseCase;
+  LireLesMessageGroupesLocalUseCase lireLesMessageGroupesLocalUseCase;
+  LireLesMessageDetailsLocalUseCase lireLesMessageDetailsLocalUseCase;
+  SauvegarderLesMessageGroupesLocalUseCase sauvegarderLesMessageGroupesLocalUseCase;
+  SauvegarderMessageDetailEntrantLocalUseCase sauvegarderMessageDetailEntrantLocalUseCase;
+  SauvegarderTousLesMessageDetailsLocalUseCase sauvegarderTousLesMessageDetailsLocalUseCase;
 
   //static UserNetworkService user;
 
@@ -44,7 +44,7 @@ class ChatInteractor {
       this.sauvegarderMessageEntrantUseCase,
       this.sauvegarderTousLesMessagesUseCase);
 
-  static build(UserNetworkService user,MessageNetworkService network, MessageLocalService local) {
+  static build(UserLocalService user,MessageNetworkService network, MessageLocalService local) {
 
     return ChatInteractor._(
         CreerMessageUseCase(user, network, local),

@@ -12,6 +12,8 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
+  var email=TextEditingController();
+  var password=TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
@@ -25,6 +27,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [_contenuPrincipale(context), _chargement(context)],
       ),
@@ -38,11 +41,92 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Container(
+            padding: const EdgeInsets.only(),
+            child: Image.asset("images/login.png"),
+              width: 300,
+            ),
+
+          SizedBox(height: 20,),
+          Text("Authentification",
+          style: TextStyle(
+            color: Colors.orange,
+            fontWeight: FontWeight.bold,
+            fontSize: 25
+          ),),
+          SizedBox(height: 40,),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: email,
+              decoration: InputDecoration(label: Text("Email"),
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                      color: Colors.orange, // Définir la couleur de la bordure
+                      width: 2.0, // Définir l'épaisseur de la bordure
+                      ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                      color: Colors.orange, // Définir la couleur de la bordure lorsque le TextField est en focus
+                      width: 2.0,
+                      ),
+                      ),
+
+                  prefixIcon: Icon(Icons.verified_user)),
+            ),
+          ),
+          SizedBox(height: 7,),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextField(
+              controller: password,
+              obscureText: true,
+              decoration: InputDecoration(label: Text("Mot de passe"),
+                  prefixIcon: Icon(Icons.lock),
+                  suffixIcon: Icon(Icons.visibility_off),
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                      color: Colors.orange, // Définir la couleur de la bordure
+                      width: 2.0, // Définir l'épaisseur de la bordure
+                      ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                      color: Colors.orange, // Définir la couleur de la bordure lorsque le TextField est en focus
+                      width: 2.0,
+                      ),
+                      ),
+                  ),
+              ),
+            ),
+
+          SizedBox(height: 50,),
+
+          ElevatedButton(onPressed: () async{
+            print(email.text);
+            print(password.text);
+            var ctrl=ref.read(loginCtrlProvider.notifier);
+         var resultat = await  ctrl.authenticate(email.text,password.text);
+           if(resultat){
+             context.pushNamed(Urls.test.name);
+           }
+
+          },
+              child: Text("Envoyer"),
+            style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 150),
+                backgroundColor: Colors.orange,
+                foregroundColor: Colors.white
+            ),),
+          /*
           ElevatedButton(
               onPressed: () {
                 context.pushNamed(Urls.test.name);
               },
               child: Text("Naviguer"))
+
+           */
         ],
       ),
     );

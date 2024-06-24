@@ -6,6 +6,6 @@ import '../model/AuthenticateResponse.dart';
 import '../model/User.dart';
 
 abstract class UserNetworkService{
-  Future<User?> getUser();
+  Future<User?> getUser(String token);
   Future<AuthenticateResponse?> authenticate(AuthenticateRequestBody data);
 }
