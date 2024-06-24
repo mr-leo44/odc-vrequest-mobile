@@ -47,7 +47,7 @@ GoRouter router(RouterRef ref) {
               },
             ),
             GoRoute(
-              path: "/chat",
+              path: "chat",
               name: Urls.chatList.name,
               builder: (ctx, state) => ChatListPage(),
             ),
