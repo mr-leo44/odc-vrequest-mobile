@@ -20,7 +20,6 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var ctrl = ref.read(chatDetailCtrlProvider.notifier);
-      ctrl.getPassagers(widget.chatUsersModel);
     });
   }
 
@@ -41,7 +40,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
               flexibleSpace: FlexibleSpaceBar(
                   centerTitle: true,
                   collapseMode: CollapseMode.parallax,
-                  title: Text(widget.chatUsersModel.ticket,
+                  title: Text(widget.chatUsersModel.demande.ticket,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,

@@ -52,7 +52,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     setState(() {
       var ctrl = ref.read(chatCtrlProvider.notifier);
       ctrl.addMessage(CreerMessageRequete(
-        demandeId: widget.chatUsersModel.demandeId,
+        demande: widget.chatUsersModel.demande,
+        user: widget.chatUsersModel.demande.initiateur,
         contenu: text,
       ));
       ctrl.getList(widget.chatUsersModel);
@@ -185,10 +186,19 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
           onPressed: () => context.pushNamed(Urls.chatList.name),
           icon: Icon(Icons.arrow_back),
         ),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(48),
-          child: Container(
-            width: 40,
+        // ClipRRect(
+        //   borderRadius: BorderRadius.circular(48),
+        //   child: Container(
+        //     width: 40,
+        //     child: Image.asset(widget.chatUsersModel.avatar),
+        //   ),
+        // ),
+        CircleAvatar(
+          backgroundColor: Colors.white,
+          child: ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(20),
+            ),
             child: Image.asset(widget.chatUsersModel.avatar),
           ),
         ),
@@ -199,7 +209,7 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
     title: Column(
       children: [
         Text(
-          widget.chatUsersModel.ticket,
+          widget.chatUsersModel.demande.ticket,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         if (isOnline)

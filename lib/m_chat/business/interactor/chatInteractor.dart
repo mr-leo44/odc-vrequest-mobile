@@ -7,7 +7,6 @@ import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/sup
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/lireLesGroupesUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/lireLesMessagesUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/recupererMessageGroupeUseCase.dart';
-import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/recupererPassagersUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderLesGroupesUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderMessageEntrantUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/sauvegarderTousLesMessagesUseCase.dart';
@@ -23,7 +22,6 @@ class ChatInteractor {
   RecupererListMessageDetailUseCase recupererListMessageDetailUseCase;
   RecupererListMessageGroupeUseCase recupererListMessageGroupeUseCase;
   RecupererMessageGroupeUseCase recupererMessageGroupeUseCase;
-  RecupererPassagersUseCase recupererPassagersUseCase;
   SupprimerMessageDetailUseCase supprimerMessageDetailUseCase;
 
   LireLesGroupesUseCase lireLesGroupesUseCase;
@@ -39,7 +37,6 @@ class ChatInteractor {
       this.recupererListMessageDetailUseCase,
       this.recupererListMessageGroupeUseCase,
       this.recupererMessageGroupeUseCase,
-      this.recupererPassagersUseCase,
       this.supprimerMessageDetailUseCase,
       this.lireLesGroupesUseCase,
       this.lireLesMessagesUseCase,
@@ -54,7 +51,6 @@ class ChatInteractor {
         RecupererListMessageDetailUseCase(network, local),
         RecupererListMessageGroupeUseCase(network, local),
         RecupererMessageGroupeUseCase(network, local),
-        RecupererPassagersUseCase(network,local),
         SupprimerMessageDetailUseCase(network, local),
         LireLesGroupesUseCase(network, local),
         LireLesMessagesUseCase(network, local),
