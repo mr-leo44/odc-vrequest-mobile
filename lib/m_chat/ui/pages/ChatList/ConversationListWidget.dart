@@ -32,6 +32,7 @@ class _ConversationListState extends State<ConversationListWidget> {
               child: Row(
                 children: <Widget>[
                   CircleAvatar(
+                    backgroundColor: Colors.white ,
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(
                         Radius.circular(20),
@@ -49,7 +50,7 @@ class _ConversationListState extends State<ConversationListWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            widget.chatUsersModel.ticket,
+                            widget.chatUsersModel.demande.ticket,
                             style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
@@ -198,7 +199,7 @@ Widget _subTitle(widget) {
         Expanded(
           child: Text(
             '~ ' +
-                widget.chatUsersModel.lastSender +
+                widget.chatUsersModel.lastSender.name +
                 ' : ' +
                 widget.chatUsersModel.lastMessage,
             softWrap: false,
