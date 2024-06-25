@@ -1,13 +1,15 @@
+import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gio/gio.dart' as gio;
 import 'package:odc_mobile_project/m_chat/business/model/ChatModel.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
 import 'package:odc_mobile_project/m_chat/business/model/DemandeChat.dart';
 import 'package:odc_mobile_project/m_chat/business/model/creerMessageRequete.dart';
-import 'package:odc_mobile_project/m_chat/business/model/messageDetails.dart';
-import 'package:odc_mobile_project/m_chat/business/model/messageGroupe.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageNetworkService.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/chat_message_type.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
+import 'package:http/http.dart' as http;
 
 class ChatNetworkServiceV1 implements MessageNetworkService {
   ChatNetworkServiceV1(this.baseURL);
@@ -377,7 +379,7 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
   ];
 
   @override
-  Future<List<ChatUsersModel>> recupererListMessageGroupe(String token) {
+  Future<List<ChatUsersModel>> recupererListMessageGroupe(String token) async {
     return Future.value(this.chatUsers);
   }
 
@@ -393,19 +395,66 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
   @override
   Future<List<ChatModel>> recupererListMessageDetail(
       ChatUsersModel data) async {
-    return Future.value(this.chatList);
+    List<ChatModel> lists = <ChatModel>[];
+    var url = this.baseURL + '/api/messages';
+
+    try {
+      var response = await gio.get(url);
+
+      if (((response.statusCode == 200) || (response.statusCode == 201)) &&
+          (response.headers["content-type"] == "application/json")) {
+        List result = json.decode(response.body);
+        var responseFinal = result.map((e) {
+          User user = User.fromJson(e["user"]);
+          return ChatModel.fromJson({
+            "user": user,
+            "contenu": e["contenu"],
+            "type": (user.id == 1)
+                ? ChatMessageType.sent
+                : ChatMessageType.received,
+            "time": DateTime.now(),
+          });
+        }).toList();
+        lists = responseFinal;
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return Future.value(lists);
   }
 
   @override
   Future<bool> creerMessage(CreerMessageRequete data) async {
-    ChatUsersModel chatUsersModel =
-        await recupererMessageGroupe(data.demande.id);
-    List<ChatModel> listMessages =
-        await recupererListMessageDetail(chatUsersModel);
-    listMessages.add(ChatModel.sent(user: data.user, message: data.contenu));
-    listMessages.reversed.toList();
+    bool added = false;
+    // ChatUsersModel chatUsersModel =
+    //     await recupererMessageGroupe(data.demande.id);
+    // List<ChatModel> listMessages =
+    //     await recupererListMessageDetail(chatUsersModel);
+    // listMessages.add(ChatModel.sent(user: data.user, message: data.contenu));
+    // listMessages.reversed.toList();
 
-    return Future.value(true);
+    var url = this.baseURL + '/api/messages';
+    var param = {
+      "user_id": data.user.id.toString(),
+      "contenu":data.contenu, 
+      "message_groupe_id": data.demande.id.toString(),
+    };
+
+    try {
+      var response = await gio.post(url, body: param);
+
+      if (((response.statusCode == 200) || (response.statusCode == 201)) &&
+          (response.headers["content-type"] == "application/json")) {
+        var result = json.decode(response.body);
+        added = result["added"];
+        print(added);
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return Future.value(added);
   }
 
   @override

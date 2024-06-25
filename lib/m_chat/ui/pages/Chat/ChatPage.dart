@@ -12,6 +12,7 @@ import 'package:odc_mobile_project/m_chat/ui/pages/Chat/Bubble.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatCtrl.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailPage.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListPage.dart';
+import 'package:odc_mobile_project/m_user/business/model/User.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
@@ -60,16 +61,29 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     newMessage.text = '';
   }
 
-  addMessage(String text) {
-    setState(() {
-      var ctrl = ref.read(chatCtrlProvider.notifier);
-      ctrl.addMessage(CreerMessageRequete(
-        demande: widget.chatUsersModel.demande,
-        user: widget.chatUsersModel.demande.initiateur,
-        contenu: text,
-      ));
-      ctrl.getList(widget.chatUsersModel);
-    });
+  addMessage(String text) async {
+    var ctrl = ref.read(chatCtrlProvider.notifier);
+    var resp = await ctrl.addMessage(CreerMessageRequete(
+      demande: widget.chatUsersModel.demande,
+      user: User(
+          id: 1,
+          emailVerifiedAt: DateTime.now(),
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now()),
+      contenu: text,
+    ));
+    if (resp) {
+      setState(() {
+        ctrl.getList(widget.chatUsersModel);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content:
+              Text('Le message n\'a pas ete ajoute, veuillez reessayer svp'),
+        ),
+      );
+    }
   }
 
   @override
@@ -78,6 +92,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     // final bool isLargeScreen = width > 800;
     var state = ref.watch(chatCtrlProvider);
     List<ChatModel> chatList = state.chatList.reversed.toList();
+    // chatList.reversed.toList();
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -156,7 +171,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                       ),
                       // validator: (String? value) {
                       //   if (value == null || value.isNotEmpty) {
-                          
+
                       //     return 'Le nom est obligatoire';
                       //   }
                       // },
