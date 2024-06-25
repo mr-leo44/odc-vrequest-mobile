@@ -34,10 +34,10 @@ class ChatModel {
     factory ChatModel.sent({required User user, required String message}) =>
       ChatModel(user: user, message: message, type: ChatMessageType.sent, time: DateTime.now());
 
-    factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
+    factory ChatModel.fromJson(Map json) => ChatModel(
         avatar: json["avatar"] ?? "assets/images/avatar_1.png" ,
         user: json["user"] ?? null ,
-        message: json["message"] ?? "" ,
+        message: json["contenu"] ?? "" ,
         type: json["type"] ?? null ,
         time: json["time"] ?? "",
     );
@@ -45,7 +45,7 @@ class ChatModel {
     Map<String, dynamic> toJson() => {
         "avatar": avatar,
         "user": user,
-        "message": message,
+        "contenu": message,
         "type": type,
         "time": time,
     };
