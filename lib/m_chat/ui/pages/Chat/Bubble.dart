@@ -45,7 +45,9 @@ class Bubble extends StatelessWidget {
                   if (chat.type.name == 'received')
                     Text(
                       chat.user.name,
-                      style: TextStyle(color: Color(0xFF007AFF), fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Color(0xFF007AFF),
+                          fontWeight: FontWeight.bold),
                     ),
                   SizedBox(
                     height: 3,
@@ -61,6 +63,18 @@ class Bubble extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 8,
+                  ),
+                  if (chat.type.name == 'received')
+                    Text(
+                      "Chauffeur",
+                      style: TextStyle(
+                        color:  Color(0xFF007AFF),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                      ),
+                    ),
+                  SizedBox(
+                    height: 2,
                   ),
                   Text(
                     Formatter.formatDateTime(chat.time),
