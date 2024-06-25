@@ -49,6 +49,7 @@ dependencies:
   flutter_svg: ^2.0.5
   flutter_chat_bubble: ^2.0.2
   flutter_touch_ripple: ^1.1.21
+  gio: ^0.0.4
 
 dev_dependencies:
   flutter_test:

@@ -352,6 +352,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  gio:
+    dependency: "direct main"
+    description:
+      name: gio
+      sha256: "1db5ef5675409fb9b135bf557ba0e934189f916bb25e08ed53bb6b2e44ea517a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   glob:
     dependency: transitive
     description:
