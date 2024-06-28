@@ -5,6 +5,7 @@
 
 import 'package:meta/meta.dart';
 import 'package:odc_mobile_project/m_chat/business/model/DemandeChat.dart';
+import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'dart:convert';
 
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
@@ -14,7 +15,7 @@ CreerMessageRequete creerMessageRequeteFromJson(String str) => CreerMessageReque
 String creerMessageRequeteToJson(CreerMessageRequete data) => json.encode(data.toJson());
 
 class CreerMessageRequete {
-  DemandeChat demande;
+  Demande demande;
   User user;
   String contenu;
 

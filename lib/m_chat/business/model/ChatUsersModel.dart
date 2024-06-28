@@ -1,9 +1,9 @@
-import 'package:odc_mobile_project/m_chat/business/model/DemandeChat.dart';
+import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 
 class ChatUsersModel {
     String avatar;
-    DemandeChat demande;
+    Demande demande;
     User lastSender;
     String lastMessage;
     bool isVideo;
@@ -24,7 +24,7 @@ class ChatUsersModel {
 
     ChatUsersModel copyWith({
         String? avatar,
-        DemandeChat? demande,
+        Demande? demande,
         User? lastSender,
         String? lastMessage,
         bool? isVideo,
@@ -43,7 +43,7 @@ class ChatUsersModel {
             unread: unread ?? this.unread,
         );
 
-    factory ChatUsersModel.fromJson(Map<String, dynamic> json) => ChatUsersModel(
+    factory ChatUsersModel.fromJson(Map json) => ChatUsersModel(
         avatar: json["avatar"] ?? "assets/images/car3.webp" ,
         demande: json["demande"] ?? null ,
         lastSender: json["lastSender"] ?? null ,
