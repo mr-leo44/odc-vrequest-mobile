@@ -4,7 +4,6 @@
 //     final creerMessageRequete = creerMessageRequeteFromJson(jsonString);
 
 import 'package:meta/meta.dart';
-import 'package:odc_mobile_project/m_chat/business/model/DemandeChat.dart';
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'dart:convert';
 

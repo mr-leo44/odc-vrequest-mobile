@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gio/gio.dart' as gio;
 import 'package:odc_mobile_project/m_chat/business/model/ChatModel.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
-import 'package:odc_mobile_project/m_chat/business/model/DemandeChat.dart';
 import 'package:odc_mobile_project/m_chat/business/model/creerMessageRequete.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageNetworkService.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/chat_message_type.dart';
