@@ -107,6 +107,7 @@ class _ConversationListState extends State<ConversationListWidget> {
 Widget _subTitle(widget) {
   return Row(
     children: [
+      if (widget.chatUsersModel.lastSender.id != 0)
       if (widget.chatUsersModel.lastSender != "Bap Mutemba")
         if (widget.chatUsersModel.isMessageRead)
           Row(
@@ -138,7 +139,7 @@ Widget _subTitle(widget) {
               )
             ],
           ),
-      if (widget.chatUsersModel.lastMessage.isEmpty)
+      if ((widget.chatUsersModel.lastMessage.isEmpty) && (widget.chatUsersModel.lastSender.id != 0))
         Row(
           children: [
             if (!widget.chatUsersModel.isVideo)
@@ -196,6 +197,7 @@ Widget _subTitle(widget) {
           ],
         )
       else
+        if (widget.chatUsersModel.lastSender.id != 0)
         Expanded(
           child: Text(
             '~ ' +
