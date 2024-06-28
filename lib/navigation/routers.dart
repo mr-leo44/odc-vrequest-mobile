@@ -24,7 +24,7 @@ GoRouter router(RouterRef ref) {
   final userInteractor = ref.watch(userInteractorProvider);
   return GoRouter(
       debugLogDiagnostics: true,
-      initialLocation: "/auth/login",
+      initialLocation: "/home/chat",
       /* redirect: (context, state) async {
         return null;
       },*/
