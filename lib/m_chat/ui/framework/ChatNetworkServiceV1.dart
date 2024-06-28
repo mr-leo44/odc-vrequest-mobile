@@ -81,7 +81,7 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
     var url = this.baseURL + '/api/messages';
 
     try {
-      var response = await gio.get(url);
+      var response = await gio.get(url,queryParameters: {"demande_id":data.demande.id.toString()});
 
       if (((response.statusCode == 200) || (response.statusCode == 201)) &&
           (response.headers["content-type"] == "application/json")) {
