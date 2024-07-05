@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,10 +12,11 @@ import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
 import 'package:odc_mobile_project/m_chat/business/model/creerMessageRequete.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/Bubble.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatCtrl.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/chat_message_type.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailPage.dart';
-import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListPage.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
+import 'package:signals/signals_flutter.dart';
 
 class ChatPage extends ConsumerStatefulWidget {
   ChatUsersModel chatUsersModel;
@@ -38,6 +41,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var ctrl = ref.read(chatCtrlProvider.notifier);
       ctrl.getList(widget.chatUsersModel);
+      ctrl.realTime();
+      ctrl.messageRealTime();
     });
   }
 
@@ -47,10 +52,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     super.dispose();
   }
 
-  Future<void> onFieldSubmitted() async {
+  Future<void> onFieldSubmitted(BuildContext context) async {
     if (!newMessage.text.isNotEmpty) return;
 
-    addMessage(newMessage.text);
+    addMessage(newMessage.text, context);
 
     scrollController.animateTo(
       0,
@@ -61,21 +66,25 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     newMessage.text = '';
   }
 
-  addMessage(String text) async {
+  addMessage(
+    String text,
+    BuildContext context,
+  ) async {
     var ctrl = ref.read(chatCtrlProvider.notifier);
     var resp = await ctrl.addMessage(CreerMessageRequete(
       demande: widget.chatUsersModel.demande,
       user: User(
-          id: 1,
-          emailVerifiedAt: DateTime.now(),
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now()),
+        id: 1,
+        emailVerifiedAt: DateTime.now(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
       contenu: text,
     ));
     if (resp) {
-      setState(() {
-        ctrl.getList(widget.chatUsersModel);
-      });
+      // setState(() {
+      // ctrl.getList(widget.chatUsersModel);
+      // });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -92,6 +101,17 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     // final bool isLargeScreen = width > 800;
     var state = ref.watch(chatCtrlProvider);
     List<ChatModel> chatList = state.chatList.reversed.toList();
+    if (state.newMessage != null) {
+      chatList.insert(0,
+        ChatModel.fromJson({
+          "user": state.newMessage?.user,
+          "contenu": state.newMessage?.message,
+          "type":
+              (state.newMessage?.user.id == 1) ? ChatMessageType.sent : ChatMessageType.received,
+          "time": state.newMessage?.time,
+        }),
+      );
+    }
     // chatList.reversed.toList();
 
     return Scaffold(
@@ -99,28 +119,32 @@ class _ChatPageState extends ConsumerState<ChatPage> {
       appBar: _appBar(context, widget, ref),
       body: Column(
         children: [
+          // Center(
+          //   child: Text(state.newMessage?.message ?? ""),
+          // ),
           Expanded(
             child: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                },
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    reverse: true,
-                    padding: const EdgeInsets.only(top: 12, bottom: 20) +
-                        const EdgeInsets.symmetric(horizontal: 12),
-                    separatorBuilder: (_, __) => const SizedBox(
-                      height: 12,
-                    ),
-                    controller: scrollController,
-                    itemBuilder: (context, index) {
-                      return Bubble(chat: chatList[index]);
-                    },
-                    itemCount: chatList.length,
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  reverse: true,
+                  padding: const EdgeInsets.only(top: 12, bottom: 20) +
+                      const EdgeInsets.symmetric(horizontal: 12),
+                  separatorBuilder: (_, __) => const SizedBox(
+                    height: 12,
                   ),
-                )),
+                  controller: scrollController,
+                  itemBuilder: (context, index) {
+                    return Bubble(chat: chatList[index]);
+                  },
+                  itemCount: chatList.length,
+                ),
+              ),
+            ),
           ),
           SafeArea(
             bottom: true,
@@ -136,7 +160,6 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                     key: _newMessageKey,
                     child: TextFormField(
                       focusNode: focusNode,
-                      //onChanged: onFieldChanged,
                       controller: newMessage,
                       maxLines: null,
                       textAlignVertical: TextAlignVertical.top,
@@ -165,16 +188,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
                             ),
                           ),
                           onPressed: () {
-                            onFieldSubmitted();
+                            onFieldSubmitted(context);
                           },
                         ),
                       ),
-                      // validator: (String? value) {
-                      //   if (value == null || value.isNotEmpty) {
-
-                      //     return 'Le nom est obligatoire';
-                      //   }
-                      // },
                     ),
                   ),
                 ],
@@ -264,53 +281,9 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
     ),
     actions: [
       _PopupMenuButton(widget: widget),
-      // IconButton(
-      //   onPressed: () {},
-      //   icon: Icon(Icons.videocam_outlined),
-      // ),
-      // IconButton(
-      //   onPressed: () {},
-      //   icon: Icon(Icons.call_outlined),
-      // ),
     ],
   );
 }
-
-// Widget _sendMessage() {
-//   return Container(
-//     color: Colors.amber,
-//     width: double.infinity,
-//     child: TextFormField(
-//       decoration: InputDecoration(
-//         enabledBorder: InputBorder.none,
-//         focusedBorder: InputBorder.none,
-//         hintText: "Ecriver un message...",
-//         hintStyle: TextStyle(
-//           fontSize: 15,
-//         ),
-//         icon: IconButton(
-//           onPressed: () {},
-//           icon: Icon(Icons.photo_camera_outlined),
-//         ),
-//         prefixIcon: IconButton(
-//           onPressed: () {},
-//           icon: Icon(Icons.attach_file),
-//         ),
-//         suffixIcon: ClipRRect(
-//           borderRadius: BorderRadius.circular(48),
-//           child: Container(
-//             color: Colors.white,
-//             child: IconButton(
-//               iconSize: 18,
-//               onPressed: () {},
-//               icon: Icon(Icons.settings_voice_outlined),
-//             ),
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-// }
 
 class _PopupMenuButton extends StatelessWidget {
   var widget;

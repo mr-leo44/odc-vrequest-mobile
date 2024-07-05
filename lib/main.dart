@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/chatInteractor.dart';
 import 'package:odc_mobile_project/m_chat/ui/framework/ChatLocalServiceV1.dart';
 import 'package:odc_mobile_project/m_chat/ui/framework/ChatNetworkServiceV1.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 import 'm_user/business/interactor/UserInteractor.dart';
 import 'm_user/ui/framework/UserLocalServiceImpl.dart';
@@ -18,13 +19,21 @@ void main() async {
   var stockage = GetStorage();
 
   var baseUrl = dotenv.env['BASE_URL'] ?? "";
+  var socketUrl = dotenv.env['SOCKET_URL'] ?? "";
 
 // module user service implementations
   var userNetworkImpl = UserNetworkServiceImpl(baseUrl);
   var userLocalImpl = UserLocalServiceImpl(stockage);
   var userInteractor=UserInteractor.build(userNetworkImpl, userLocalImpl);
 
-  var chatNetworkImpl = ChatNetworkServiceV1(baseUrl);
+  Socket socket = io(socketUrl, <String, dynamic>{
+    "transports": ["websocket"],
+    "autoConnect": true
+  });
+
+  socket.connect();
+
+  var chatNetworkImpl = ChatNetworkServiceV1(baseUrl,socket);
   var chatLocalImpl = ChatLocalServiceV1(baseUrl);
   var chatInteractor = ChatInteractor.build(userNetworkImpl,chatNetworkImpl,chatLocalImpl);
 

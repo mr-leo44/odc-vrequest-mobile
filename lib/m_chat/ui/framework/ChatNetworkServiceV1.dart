@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gio/gio.dart' as gio;
 import 'package:odc_mobile_project/m_chat/business/model/ChatModel.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
@@ -9,15 +9,20 @@ import 'package:odc_mobile_project/m_chat/business/service/messageNetworkService
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/chat_message_type.dart';
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
-import 'package:http/http.dart' as http;
+import 'package:signals/signals_flutter.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class ChatNetworkServiceV1 implements MessageNetworkService {
-  ChatNetworkServiceV1(this.baseURL);
+  ChatNetworkServiceV1(this.baseURL, this.socket);
   String baseURL;
+  Socket socket;
+  @override
+  Signal<ChatModel> message = Signal(
+    ChatModel.fromJson({}),
+  );
 
   @override
   Future<List<ChatUsersModel>> recupererListMessageGroupe(String token) async {
-    // return Future.value(this.chatUsers);
     List<ChatUsersModel> lists = <ChatUsersModel>[];
     var url = this.baseURL + '/api/demandes';
 
@@ -41,19 +46,19 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
             "status": e["demande"]["status"],
             "longitude": e["demande"]["longitude"].toString(),
             "latitude": e["demande"]["latitude"].toString(),
-            "initiateur" : initiateur,
-            "chauffeur" : chauffeur,
-            "nbrEtranger" : int.parse(e["demande"]["nbrEtranger"]),
+            "initiateur": initiateur,
+            "chauffeur": chauffeur,
+            "nbrEtranger": int.parse(e["demande"]["nbrEtranger"]),
             "created_at": e["demande"]["created_at"],
           });
           return ChatUsersModel.fromJson({
-                    "demande": demande,
-                    "lastSender": lastSender,
-                    "lastMessage": e["lastMessage"],
-                    "isVideo": e["isVideo"],
-                    "isMessageRead": e["isMessageRead"],
-                    "time": e["time"],
-                    "unread": e["unread"],
+            "demande": demande,
+            "lastSender": lastSender,
+            "lastMessage": e["lastMessage"],
+            "isVideo": e["isVideo"],
+            "isMessageRead": e["isMessageRead"],
+            "time": e["time"],
+            "unread": e["unread"],
           });
         }).toList();
         lists = responseFinal;
@@ -81,7 +86,8 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
     var url = this.baseURL + '/api/messages';
 
     try {
-      var response = await gio.get(url,queryParameters: {"demande_id":data.demande.id.toString()});
+      var response = await gio.get(url,
+          queryParameters: {"demande_id": data.demande.id.toString()});
 
       if (((response.statusCode == 200) || (response.statusCode == 201)) &&
           (response.headers["content-type"] == "application/json")) {
@@ -94,7 +100,7 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
             "type": (user.id == 1)
                 ? ChatMessageType.sent
                 : ChatMessageType.received,
-            "time": DateTime.now(),
+            "time": DateTime.parse(e["time"]) ,
           });
         }).toList();
         lists = responseFinal;
@@ -109,17 +115,11 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
   @override
   Future<bool> creerMessage(CreerMessageRequete data) async {
     bool added = false;
-    // ChatUsersModel chatUsersModel =
-    //     await recupererMessageGroupe(data.demande.id);
-    // List<ChatModel> listMessages =
-    //     await recupererListMessageDetail(chatUsersModel);
-    // listMessages.add(ChatModel.sent(user: data.user, message: data.contenu));
-    // listMessages.reversed.toList();
 
     var url = this.baseURL + '/api/messages';
     var param = {
       "user_id": data.user.id.toString(),
-      "contenu":data.contenu, 
+      "contenu": data.contenu,
       "message_groupe_id": data.demande.id.toString(),
     };
 
@@ -130,7 +130,22 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
           (response.headers["content-type"] == "application/json")) {
         var result = json.decode(response.body);
         added = result["added"];
-        print(added);
+      }
+
+      if (socket.connected) {
+        print("Socket connected");
+        socket.emit('test', 'testSendMsg');
+
+        var donnees = {
+          "user": data.user,
+          "contenu": data.contenu,
+          "demande": data.demande.id,
+        };
+
+        socket.emit('joinRoom', donnees["demande"].toString());
+        socket.emit('createMessage', donnees);
+      } else {
+        print("Socket not connected");
       }
     } catch (e) {
       print(e);
@@ -143,5 +158,27 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
   Future<bool> supprimerMessageDetail(int messageDetailId) {
     // TODO: implement supprimerMessageDetail
     throw UnimplementedError();
+  }
+
+  @override
+  Future<void> realTime() async {
+    if (socket.connected) {
+      print("Socket connected");
+
+      socket.emit('test', 'testReceiveMsg');
+      socket.on('sendMessage', (resp) {
+        User user = User.fromJson(resp["user"]);
+        message.value = ChatModel.fromJson({
+          "user": user,
+          "contenu": resp["contenu"],
+          "type": (user.id == 1)
+              ? ChatMessageType.sent
+              : ChatMessageType.received,
+          "time": DateTime.now(),
+        });
+      });
+    } else {
+      print("Socket not connected");
+    }
   }
 }
