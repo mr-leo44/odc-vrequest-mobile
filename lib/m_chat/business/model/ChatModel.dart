@@ -5,7 +5,7 @@ class ChatModel {
     final String avatar;
     final User user;
     final String message;
-    final ChatMessageType type;
+    final ChatMessageType? type;
     final DateTime time;
 
     ChatModel({
@@ -36,10 +36,10 @@ class ChatModel {
 
     factory ChatModel.fromJson(Map json) => ChatModel(
         avatar: json["avatar"] ?? "assets/images/avatar_1.png" ,
-        user: json["user"] ?? null ,
+        user: json["user"] ?? User(id: 0, emailVerifiedAt: DateTime.now(), createdAt: DateTime.now(), updatedAt: DateTime.now()) ,
         message: json["contenu"] ?? "" ,
         type: json["type"] ?? null ,
-        time: json["time"] ?? "",
+        time: json["time"] ?? DateTime.now(),
     );
 
     Map<String, dynamic> toJson() => {
