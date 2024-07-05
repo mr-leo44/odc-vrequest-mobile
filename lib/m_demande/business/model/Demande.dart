@@ -21,8 +21,9 @@ class Demande {
   String status;
   int nbrePassagers;
   User initiateur ;
-  User manager;
-  User chefCharroi;
+  User? manager;
+  User? chefCharroi;
+  User chauffeur;
   double longitude;
   double latitude;
   DateTime createAt;
@@ -40,6 +41,7 @@ class Demande {
     required this.initiateur,
     required this.manager,
     required this.chefCharroi,
+    required this.chauffeur,
     this.longitude = 0.0,
     this.latitude = 0.0,
     required this.createAt,
@@ -51,14 +53,15 @@ class Demande {
     motif: json["motif"] ?? "",
     ticket: json["ticket"] ?? "",
     dateDeplacement:json["date_deplacement"] != null ? DateTime.parse(json["date_deplacement"]) : DateTime.now(),
-    lieuDepart: json["lieu_depart"] ??  0,
-    destination: json["destination"] ??  0,
+    lieuDepart: json["lieu_depart"] ??  "",
+    destination: json["destination"] ??  "",
     nbrePassagers: json["nbre_passagers"] ??  0,
     initiateur: json["initiateur"] ??  null,
     manager: json["manager"] ??  null,
     chefCharroi: json["chef_charroi"] ??  null,
-    longitude: json["longitude"].toDouble() ?? 0.0,
-    latitude: json["latitude"].toDouble() ?? 0.0,
+    chauffeur: json["chauffeur"] ??  null,
+    longitude: double.parse(json["longitude"]) ?? 0.0,
+    latitude: double.parse(json["latitude"]) ?? 0.0,
     createAt: json["create_at"] != null ? DateTime.parse(json["create_at"]) : DateTime.now(),
   );
 
@@ -74,6 +77,7 @@ class Demande {
     "initiateur": initiateur,
     "manager": manager,
     "chef_charroi": chefCharroi,
+    "chauffeur" : chauffeur,
     "longitude": longitude,
     "latitude": latitude,
     "create_at": "${createAt.year.toString().padLeft(4, '0')}-${createAt.month.toString().padLeft(2, '0')}-${createAt.day.toString().padLeft(2, '0')}",
