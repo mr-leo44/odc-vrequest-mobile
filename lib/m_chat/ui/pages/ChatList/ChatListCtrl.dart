@@ -13,7 +13,7 @@ class ChatListCtrl extends _$ChatListCtrl {
   }
 
   void getList() async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, chatsUsers: List.empty());
     var interactor = ref.watch(chatInteractorProvider);
     var res = await interactor.recupererListMessageGroupeUseCase.run("bjhdfdj");
     state = state.copyWith(isLoading: false, chatsUsers: res);

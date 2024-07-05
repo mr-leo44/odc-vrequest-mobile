@@ -42,9 +42,9 @@ class Bubble extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: crossAlignmentOnType,
                 children: [
-                  if (chat.type.name == 'received')
+                  if (chat.type?.name == 'received')
                     Text(
-                      chat.user.name,
+                      chat.user!.name,
                       style: TextStyle(
                           color: Color(0xFF007AFF),
                           fontWeight: FontWeight.bold),
@@ -64,7 +64,7 @@ class Bubble extends StatelessWidget {
                   SizedBox(
                     height: 8,
                   ),
-                  if (chat.type.name == 'received')
+                  if (chat.type?.name == 'received')
                     Text(
                       "Chauffeur",
                       style: TextStyle(
@@ -95,6 +95,8 @@ class Bubble extends StatelessWidget {
         return Colors.white;
       case ChatMessageType.received:
         return const Color(0xFF0F0F0F);
+      case null:
+        return Colors.black ;
     }
   }
 
@@ -104,6 +106,8 @@ class Bubble extends StatelessWidget {
         return const Color(0xFFE7E7ED);
       case ChatMessageType.sent:
         return const Color(0xFF007AFF);
+      case null:
+        return Colors.black ;
     }
   }
 
@@ -113,6 +117,8 @@ class Bubble extends StatelessWidget {
         return ChatBubbleClipper1(type: BubbleType.sendBubble);
       case ChatMessageType.received:
         return ChatBubbleClipper1(type: BubbleType.receiverBubble);
+      case null:
+        return ChatBubbleClipper1(type: BubbleType.receiverBubble);
     }
   }
 
@@ -121,6 +127,8 @@ class Bubble extends StatelessWidget {
       case ChatMessageType.sent:
         return CrossAxisAlignment.end;
       case ChatMessageType.received:
+        return CrossAxisAlignment.start;
+      case null:
         return CrossAxisAlignment.start;
     }
   }
@@ -132,6 +140,8 @@ class Bubble extends StatelessWidget {
 
       case ChatMessageType.sent:
         return MainAxisAlignment.end;
+      case null:
+        return MainAxisAlignment.start;
     }
   }
 
@@ -140,6 +150,13 @@ class Bubble extends StatelessWidget {
       case ChatMessageType.sent:
         return const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 24);
       case ChatMessageType.received:
+        return const EdgeInsets.only(
+          top: 10,
+          bottom: 10,
+          left: 24,
+          right: 10,
+        );
+      case null:
         return const EdgeInsets.only(
           top: 10,
           bottom: 10,

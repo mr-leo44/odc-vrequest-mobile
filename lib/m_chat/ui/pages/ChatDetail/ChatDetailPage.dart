@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatModel.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatPage.dart';
@@ -61,19 +62,19 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                 _CustomListTile(
                                   textLeading: "Lieu destination",
                                   title: widget
-                                      .chatUsersModel.demande.lieuDestination,
+                                      .chatUsersModel.demande.destination,
                                 ),
                                 _CustomListTile(
                                   textLeading: "Longitude Latitude",
                                   title: widget
-                                          .chatUsersModel.demande.longitude +
+                                          .chatUsersModel.demande.longitude.toString() +
                                       ' , ' +
-                                      widget.chatUsersModel.demande.latitude,
+                                      widget.chatUsersModel.demande.latitude.toString(),
                                 ),
                                 _CustomListTile(
                                   textLeading: "Date de deplacement",
-                                  title: widget
-                                      .chatUsersModel.demande.dateDeplacement,
+                                  title: DateFormat('dd/MM/yyyy - HH:mm').format(widget
+                                      .chatUsersModel.demande.dateDeplacement) ,
                                 ),
                                 _CustomListTile(
                                   textLeading: "Status",
