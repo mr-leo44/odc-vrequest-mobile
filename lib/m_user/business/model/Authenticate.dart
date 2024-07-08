@@ -9,21 +9,21 @@ AuthenticateRequestBody authenticateFromJson(String str) => AuthenticateRequestB
 String authenticateToJson(AuthenticateRequestBody data) => json.encode(data.toJson());
 
 class AuthenticateRequestBody {
-  String email;
+  String username;
   String password;
 
   AuthenticateRequestBody({
-    required this.email,
+    required this.username,
     required this.password,
   });
 
   factory AuthenticateRequestBody.fromJson(Map<String, dynamic> json) => AuthenticateRequestBody(
-    email: json["email"],
+    username: json["username"],
     password: json["password"],
   );
 
   Map<String, dynamic> toJson() => {
-    "email": email,
+    "username": username,
     "password": password,
   };
 }

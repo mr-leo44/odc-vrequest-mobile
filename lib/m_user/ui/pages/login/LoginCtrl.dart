@@ -1,5 +1,6 @@
 import 'package:odc_mobile_project/m_user/business/interactor/UserInteractor.dart';
 import 'package:odc_mobile_project/m_user/business/model/Authenticate.dart';
+import 'package:odc_mobile_project/m_user/business/model/AuthenticateResponse.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'LoginState.dart';
@@ -14,14 +15,21 @@ class LoginCtrl extends _$LoginCtrl {
     return LoginState();
   }
 
+  void readLocalToken()async{
+    var usecase = ref.watch(userInteractorProvider).getUserLocalUseCase;
+    var res=await usecase.run();
+    print("token local ${res?.toJson()}");
+
+  }
+
   // execution d'une action
-  Future<bool> authenticate(String emailValue, String passwordValue) async {
+  Future<AuthenticateResponse?> authenticate(String username, String passwordValue) async {
     var data =
-        AuthenticateRequestBody(email: emailValue, password: passwordValue);
+    AuthenticateRequestBody(username: username, password: passwordValue);
     var usecase = ref.watch(userInteractorProvider).authenticateusecase;
     state = state.copyWith(isLoading: true);
     var res = await usecase.run(data);
     state = state.copyWith(isLoading: false);
-    return true;
+    return res;
   }
 }
