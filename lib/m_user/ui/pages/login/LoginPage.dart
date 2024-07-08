@@ -12,8 +12,8 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
-  var email=TextEditingController();
-  var password=TextEditingController();
+  var email=TextEditingController(text: "sjayes0");
+  var password=TextEditingController(text: "123456");
   @override
   void initState() {
     // TODO: implement initState
@@ -21,6 +21,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // action initiale de la page et appel d'un controleur
       var ctrl = ref.read(loginCtrlProvider.notifier);
+      ctrl.readLocalToken();
     });
   }
 
@@ -44,16 +45,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           Container(
             padding: const EdgeInsets.only(),
             child: Image.asset("images/login.png"),
-              width: 300,
-            ),
+            width: 300,
+          ),
 
           SizedBox(height: 20,),
           Text("Authentification",
-          style: TextStyle(
-            color: Colors.orange,
-            fontWeight: FontWeight.bold,
-            fontSize: 25
-          ),),
+            style: TextStyle(
+                color: Colors.orange,
+                fontWeight: FontWeight.bold,
+                fontSize: 25
+            ),),
           SizedBox(height: 40,),
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -61,17 +62,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               controller: email,
               decoration: InputDecoration(label: Text("Email"),
                   border: OutlineInputBorder(
-                      borderSide: BorderSide(
+                    borderSide: BorderSide(
                       color: Colors.orange, // Définir la couleur de la bordure
                       width: 2.0, // Définir l'épaisseur de la bordure
-                      ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
                       color: Colors.orange, // Définir la couleur de la bordure lorsque le TextField est en focus
                       width: 2.0,
-                      ),
-                      ),
+                    ),
+                  ),
 
                   prefixIcon: Icon(Icons.verified_user)),
             ),
@@ -83,37 +84,44 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               controller: password,
               obscureText: true,
               decoration: InputDecoration(label: Text("Mot de passe"),
-                  prefixIcon: Icon(Icons.lock),
-                  suffixIcon: Icon(Icons.visibility_off),
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                      color: Colors.orange, // Définir la couleur de la bordure
-                      width: 2.0, // Définir l'épaisseur de la bordure
-                      ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                      color: Colors.orange, // Définir la couleur de la bordure lorsque le TextField est en focus
-                      width: 2.0,
-                      ),
-                      ),
+                prefixIcon: Icon(Icons.lock),
+                suffixIcon: Icon(Icons.visibility_off),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.orange, // Définir la couleur de la bordure
+                    width: 2.0, // Définir l'épaisseur de la bordure
                   ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.orange, // Définir la couleur de la bordure lorsque le TextField est en focus
+                    width: 2.0,
+                  ),
+                ),
               ),
             ),
+          ),
 
           SizedBox(height: 50,),
 
           ElevatedButton(onPressed: () async{
-            print(email.text);
-            print(password.text);
+
             var ctrl=ref.read(loginCtrlProvider.notifier);
-         var resultat = await  ctrl.authenticate(email.text,password.text);
-           if(resultat){
-             context.pushNamed(Urls.test.name);
-           }
+            var resultat = await  ctrl.authenticate(email.text,password.text);
+
+            if(resultat?.id!=0){
+              if(resultat?.manager?.id==0){
+                context.goNamed(Urls.choix_manager.name);
+              }
+              else{
+                context.goNamed(Urls.accueil.name);
+              }
+
+            }
+
 
           },
-              child: Text("Envoyer"),
+            child: Text("Envoyer"),
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 150),
                 backgroundColor: Colors.orange,
