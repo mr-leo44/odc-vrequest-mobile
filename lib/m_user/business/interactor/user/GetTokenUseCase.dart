@@ -9,7 +9,7 @@ class GetTokenUseCase{
 
   GetTokenUseCase(this.local);
 
-  Future<String> run(S) async{
+  Future<String> run() async{
     var res = await local.getToken();
     return res;
   }
