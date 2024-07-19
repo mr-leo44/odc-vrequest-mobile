@@ -11,22 +11,24 @@ import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 import 'package:signals/signals_flutter.dart';
 import 'package:socket_io_client/socket_io_client.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:dio/dio.dart';
 
 class ChatNetworkServiceV1 implements MessageNetworkService {
   ChatNetworkServiceV1(this.baseURL, this.socket);
   String baseURL;
   Socket socket;
   @override
-  Signal<ChatModel> message = Signal(
-    ChatModel.fromJson({}),
-  );
+  Signal<ChatModel> message = ChatModel.fromJson({}).toSignal();
+  Signal<int> isconnected = Signal(0);
+  Signal<int> isdeconnected = Signal(0);
 
   @override
   Future<List<ChatUsersModel>> recupererListMessageGroupe(String token) async {
     List<ChatUsersModel> lists = <ChatUsersModel>[];
     var url = this.baseURL + '/api/demandes';
 
-    try {
+    // try {
       var response = await gio.get(url);
 
       if (((response.statusCode == 200) || (response.statusCode == 201)) &&
@@ -55,7 +57,8 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
             "demande": demande,
             "lastSender": lastSender,
             "lastMessage": e["lastMessage"],
-            "isVideo": e["isVideo"],
+            "isPicture" : e["isPicture"] == 1 ? true : false,
+            "isVideo": e["isVideo"] == 1 ? true : false ,
             "isMessageRead": e["isMessageRead"],
             "time": e["time"],
             "unread": e["unread"],
@@ -63,9 +66,9 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
         }).toList();
         lists = responseFinal;
       }
-    } catch (e) {
-      print(e);
-    }
+    // } catch (e) {
+    //   print(e);
+    // }
 
     return Future.value(lists);
   }
@@ -81,30 +84,42 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
 
   @override
   Future<List<ChatModel>> recupererListMessageDetail(
-      ChatUsersModel data) async {
+      ChatUsersModel data, User? auth) async {
     List<ChatModel> lists = <ChatModel>[];
     var url = this.baseURL + '/api/messages';
+    await dotenv.load(fileName: ".env");
+    String file = "";
 
     try {
-      var response = await gio.get(url,
-          queryParameters: {"demande_id": data.demande.id.toString()});
+    var response = await gio
+        .get(url, queryParameters: {"demande_id": data.demande.id.toString()});
 
-      if (((response.statusCode == 200) || (response.statusCode == 201)) &&
-          (response.headers["content-type"] == "application/json")) {
+    if (((response.statusCode == 200) || (response.statusCode == 201)) &&
+        (response.headers["content-type"] == "application/json")) {
+      if (auth != null) {
         List result = json.decode(response.body);
         var responseFinal = result.map((e) {
+          // if((e["contenu"] != "") || (e["isPicture"] == 1) || (e["isVideo"]) ){
+
+          // }
+          file = e["filepath"] != null ? e["filepath"] : "";
           User user = User.fromJson(e["user"]);
           return ChatModel.fromJson({
             "user": user,
             "contenu": e["contenu"],
-            "type": (user.id == 1)
+            "file":
+                this.baseURL + "/" + dotenv.env["DISK_STORAGE"]! + "/" + file,
+            "isPicture": e["isPicture"] == 1 ? true : false,
+            "isVideo": e["isVideo"] == 1 ? true : false,
+            "type": (user.id == auth.id)
                 ? ChatMessageType.sent
                 : ChatMessageType.received,
-            "time": DateTime.parse(e["time"]) ,
+            "time": DateTime.parse(e["time"]),
           });
         }).toList();
         lists = responseFinal;
       }
+    }
     } catch (e) {
       print(e);
     }
@@ -115,37 +130,62 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
   @override
   Future<bool> creerMessage(CreerMessageRequete data) async {
     bool added = false;
+    Dio dio = Dio();
 
     var url = this.baseURL + '/api/messages';
-    var param = {
-      "user_id": data.user.id.toString(),
-      "contenu": data.contenu,
-      "message_groupe_id": data.demande.id.toString(),
-    };
+    var param;
 
     try {
-      var response = await gio.post(url, body: param);
-
-      if (((response.statusCode == 200) || (response.statusCode == 201)) &&
-          (response.headers["content-type"] == "application/json")) {
-        var result = json.decode(response.body);
-        added = result["added"];
+      if (data.isPicture || data.isVideo) {
+        param = FormData.fromMap({
+          "user_id": data.user.id.toString(),
+          "contenu": data.contenu,
+          "message_groupe_id": data.demande.id.toString(),
+          'file': await MultipartFile.fromFile(data.file!.path,
+              filename: data.file!.name, ),
+          "isPicture" : data.isPicture ? 1 : 0,
+          "isVideo" : data.isVideo ? 1 : 0,
+        });
+      } else {
+        param = FormData.fromMap({
+          "user_id": data.user.id.toString(),
+          "contenu": data.contenu,
+          "message_groupe_id": data.demande.id.toString(),
+        });
       }
 
-      if (socket.connected) {
-        print("Socket connected");
-        socket.emit('test', 'testSendMsg');
+      var response = await dio.post(
+        url,
+        data: param,
+        options: Options(
+          headers: {
+            "Content-Type" : "application/json",
+            //"Accept":"image"
+          },
+        ),
+      );
 
-        var donnees = {
-          "user": data.user,
-          "contenu": data.contenu,
-          "demande": data.demande.id,
-        };
+      if (response.statusCode == 200) {
+        added = true;
+      }
 
-        socket.emit('joinRoom', donnees["demande"].toString());
-        socket.emit('createMessage', donnees);
+      print(response.statusCode);
+
+      if (added == true) {
+        print('Message sended');
+        if (socket.connected) {
+          socket.emit('test', 'testSendMsg');
+
+          var donnees = {
+            "user": data.user,
+            "contenu": data.contenu,
+            "demande": data.demande.id,
+          };
+          // socket.emit('joinRoom', donnees["demande"].toString());
+          socket.emit('createMessage', donnees);
+        }
       } else {
-        print("Socket not connected");
+        print('Message not sended');
       }
     } catch (e) {
       print(e);
@@ -161,24 +201,52 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
   }
 
   @override
-  Future<void> realTime() async {
+  Future<void> realTime(User? auth) async {
     if (socket.connected) {
       print("Socket connected");
 
       socket.emit('test', 'testReceiveMsg');
       socket.on('sendMessage', (resp) {
-        User user = User.fromJson(resp["user"]);
-        message.value = ChatModel.fromJson({
-          "user": user,
-          "contenu": resp["contenu"],
-          "type": (user.id == 1)
-              ? ChatMessageType.sent
-              : ChatMessageType.received,
-          "time": DateTime.now(),
-        });
+        if ((auth != null) && (resp != message.value)) {
+          User user = User.fromJson(resp["user"]);
+          message.value = ChatModel.fromJson({
+            "user": user,
+            "contenu": resp["contenu"],
+            "type": (user.id == auth.id)
+                ? ChatMessageType.sent
+                : ChatMessageType.received,
+            "time": DateTime.now(),
+          });
+        }
+      });
+      socket.emit('test', 'testWhoIsConnected');
+      socket.on('isConnected', (resp) {
+        isconnected.value = resp;
+      });
+      socket.emit('test', 'testWhoIsDeconnected');
+      socket.on('isDeconnected', (resp) {
+        isdeconnected.value = resp;
       });
     } else {
       print("Socket not connected");
     }
+  }
+
+  @override
+  Future<bool> joinRoom(Demande demande, User? auth) async {
+    var joined = false;
+
+    if (socket.connected) {
+      socket.emit('test', 'testJoinRoom');
+      socket.emit('joinRoom', [demande.id.toString(), auth?.id]);
+      print("Joined");
+
+      joined = true;
+    } else {
+      print("Not Joined");
+      joined = false;
+    }
+
+    return joined;
   }
 }
