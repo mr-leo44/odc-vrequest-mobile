@@ -20,8 +20,10 @@ class ChatDetailPage extends ConsumerStatefulWidget {
 class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       var ctrl = ref.read(chatDetailCtrlProvider.notifier);
+      await ctrl.getUser();
+      ctrl.stateConnection();
     });
   }
 
@@ -53,30 +55,38 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                 _CustomListTile(
                                   textLeading: "Motif",
                                   title: widget.chatUsersModel.demande.motif,
+                                  ref: ref,
                                 ),
                                 _CustomListTile(
                                   textLeading: "Lieu depart",
                                   title:
                                       widget.chatUsersModel.demande.lieuDepart,
+                                  ref: ref,
                                 ),
                                 _CustomListTile(
                                   textLeading: "Lieu destination",
-                                  title: widget
-                                      .chatUsersModel.demande.destination,
+                                  title:
+                                      widget.chatUsersModel.demande.destination,
+                                  ref: ref,
                                 ),
                                 _CustomListTile(
+                                  ref: ref,
                                   textLeading: "Longitude Latitude",
-                                  title: widget
-                                          .chatUsersModel.demande.longitude.toString() +
+                                  title: widget.chatUsersModel.demande.longitude
+                                          .toString() +
                                       ' , ' +
-                                      widget.chatUsersModel.demande.latitude.toString(),
+                                      widget.chatUsersModel.demande.latitude
+                                          .toString(),
                                 ),
                                 _CustomListTile(
+                                  ref: ref,
                                   textLeading: "Date de deplacement",
-                                  title: DateFormat('dd/MM/yyyy - HH:mm').format(widget
-                                      .chatUsersModel.demande.dateDeplacement) ,
+                                  title: DateFormat('dd/MM/yyyy - HH:mm')
+                                      .format(widget.chatUsersModel.demande
+                                          .dateDeplacement),
                                 ),
                                 _CustomListTile(
+                                  ref: ref,
                                   textLeading: "Status",
                                   title: widget.chatUsersModel.demande.status,
                                 ),
@@ -86,17 +96,19 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                               title: "Membres",
                               children: [
                                 _CustomListTile(
+                                  ref: ref,
                                   avatar: "assets/images/avatar_1.png",
                                   textLeading: "",
                                   title: widget
-                                      .chatUsersModel.demande.initiateur.name,
+                                      .chatUsersModel.demande.initiateur.username,
                                   subtitle: "Initiateur",
                                 ),
                                 _CustomListTile(
+                                  ref: ref,
                                   avatar: "assets/images/avatar_1.png",
                                   textLeading: "",
                                   title: widget
-                                      .chatUsersModel.demande.chauffeur.name,
+                                      .chatUsersModel.demande.chauffeur.username,
                                   subtitle: "Chauffeur",
                                 ),
                               ],
@@ -167,9 +179,9 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
             children: [
               Expanded(
                 child: Text(
-                  widget.chatUsersModel.demande.initiateur.name +
+                  widget.chatUsersModel.demande.initiateur.username +
                       ", " +
-                      widget.chatUsersModel.demande.chauffeur.name,
+                      widget.chatUsersModel.demande.chauffeur.username,
                   style: TextStyle(fontSize: 12),
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
@@ -189,28 +201,62 @@ class _CustomListTile extends StatelessWidget {
   final String textLeading;
   final String avatar;
   final String subtitle;
-  const _CustomListTile(
-      {Key? key,
-      required this.title,
-      required this.textLeading,
-      this.avatar = "",
-      this.subtitle = ""})
-      : super(key: key);
+  final WidgetRef ref;
+
+  _CustomListTile({
+    required this.ref,
+    required this.title,
+    required this.textLeading,
+    this.avatar = "",
+    this.subtitle = "",
+  });
 
   @override
   Widget build(BuildContext context) {
+    var state = ref.watch(chatDetailCtrlProvider);
+
     if (avatar.isEmpty) {
-      return ListTile(
-        title: Text(title),
-        leading: Text(textLeading + " :"),
+      return Column(
+        children: [
+          ListTile(
+            title: Text(title),
+            leading: Text(textLeading + " :"),
+          ),
+        ],
       );
     } else {
-      return ListTile(
-        title: Text(title),
-        subtitle: Text(subtitle),
-        leading: CircleAvatar(
-          backgroundImage: AssetImage(avatar),
-        ),
+      return Column(
+        children: [
+          ListTile(
+            title: Row(
+              children: [
+                Text(title),
+                SizedBox(width: 5,),
+                if ((subtitle.isNotEmpty) &&
+                    (state.isconnected == state.auth?.id))
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: CircleAvatar(
+                      radius: 5,
+                      backgroundColor:
+                          Theme.of(context).scaffoldBackgroundColor,
+                      child: Container(
+                        width: 15,
+                        margin: EdgeInsets.all(2.0),
+                        decoration: BoxDecoration(
+                            color: Colors.green, shape: BoxShape.circle),
+                      ),
+                    ),
+                  )
+              ],
+            ),
+            subtitle: Text(subtitle),
+            leading: CircleAvatar(
+              backgroundImage: AssetImage(avatar),
+            ),
+          ),
+        ],
       );
     }
   }

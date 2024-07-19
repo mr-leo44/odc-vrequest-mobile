@@ -1,4 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/IsConnectedUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/IsDeconnectedUseCase.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/JoinRoomUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageDetails/recupererListMessageDetailUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/creerMessageUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/MessageGroupe/recupererListMessageGroupeUseCase.dart';
@@ -31,24 +34,34 @@ class ChatInteractor {
   SauvegarderLesGroupesUseCase sauvegarderLesGroupesUseCase;
   SauvegarderMessageEntrantUseCase sauvegarderMessageEntrantUseCase;
   SauvegarderTousLesMessagesUseCase sauvegarderTousLesMessagesUseCase;
+  JoinRoomUseCase joinRoomUseCase;
+  IsDeconnectedUseCase isDeconnectedUseCase;
+  IsConnectedUseCase isConnectedUseCase;
 
   ChatInteractor._(
+    this.isConnectedUseCase,
+    this.isDeconnectedUseCase,
+    this.joinRoomUseCase,
     this.messageRealTimeUseCase,
-      this.realTimeUseCase,
-      this.creerMessageUseCase,
-      this.recupererListMessageDetailUseCase,
-      this.recupererListMessageGroupeUseCase,
-      this.recupererMessageGroupeUseCase,
-      this.supprimerMessageDetailUseCase,
-      this.lireLesGroupesUseCase,
-      this.lireLesMessagesUseCase,
-      this.sauvegarderLesGroupesUseCase,
-      this.sauvegarderMessageEntrantUseCase,
-      this.sauvegarderTousLesMessagesUseCase);
+    this.realTimeUseCase,
+    this.creerMessageUseCase,
+    this.recupererListMessageDetailUseCase,
+    this.recupererListMessageGroupeUseCase,
+    this.recupererMessageGroupeUseCase,
+    this.supprimerMessageDetailUseCase,
+    this.lireLesGroupesUseCase,
+    this.lireLesMessagesUseCase,
+    this.sauvegarderLesGroupesUseCase,
+    this.sauvegarderMessageEntrantUseCase,
+    this.sauvegarderTousLesMessagesUseCase,
+  );
 
   static build(UserNetworkService user, MessageNetworkService network,
       MessageLocalService local) {
     return ChatInteractor._(
+      IsConnectedUseCase(network),
+      IsDeconnectedUseCase(network),
+      JoinRoomUseCase(network),
       MessageRealTimeUseCase(network),
       RealTimeUseCase(network),
       CreerMessageUseCase(user, network, local),
