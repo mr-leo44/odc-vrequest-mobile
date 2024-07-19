@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:odc_mobile_project/navigation/routers.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListCtrl.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatPlaceholder.dart';
@@ -35,7 +38,7 @@ class _ChatState extends ConsumerState<ChatListPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _header(refresh),
+            _header(refresh,context),
             _searchBar(),
             Stack(
               children: [
@@ -50,16 +53,23 @@ class _ChatState extends ConsumerState<ChatListPage> {
   }
 }
 
-Widget _header(refresh) {
+Widget _header(refresh, BuildContext context) {
   return SafeArea(
     child: Padding(
       padding: EdgeInsets.only(left: 16, right: 16, top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
+          IconButton(
+            onPressed: () {
+              HapticFeedback.selectionClick();
+              context.goNamed(Urls.accueil.name);
+            },
+            icon: Icon(Icons.arrow_back),
+          ),
           Text(
             "Conversations",
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
           ),
           Container(
             padding: EdgeInsets.only(left: 5, right: 5, top: 2, bottom: 2),
@@ -73,6 +83,7 @@ Widget _header(refresh) {
                 foregroundColor: WidgetStatePropertyAll(Colors.black),
               ),
               onPressed: () {
+                HapticFeedback.selectionClick();
                 refresh();
               },
               child: Row(
@@ -80,18 +91,15 @@ Widget _header(refresh) {
                   Icon(
                     Icons.refresh,
                     //color: Colors.pink,
-                    size: 20,
+                    size: 25,
                   ),
-                  SizedBox(
-                    width: 2,
-                  ),
-                  Text(
-                    "Actualiser",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                  ),
+                  // Text(
+                  //   "Actualiser",
+                  //   style: TextStyle(
+                  //       fontSize: 14,
+                  //       color: Colors.black,
+                  //       fontWeight: FontWeight.bold),
+                  // ),
                 ],
               ),
             ),
