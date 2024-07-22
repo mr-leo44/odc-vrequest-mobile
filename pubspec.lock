@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  awesome_notifications:
+    dependency: "direct main"
+    description:
+      name: awesome_notifications
+      sha256: d9e46ce7f5171ee1e9b1c5bc6dc40bd77528561f592842ce97ce3a0a9ae155ef
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.3+1"
   boolean_selector:
     dependency: transitive
     description:
@@ -736,6 +744,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  palette_generator:
+    dependency: "direct main"
+    description:
+      name: palette_generator
+      sha256: d50fbcd69abb80c5baec66d700033b1a320108b1aa17a5961866a12c0abb7c0c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3+4"
   path:
     dependency: transitive
     description:

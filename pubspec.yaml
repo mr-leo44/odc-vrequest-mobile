@@ -61,6 +61,8 @@ dependencies:
   popup_menu_plus: ^0.0.6
   dio: ^5.5.0+1
   url_launcher: ^6.3.0
+  awesome_notifications: ^0.9.3+1
+  palette_generator: ^0.3.3+4
 
 dev_dependencies:
   flutter_test:

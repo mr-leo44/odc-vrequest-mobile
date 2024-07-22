@@ -17,6 +17,7 @@ import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailPage.dar
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:odc_mobile_project/shared/ui/SharedCtrl.dart';
 import 'package:video_player/video_player.dart';
 import 'package:popup_menu_plus/popup_menu_plus.dart';
 
@@ -47,10 +48,14 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       var ctrl = ref.read(chatCtrlProvider.notifier);
       await ctrl.getUser();
-      await ctrl.joinRoom(widget.chatUsersModel.demande);
-      ctrl.getList(widget.chatUsersModel);
-      ctrl.realTime();
+      // await ctrl.joinRoom(widget.chatUsersModel.demande);
       ctrl.messageRealTime(widget.chatUsersModel);
+      // ctrl.realTime();
+      ctrl.getList(widget.chatUsersModel);
+
+      var sharedCtrl = ref.read(sharedCtrlProvider.notifier);
+      sharedCtrl.messageRealTime();
+      sharedCtrl.realTime();
     });
   }
 
