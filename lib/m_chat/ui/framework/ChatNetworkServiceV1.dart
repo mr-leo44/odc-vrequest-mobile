@@ -28,7 +28,7 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
     List<ChatUsersModel> lists = <ChatUsersModel>[];
     var url = this.baseURL + '/api/demandes';
 
-    // try {
+    try {
       var response = await gio.get(url);
 
       if (((response.statusCode == 200) || (response.statusCode == 201)) &&
@@ -57,8 +57,8 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
             "demande": demande,
             "lastSender": lastSender,
             "lastMessage": e["lastMessage"],
-            "isPicture" : e["isPicture"] == 1 ? true : false,
-            "isVideo": e["isVideo"] == 1 ? true : false ,
+            "isPicture": e["isPicture"] == 1 ? true : false,
+            "isVideo": e["isVideo"] == 1 ? true : false,
             "isMessageRead": e["isMessageRead"],
             "time": e["time"],
             "unread": e["unread"],
@@ -66,9 +66,9 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
         }).toList();
         lists = responseFinal;
       }
-    // } catch (e) {
-    //   print(e);
-    // }
+    } catch (e) {
+      print(e);
+    }
 
     return Future.value(lists);
   }
@@ -91,35 +91,36 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
     String file = "";
 
     try {
-    var response = await gio
-        .get(url, queryParameters: {"demande_id": data.demande.id.toString()});
+      var response = await gio.get(url,
+          queryParameters: {"demande_id": data.demande.id.toString()});
 
-    if (((response.statusCode == 200) || (response.statusCode == 201)) &&
-        (response.headers["content-type"] == "application/json")) {
-      if (auth != null) {
-        List result = json.decode(response.body);
-        var responseFinal = result.map((e) {
-          // if((e["contenu"] != "") || (e["isPicture"] == 1) || (e["isVideo"]) ){
+      if (((response.statusCode == 200) || (response.statusCode == 201)) &&
+          (response.headers["content-type"] == "application/json")) {
+        if (auth != null) {
+          List result = json.decode(response.body);
+          var responseFinal = result.map((e) {
+            // if((e["contenu"] != "") || (e["isPicture"] == 1) || (e["isVideo"]) ){
 
-          // }
-          file = e["filepath"] != null ? e["filepath"] : "";
-          User user = User.fromJson(e["user"]);
-          return ChatModel.fromJson({
-            "user": user,
-            "contenu": e["contenu"],
-            "file":
-                this.baseURL + "/" + dotenv.env["DISK_STORAGE"]! + "/" + file,
-            "isPicture": e["isPicture"] == 1 ? true : false,
-            "isVideo": e["isVideo"] == 1 ? true : false,
-            "type": (user.id == auth.id)
-                ? ChatMessageType.sent
-                : ChatMessageType.received,
-            "time": DateTime.parse(e["time"]),
-          });
-        }).toList();
-        lists = responseFinal;
+            // }
+            file = e["filepath"] != null ? e["filepath"] : "";
+            User user = User.fromJson(e["user"]);
+            return ChatModel.fromJson({
+              "demande": data.demande,
+              "user": user,
+              "contenu": e["contenu"],
+              "file":
+                  this.baseURL + "/" + dotenv.env["DISK_STORAGE"]! + "/" + file,
+              "isPicture": e["isPicture"] == 1 ? true : false,
+              "isVideo": e["isVideo"] == 1 ? true : false,
+              "type": (user.id == auth.id)
+                  ? ChatMessageType.sent
+                  : ChatMessageType.received,
+              "time": DateTime.parse(e["time"]),
+            });
+          }).toList();
+          lists = responseFinal;
+        }
       }
-    }
     } catch (e) {
       print(e);
     }
@@ -134,62 +135,68 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
 
     var url = this.baseURL + '/api/messages';
     var param;
+    await dotenv.load(fileName: ".env");
 
-    try {
-      if (data.isPicture || data.isVideo) {
-        param = FormData.fromMap({
-          "user_id": data.user.id.toString(),
-          "contenu": data.contenu,
-          "message_groupe_id": data.demande.id.toString(),
-          'file': await MultipartFile.fromFile(data.file!.path,
-              filename: data.file!.name, ),
-          "isPicture" : data.isPicture ? 1 : 0,
-          "isVideo" : data.isVideo ? 1 : 0,
-        });
-      } else {
-        param = FormData.fromMap({
-          "user_id": data.user.id.toString(),
-          "contenu": data.contenu,
-          "message_groupe_id": data.demande.id.toString(),
-        });
-      }
-
-      var response = await dio.post(
-        url,
-        data: param,
-        options: Options(
-          headers: {
-            "Content-Type" : "application/json",
-            //"Accept":"image"
-          },
+    // try {
+    if (data.isPicture || data.isVideo) {
+      param = FormData.fromMap({
+        "user_id": data.user.id.toString(),
+        "contenu": data.contenu,
+        "message_groupe_id": data.demande.id.toString(),
+        'file': await MultipartFile.fromFile(
+          data.file!.path,
+          filename: data.file!.name,
         ),
-      );
+        "isPicture": data.isPicture ? 1 : 0,
+        "isVideo": data.isVideo ? 1 : 0,
+      });
+    } else {
+      param = FormData.fromMap({
+        "user_id": data.user.id.toString(),
+        "contenu": data.contenu,
+        "message_groupe_id": data.demande.id.toString(),
+      });
+    }
 
-      if (response.statusCode == 200) {
-        added = true;
-      }
+    var response = await dio.post(
+      url,
+      data: param,
+      options: Options(
+        headers: {
+          "Content-Type": "application/json",
+          //"Accept":"image"
+        },
+      ),
+    );
 
-      print(response.statusCode);
+    if (response.statusCode == 200) {
+      var message_resp = json.decode(response.toString());
+      added = true;
+      if (socket.connected) {
+        socket.emit('test', 'testSendMsg');
 
-      if (added == true) {
-        print('Message sended');
-        if (socket.connected) {
-          socket.emit('test', 'testSendMsg');
 
           var donnees = {
             "user": data.user,
-            "contenu": data.contenu,
-            "demande": data.demande.id,
+            "contenu": message_resp["message"]["contenu"],
+            "demande": data.demande,
+            "filepath": 
+              (message_resp["message"]["filepath"] != null)
+                ? this.baseURL +
+                  "/" +
+                  dotenv.env["DISK_STORAGE"]! +
+                  "/" +
+                  message_resp["message"]["filepath"]
+                : ""
           };
-          // socket.emit('joinRoom', donnees["demande"].toString());
-          socket.emit('createMessage', donnees);
-        }
-      } else {
-        print('Message not sended');
+        
+        // socket.emit('joinRoom', donnees["demande"].toString());
+        socket.emit('createMessage', donnees);
       }
-    } catch (e) {
-      print(e);
     }
+    // } catch (e) {
+    //   print(e);
+    // }
 
     return Future.value(added);
   }
@@ -203,15 +210,53 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
   @override
   Future<void> realTime(User? auth) async {
     if (socket.connected) {
-      print("Socket connected");
-
-      socket.emit('test', 'testReceiveMsg');
       socket.on('sendMessage', (resp) {
         if ((auth != null) && (resp != message.value)) {
+          // print("Message received");
           User user = User.fromJson(resp["user"]);
           message.value = ChatModel.fromJson({
+            "demande": Demande.fromJson({
+              "id": resp["demande"]["id"],
+              "date_demande": resp["demande"]["date_demande"],
+              "motif": resp["demande"]["motif"],
+              "status": resp["demande"]["status"],
+              "date_deplacement": resp["demande"]["date_deplacement"],
+              "lieu_depart": resp["demande"]["lieuDepart"],
+              "destination": resp["demande"]["destination"],
+              "nbre_passagers": resp["demande"]["nbre_passagers"],
+              "initiateur": User.fromJson({
+                "id": resp["demande"]["initiateur"]["id"],
+                "first_name": resp["demande"]["initiateur"]["first_name"],
+                "username": resp["demande"]["initiateur"]["username"],
+                "last_name": resp["demande"]["initiateur"]["last_name"],
+                "email": resp["demande"]["initiateur"]["email"],
+                "phone": resp["demande"]["initiateur"]["phone"],
+                "email_verified_at": resp["demande"]["initiateur"]
+                    ["email_verified_at"],
+                "created_at": resp["demande"]["initiateur"]["created_at"],
+                "updated_at": resp["demande"]["initiateur"]["updated_at"],
+                "role": resp["demande"]["initiateur"]["role"],
+              }),
+              "chauffeur": User.fromJson({
+                "id": resp["demande"]["chauffeur"]["id"],
+                "first_name": resp["demande"]["chauffeur"]["first_name"],
+                "username": resp["demande"]["chauffeur"]["username"],
+                "last_name": resp["demande"]["chauffeur"]["last_name"],
+                "email": resp["demande"]["chauffeur"]["email"],
+                "phone": resp["demande"]["chauffeur"]["phone"],
+                "email_verified_at": resp["demande"]["chauffeur"]
+                    ["email_verified_at"],
+                "created_at": resp["demande"]["chauffeur"]["created_at"],
+                "updated_at": resp["demande"]["chauffeur"]["updated_at"],
+                "role": resp["demande"]["chauffeur"]["role"],
+              }),
+              "longitude": resp["demande"]["longitude"],
+              "latitude": resp["demande"]["latitude"],
+              "create_at": resp["demande"]["create_at"],
+            }),
             "user": user,
             "contenu": resp["contenu"],
+            "file": resp["filepath"],
             "type": (user.id == auth.id)
                 ? ChatMessageType.sent
                 : ChatMessageType.received,
@@ -219,16 +264,14 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
           });
         }
       });
-      socket.emit('test', 'testWhoIsConnected');
-      socket.on('isConnected', (resp) {
-        isconnected.value = resp;
-      });
-      socket.emit('test', 'testWhoIsDeconnected');
-      socket.on('isDeconnected', (resp) {
-        isdeconnected.value = resp;
-      });
-    } else {
-      print("Socket not connected");
+      // socket.emit('test', 'testWhoIsConnected');
+      // socket.on('isConnected', (resp) {
+      //   isconnected.value = resp;
+      // });
+      // socket.emit('test', 'testWhoIsDeconnected');
+      // socket.on('isDeconnected', (resp) {
+      //   isdeconnected.value = resp;
+      // });
     }
   }
 
