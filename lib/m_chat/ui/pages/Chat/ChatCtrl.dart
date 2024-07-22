@@ -32,7 +32,8 @@ class ChatCtrl extends _$ChatCtrl {
       //   print("receuved $message");
       //   state = state.copyWith( chatList: actualList);
       // }
-       getList(data);
+      // print("ChatCtrl: ${message.demande.id}");
+      getList(data);
     });
   }
 
@@ -52,7 +53,6 @@ class ChatCtrl extends _$ChatCtrl {
 
   void getList(ChatUsersModel data) async {
     state = state.copyWith(isLoading: true);
-    getUser();
     var interactor = ref.watch(chatInteractorProvider);
     var lists =
         await interactor.recupererListMessageDetailUseCase.run(data, state.auth);
