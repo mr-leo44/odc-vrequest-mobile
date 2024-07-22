@@ -25,12 +25,14 @@ class Demande {
   User? manager;
   User? chauffeur;
   User? chefCharroi;
+  String longitude;
+  String latitude;
   double longitudelDepart;
   double latitudeDepart;
   // double longitudelDestination;
   // double latitudeDestination;
-  double longitude;
-  double latitude;
+  String longitude;
+  String latitude;
   DateTime createAt;
 
   Demande({
@@ -51,8 +53,8 @@ class Demande {
     this.latitudeDepart = 0.0,
     // this.longitudelDestination = 0.0,
     // this.latitudeDestination = 0.0,
-    this.longitude = 0.0,
-    this.latitude = 0.0,
+    this.longitude = "0.0",
+    this.latitude = "0.0",
     required this.createAt,
   });
 

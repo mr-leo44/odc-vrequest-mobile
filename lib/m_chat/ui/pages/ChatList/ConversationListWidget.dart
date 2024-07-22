@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatCtrl.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatPage.dart';
-import 'package:odc_mobile_project/navigation/routers.dart';
 
-class ConversationListWidget extends StatefulWidget {
+class ConversationListWidget extends ConsumerStatefulWidget {
   ChatUsersModel chatUsersModel;
 
   ConversationListWidget({required this.chatUsersModel});
+
   @override
-  _ConversationListState createState() => _ConversationListState();
+  ConsumerState<ConversationListWidget> createState() => _ConversationlistState();
 }
 
-class _ConversationListState extends State<ConversationListWidget> {
+class _ConversationlistState extends ConsumerState<ConversationListWidget> {
+
   @override
   Widget build(BuildContext context) {
+    
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -59,7 +62,7 @@ class _ConversationListState extends State<ConversationListWidget> {
                           SizedBox(
                             height: 6,
                           ),
-                          _subTitle(widget),
+                          _subTitle(widget,this.ref),
                         ],
                       ),
                     ),
@@ -104,17 +107,18 @@ class _ConversationListState extends State<ConversationListWidget> {
   }
 }
 
-Widget _subTitle(widget) {
+Widget _subTitle(widget, WidgetRef ref) {
+  var state = ref.watch(chatCtrlProvider);
+  ChatUsersModel chatUsersModel = widget.chatUsersModel;
   return Row(
     children: [
-      if (widget.chatUsersModel.lastSender.id != 0)
-      if (widget.chatUsersModel.lastSender != "Bap Mutemba")
-        if (widget.chatUsersModel.isMessageRead)
-          Row(
+      if(chatUsersModel.lastSender.id != 0)
+        (chatUsersModel.isMessageRead )
+        ? Row(
             children: [
               Icon(
                 Icons.done_all,
-                color: !widget.chatUsersModel.isMessageRead
+                color: !chatUsersModel.isMessageRead
                     ? Colors.amber.shade700
                     : Colors.grey.shade500,
                 size: 15,
@@ -124,12 +128,11 @@ Widget _subTitle(widget) {
               )
             ],
           )
-        else
-          Row(
+        : Row(
             children: [
               Icon(
                 Icons.check,
-                color: !widget.chatUsersModel.isMessageRead
+                color: !chatUsersModel.isMessageRead
                     ? Colors.amber.shade700
                     : Colors.grey.shade500,
                 size: 15,
@@ -139,83 +142,84 @@ Widget _subTitle(widget) {
               )
             ],
           ),
-      if ((widget.chatUsersModel.lastMessage.isEmpty) && (widget.chatUsersModel.lastSender.id != 0))
-        Row(
-          children: [
-            if (!widget.chatUsersModel.isVideo)
-              Row(
-                children: [
-                  Icon(
-                    Icons.camera_alt,
-                    color: Colors.grey.shade500,
-                    size: 15,
+
+      Row(
+        children: [
+          if (chatUsersModel.isPicture)
+            Row(
+              children: [
+                Icon(
+                  Icons.camera_alt,
+                  color: Colors.grey.shade500,
+                  size: 15,
+                ),
+                SizedBox(
+                  width: 4,
+                ),
+                Text(
+                  "Photo",
+                  softWrap: false,
+                  style: TextStyle(
+                    color: !widget.chatUsersModel.isMessageRead
+                        ? Colors.amber.shade700
+                        : Colors.grey.shade500,
+                    fontWeight: !widget.chatUsersModel.isMessageRead
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
-                  SizedBox(
-                    width: 4,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+
+          if(chatUsersModel.isVideo)
+            Row(
+              children: [
+                Icon(
+                  Icons.videocam,
+                  color: Colors.grey.shade500,
+                  size: 15,
+                ),
+                SizedBox(
+                  width: 4,
+                ),
+                Text(
+                  "Video",
+                  softWrap: false,
+                  style: TextStyle(
+                    color: !widget.chatUsersModel.isMessageRead
+                        ? Colors.amber.shade700
+                        : Colors.grey.shade500,
+                    fontWeight: !widget.chatUsersModel.isMessageRead
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
-                  Text(
-                    "Photo",
-                    softWrap: false,
-                    style: TextStyle(
-                      color: !widget.chatUsersModel.isMessageRead
-                          ? Colors.amber.shade700
-                          : Colors.grey.shade500,
-                      fontWeight: !widget.chatUsersModel.isMessageRead
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              )
-            else
-              Row(
-                children: [
-                  Icon(
-                    Icons.videocam,
-                    color: Colors.grey.shade500,
-                    size: 15,
-                  ),
-                  SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    "Video",
-                    softWrap: false,
-                    style: TextStyle(
-                      color: !widget.chatUsersModel.isMessageRead
-                          ? Colors.amber.shade700
-                          : Colors.grey.shade500,
-                      fontWeight: !widget.chatUsersModel.isMessageRead
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-          ],
-        )
-      else
-        if (widget.chatUsersModel.lastSender.id != 0)
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+        ],
+      ),
+      if(chatUsersModel.lastSender.id != 0 && ((!chatUsersModel.isPicture) && (!chatUsersModel.isVideo)) )
         Expanded(
           child: Text(
             '~ ' +
-                widget.chatUsersModel.lastSender.name +
+                chatUsersModel.lastSender.username +
                 ' : ' +
-                widget.chatUsersModel.lastMessage,
+                chatUsersModel.lastMessage,
             softWrap: false,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
                 fontSize: 13,
-                color: !widget.chatUsersModel.isMessageRead
+                color: !chatUsersModel.isMessageRead
                     ? Colors.amber.shade700
                     : Colors.grey.shade500,
-                fontWeight: !widget.chatUsersModel.isMessageRead
+                fontWeight: !chatUsersModel.isMessageRead
                     ? FontWeight.bold
                     : FontWeight.normal),
           ),
         ),
+
       SizedBox(
         width: 4,
       ),
