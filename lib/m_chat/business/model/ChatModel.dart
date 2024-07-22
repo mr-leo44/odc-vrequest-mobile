@@ -1,7 +1,9 @@
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/chat_message_type.dart';
+import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 
 class ChatModel {
+  final Demande demande;
   final String avatar;
   final User user;
   final String message;
@@ -12,6 +14,7 @@ class ChatModel {
   final bool isVideo;
 
   ChatModel({
+    required this.demande,
     this.avatar = "assets/images/avatar_1.png",
     required this.user,
     required this.message,
@@ -23,6 +26,7 @@ class ChatModel {
   });
 
   ChatModel copyWith({
+    Demande? demande,
     String? avatar,
     User? user,
     String? message,
@@ -33,6 +37,7 @@ class ChatModel {
     bool? isVideo,
   }) =>
       ChatModel(
+        demande: demande ?? this.demande,
         avatar: avatar ?? this.avatar,
         user: user ?? this.user,
         message: message ?? this.message,
@@ -43,14 +48,36 @@ class ChatModel {
         isVideo: isVideo ?? this.isVideo,
       );
 
-  factory ChatModel.sent({required User user, required String message}) =>
+  factory ChatModel.sent(
+          {required User user, required String message, required demande}) =>
       ChatModel(
-          user: user,
-          message: message,
-          type: ChatMessageType.sent,
-          time: DateTime.now());
+        demande: demande,
+        user: user,
+        message: message,
+        type: ChatMessageType.sent,
+        time: DateTime.now(),
+      );
 
   factory ChatModel.fromJson(Map json) => ChatModel(
+        demande: json["demande"] ??
+            Demande(
+                dateDemande: DateTime.now(),
+                dateDeplacement: DateTime.now(),
+                initiateur: User(
+                  id: 0,
+                  emailVerifiedAt: DateTime.now(),
+                  createdAt: DateTime.now(),
+                  updatedAt: DateTime.now(),
+                ),
+                manager: null,
+                chefCharroi: null,
+                chauffeur: User(
+                  id: 0,
+                  emailVerifiedAt: DateTime.now(),
+                  createdAt: DateTime.now(),
+                  updatedAt: DateTime.now(),
+                ),
+                createAt: DateTime.now()),
         avatar: json["avatar"] ?? "assets/images/avatar_1.png",
         user: json["user"] ??
             User(
@@ -67,6 +94,7 @@ class ChatModel {
       );
 
   Map<String, dynamic> toJson() => {
+        "demande": demande,
         "avatar": avatar,
         "user": user,
         "contenu": message,
