@@ -24,8 +24,8 @@ class Demande {
   User? manager;
   User? chefCharroi;
   User chauffeur;
-  double longitude;
-  double latitude;
+  String longitude;
+  String latitude;
   DateTime createAt;
 
   Demande({
@@ -42,12 +42,12 @@ class Demande {
     required this.manager,
     required this.chefCharroi,
     required this.chauffeur,
-    this.longitude = 0.0,
-    this.latitude = 0.0,
+    this.longitude = "0.0",
+    this.latitude = "0.0",
     required this.createAt,
   });
 
-  factory Demande.fromJson(Map<String, dynamic> json) => Demande(
+  factory Demande.fromJson(Map json) => Demande(
     id: json["id"] ?? 0,
     dateDemande:json["date_demande"] != null ? DateTime.parse(json["date_demande"]) : DateTime.now(),
     motif: json["motif"] ?? "",
@@ -60,8 +60,8 @@ class Demande {
     manager: json["manager"] ??  null,
     chefCharroi: json["chef_charroi"] ??  null,
     chauffeur: json["chauffeur"] ??  null,
-    longitude: double.parse(json["longitude"]) ?? 0.0,
-    latitude: double.parse(json["latitude"]) ?? 0.0,
+    longitude: json["longitude"] ?? "0.0",
+    latitude: json["latitude"] ?? "0.0",
     createAt: json["create_at"] != null ? DateTime.parse(json["create_at"]) : DateTime.now(),
   );
 
