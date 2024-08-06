@@ -1,24 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'SharedCtrl.dart';
+part of 'StatCtrl.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sharedCtrlHash() => r'8d7cced1c66503bd84e573eb756ae5879a0674e1';
+String _$statCtrlHash() => r'4a8d0955a047b4f8aa51bbb2fb543f0fd4d27404';
 
-/// See also [SharedCtrl].
-@ProviderFor(SharedCtrl)
-final sharedCtrlProvider = NotifierProvider<SharedCtrl, SharedState>.internal(
-  SharedCtrl.new,
-  name: r'sharedCtrlProvider',
+/// See also [StatCtrl].
+@ProviderFor(StatCtrl)
+final statCtrlProvider =
+    AutoDisposeNotifierProvider<StatCtrl, StatState>.internal(
+  StatCtrl.new,
+  name: r'statCtrlProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$sharedCtrlHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$statCtrlHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$SharedCtrl = Notifier<SharedState>;
+typedef _$StatCtrl = AutoDisposeNotifier<StatState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
