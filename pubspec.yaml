@@ -50,6 +50,19 @@ dependencies:
   flutter_chat_bubble: ^2.0.2
   flutter_touch_ripple: ^1.1.21
   gio: ^0.0.4
+  pusher_channels_flutter: ^2.2.1
+  socket_io_client: ^2.0.3+1
+  signals: ^5.2.2
+  sembast: ^3.7.1+2
+  flutter_secure_storage: ^9.2.2
+  shared_preferences: ^2.2.3
+  image_field: ^0.0.10
+  video_player: ^2.9.1
+  popup_menu_plus: ^0.0.6
+  dio: ^5.5.0+1
+  url_launcher: ^6.3.0
+  awesome_notifications: ^0.9.3+1
+  palette_generator: ^0.3.3+4
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +96,7 @@ flutter:
       - assets/icons/
       - images/
       - .env
+      - assets/copy.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

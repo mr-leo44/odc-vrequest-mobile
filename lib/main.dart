@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:odc_mobile_project/shared/ui/notification/NotificationController.dart';
 
-import 'package:get_storage/get_storage.dart';
 import 'package:path_provider/path_provider.dart';
-
 
 import 'package:odc_mobile_project/m_chat/business/interactor/chatInteractor.dart';
 import 'package:odc_mobile_project/m_chat/ui/framework/ChatLocalServiceV1.dart';
@@ -12,14 +11,20 @@ import 'package:odc_mobile_project/m_chat/ui/framework/ChatNetworkServiceV1.dart
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 
+import 'package:socket_io_client/socket_io_client.dart';
 
+import 'm_demande/business/interactor/demandeInteractor.dart';
+import 'm_demande/ui/framework/DemandeNetworkServiceImpl.dart';
 import 'm_user/business/interactor/UserInteractor.dart';
 import 'm_user/ui/framework/UserLocalServiceImpl.dart';
 import 'm_user/ui/framework/UserNetworkServiceImpl.dart';
 import 'navigation/routers.dart';
 import 'package:path/path.dart';
 
-void main() async {
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:palette_generator/palette_generator.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   final appDir = await getApplicationDocumentsDirectory();
@@ -28,32 +33,101 @@ void main() async {
   DatabaseFactory dbFactory = databaseFactoryIo;
   Database db = await dbFactory.openDatabase(dbPath);
   var baseUrl = dotenv.env['BASE_URL'] ?? "";
+  var socketUrl = dotenv.env['SOCKET_URL'] ?? "";
 
-// module user service implementations
+  Socket socket = io(socketUrl, <String, dynamic>{
+    "transports": ["websocket"],
+    "autoConnect": true
+  });
+
+  socket.connect();
+
+  // module user service implementations
   var userNetworkImpl = UserNetworkServiceImpl(baseUrl);
   var userLocalImpl = UserLocalServiceImpl(db);
-  var userInteractor=UserInteractor.build(userNetworkImpl, userLocalImpl);
+  var userInteractor = UserInteractor.build(userNetworkImpl, userLocalImpl);
 
-  var chatNetworkImpl = ChatNetworkServiceV1(baseUrl);
+  // module demande service implementations
+  var demandeNetworkImpl = DemandeNetworkServiceImpl(baseUrl);
+  var demandeIntercator =
+      DemandeInteractor.build(demandeNetworkImpl, userLocalImpl);
+
+  // module chat service implementations
+  var chatNetworkImpl = ChatNetworkServiceV1(baseUrl, socket);
   var chatLocalImpl = ChatLocalServiceV1(baseUrl);
-  var chatInteractor = ChatInteractor.build(userNetworkImpl,chatNetworkImpl,chatLocalImpl);
+  var chatInteractor =
+      ChatInteractor.build(userNetworkImpl, chatNetworkImpl, chatLocalImpl);
 
-  runApp(ProviderScope(
-      overrides: [
-        userInteractorProvider.overrideWithValue(userInteractor),
-        chatInteractorProvider.overrideWithValue(chatInteractor),
-      ],
-      child: MyApp()
-  ));
+  // initialisation Notifications
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationController.initializeLocalNotifications();
+  await NotificationController.initializeIsolateReceivePort();
+
+  runApp(ProviderScope(overrides: [
+    userInteractorProvider.overrideWithValue(userInteractor),
+    chatInteractorProvider.overrideWithValue(chatInteractor),
+    demandeInteractorProvider.overrideWithValue(demandeIntercator),
+  ], child: MyApp()));
 }
 
-
-class MyApp extends ConsumerWidget {
+///  *********************************************
+///     MAIN WIDGET
+///  *********************************************
+///
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
+
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  static Color mainColor = const Color(0xFF9D50DD);
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+
+  // static const String routeHome = '/', routeNotification = '/notification-page';
+
+  @override
+  void initState() {
+    NotificationController.startListeningNotificationEvents();
+    super.initState();
+  }
+
+  // List<Route<dynamic>> onGenerateInitialRoutes(String initialRouteName) {
+  //   List<Route<dynamic>> pageStack = [];
+  //   pageStack.add(MaterialPageRoute(
+  //       builder: (_) =>
+  //           const MyHomePage(title: 'Awesome Notifications Example App')));
+  //   if (initialRouteName == routeNotification &&
+  //       NotificationController.initialAction != null) {
+  //     pageStack.add(MaterialPageRoute(
+  //         builder: (_) => NotificationPage(
+  //             receivedAction: NotificationController.initialAction!)));
+  //   }
+  //   return pageStack;
+  // }
+
+  // Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+  //   switch (settings.name) {
+  //     case routeHome:
+  //       return MaterialPageRoute(
+  //           builder: (_) =>
+  //               const MyHomePage(title: 'Awesome Notifications Example App'));
+
+  //     case routeNotification:
+  //       ReceivedAction receivedAction = settings.arguments as ReceivedAction;
+  //       return MaterialPageRoute(
+  //           builder: (_) => NotificationPage(receivedAction: receivedAction));
+  //   }
+  //   return null;
+  // }
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: ref.watch(routerProvider),
       debugShowCheckedModeBanner: false,

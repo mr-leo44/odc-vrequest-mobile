@@ -7,6 +7,7 @@ class ChatUsersModel {
     User lastSender;
     String lastMessage;
     bool isVideo;
+    bool isPicture;
     bool isMessageRead;
     String time;
     int unread;
@@ -16,10 +17,11 @@ class ChatUsersModel {
         required this.demande,
         required this.lastSender,
         required this.lastMessage,
-        required this.isVideo,
-        required this.isMessageRead,
+        this.isVideo = false,
+        this.isPicture = false,
+        this.isMessageRead = false,
         required this.time,
-        required this.unread,
+        this.unread = 0,
     });
 
     ChatUsersModel copyWith({
@@ -28,6 +30,7 @@ class ChatUsersModel {
         User? lastSender,
         String? lastMessage,
         bool? isVideo,
+        bool? isPicture,
         bool? isMessageRead,
         String? time,
         int? unread,
@@ -37,6 +40,7 @@ class ChatUsersModel {
             demande: demande ?? this.demande ,
             lastSender: lastSender ?? this.lastSender,
             lastMessage: lastMessage ?? this.lastMessage,
+            isPicture: isPicture ?? this.isPicture,
             isVideo: isVideo ?? this.isVideo,
             isMessageRead: isMessageRead ?? this.isMessageRead,
             time: time ?? this.time,
@@ -48,10 +52,11 @@ class ChatUsersModel {
         demande: json["demande"] ?? null ,
         lastSender: json["lastSender"] ?? null ,
         lastMessage: json["lastMessage"] ?? "" ,
+        isPicture: json["isPicture"] ?? false,
         isVideo: json["isVideo"] ?? false ,
         isMessageRead: json["isMessageRead"] ?? false ,
         time: json["time"] ?? "" ,
-        unread: json["unread"] ?? -1,
+        unread: json["unread"] ?? 0,
     );
 
     Map<String, dynamic> toJson() => {
@@ -59,6 +64,7 @@ class ChatUsersModel {
         "demande": demande,
         "lastSender": lastSender,
         "lastMessage": lastMessage,
+        "isPicture": isPicture,
         "isVideo": isVideo,
         "isMessageRead": isMessageRead,
         "time": time,
