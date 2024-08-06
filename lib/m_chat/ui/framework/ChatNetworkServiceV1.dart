@@ -33,10 +33,9 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
 
       if (((response.statusCode == 200) || (response.statusCode == 201)) &&
           (response.headers["content-type"] == "application/json")) {
+            
         List result = json.decode(response.body);
         var responseFinal = result.map((e) {
-          User initiateur = User.fromJson(e["demande"]["initiateur"]);
-          User chauffeur = User.fromJson(e["demande"]["chauffeur"]);
           User lastSender = User.fromJson(e["lastSender"]);
           Demande demande = Demande.fromJson({
             "id": e["demande"]["id"],
@@ -46,12 +45,12 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
             "lieuDestination": e["demande"]["lieuDestination"],
             "lieuDepart": e["demande"]["lieuDepart"],
             "status": e["demande"]["status"],
-            "longitude": e["demande"]["longitude"].toString(),
-            "latitude": e["demande"]["latitude"].toString(),
-            "initiateur": initiateur,
-            "chauffeur": chauffeur,
+            "longitude": e["demande"]["longitude"],
+            "latitude": e["demande"]["latitude"],
+            "initiateur": e["demande"]["initiateur"],
+            "chauffeur": e["demande"]["chauffeur"],
             "nbrEtranger": int.parse(e["demande"]["nbrEtranger"]),
-            "created_at": e["demande"]["created_at"],
+            "create_at": e["demande"]["created_at"],
           });
           return ChatUsersModel.fromJson({
             "demande": demande,
@@ -99,9 +98,6 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
         if (auth != null) {
           List result = json.decode(response.body);
           var responseFinal = result.map((e) {
-            // if((e["contenu"] != "") || (e["isPicture"] == 1) || (e["isVideo"]) ){
-
-            // }
             file = e["filepath"] != null ? e["filepath"] : "";
             User user = User.fromJson(e["user"]);
             return ChatModel.fromJson({
@@ -224,7 +220,7 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
               "lieu_depart": resp["demande"]["lieuDepart"],
               "destination": resp["demande"]["destination"],
               "nbre_passagers": resp["demande"]["nbre_passagers"],
-              "initiateur": User.fromJson({
+              "initiateur": {
                 "id": resp["demande"]["initiateur"]["id"],
                 "first_name": resp["demande"]["initiateur"]["first_name"],
                 "username": resp["demande"]["initiateur"]["username"],
@@ -236,8 +232,8 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
                 "created_at": resp["demande"]["initiateur"]["created_at"],
                 "updated_at": resp["demande"]["initiateur"]["updated_at"],
                 "role": resp["demande"]["initiateur"]["role"],
-              }),
-              "chauffeur": User.fromJson({
+              },
+              "chauffeur": {
                 "id": resp["demande"]["chauffeur"]["id"],
                 "first_name": resp["demande"]["chauffeur"]["first_name"],
                 "username": resp["demande"]["chauffeur"]["username"],
@@ -249,7 +245,7 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
                 "created_at": resp["demande"]["chauffeur"]["created_at"],
                 "updated_at": resp["demande"]["chauffeur"]["updated_at"],
                 "role": resp["demande"]["chauffeur"]["role"],
-              }),
+              },
               "longitude": resp["demande"]["longitude"],
               "latitude": resp["demande"]["latitude"],
               "create_at": resp["demande"]["create_at"],
