@@ -100,7 +100,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                   avatar: "assets/images/avatar_1.png",
                                   textLeading: "",
                                   title: widget
-                                      .chatUsersModel.demande.initiateur.username,
+                                      .chatUsersModel.demande.initiateur!.username,
                                   subtitle: "Initiateur",
                                 ),
                                 _CustomListTile(
@@ -108,7 +108,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                   avatar: "assets/images/avatar_1.png",
                                   textLeading: "",
                                   title: widget
-                                      .chatUsersModel.demande.chauffeur.username,
+                                      .chatUsersModel.demande.chauffeur!.username,
                                   subtitle: "Chauffeur",
                                 ),
                               ],
