@@ -21,18 +21,13 @@ class Demande {
   String lieuDepart;
   String destination;
   int nbrePassagers;
-  User? initiateur ;
+  User? user;
   User? manager;
   User? chauffeur;
-  User? chefCharroi;
-  String longitude;
-  String latitude;
   double longitudelDepart;
   double latitudeDepart;
-  // double longitudelDestination;
-  // double latitudeDestination;
-  String longitude;
-  String latitude;
+  double longitudelDestination;
+  double latitudeDestination;
   DateTime createAt;
 
   Demande({
@@ -45,20 +40,17 @@ class Demande {
     this.lieuDepart = "",
     this.destination = '',
     this.nbrePassagers = 0,
-    required this.initiateur,
-    required this.manager,
-    required this.chefCharroi,
-    required this.chauffeur,
+    required this.user,
+    this.manager = null,
+    this.chauffeur = null,
     this.longitudelDepart = 0.0,
     this.latitudeDepart = 0.0,
-    // this.longitudelDestination = 0.0,
-    // this.latitudeDestination = 0.0,
-    this.longitude = "0.0",
-    this.latitude = "0.0",
+    this.longitudelDestination = 0.0,
+    this.latitudeDestination = 0.0,
     required this.createAt,
   });
 
-  factory Demande.fromJson(Map json) => Demande(
+  factory Demande.fromJson(Map<String, dynamic> json) => Demande(
     id: json["id"] ?? 0,
     dateDemande: json["date_demande"] != null
         ? DateTime.parse(json["date_demande"])
@@ -66,13 +58,14 @@ class Demande {
     motif: json["motif"] ?? "",
     ticket: json["ticket"] ?? "",
     status: json["status"] ?? "",
-    dateDeplacement:json["date_deplacement"] != null ? DateTime.parse(json["date_deplacement"]) : DateTime.now(),
-    lieuDepart: json["lieu_depart"] ??  0,
-    destination: json["destination"] ??  0,
-    nbrePassagers: json["nbre_passagers"] ??  0,
-    chefCharroi: json["chef_charroi"] ??  null,
-    initiateur: json["initiateur"] != null
-        ? User.fromJson(json["initiateur"])
+    dateDeplacement: json["date_deplacement"] != null
+        ? DateTime.parse(json["date_deplacement"])
+        : DateTime.now(),
+    lieuDepart: json["lieu_depart"] ?? "",
+    destination: json["destination"] ?? "",
+    nbrePassagers: json["nbre_passagers"] != null ? int.parse(json["nbre_passagers"]) : 0,
+    user: json["user"] != null
+        ? User.fromJson(json["user"])
         : User(
         id: 0,
         emailVerifiedAt: DateTime.now(),
@@ -92,21 +85,21 @@ class Demande {
         emailVerifiedAt: DateTime.now(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now()),
-    longitude: json["longitude"].toDouble() ?? 0.0,
-    latitude: json["latitude"].toDouble() ?? 0.0,
-    // longitudelDestination: json["longitude_destination"] != null
-    //     ? json["longitude_destination"].toDouble()
-    //     : 0.0,
-    // latitudeDestination: json["latitude_destination"] != null
-    //     ? json["latitude_destination"].toDouble()
-    //     : 0.0,
     longitudelDepart: json["longitude_depart"] != null
         ? json["longitude_depart"].toDouble()
         : 0.0,
     latitudeDepart: json["latitude_depart"] != null
         ? json["latitude_depart"].toDouble()
         : 0.0,
-    createAt: json["create_at"] != null ? DateTime.parse(json["create_at"]) : DateTime.now(),
+    longitudelDestination: json["longitude_destination"] != null
+        ? json["longitude_destination"].toDouble()
+        : 0.0,
+    latitudeDestination: json["latitude_destination"] != null
+        ? json["latitude_destination"].toDouble()
+        : 0.0,
+    createAt: json["create_at"] != null
+        ? DateTime.parse(json["create_at"])
+        : DateTime.now(),
   );
 
   Map<String, dynamic> toJson() => {
@@ -121,14 +114,14 @@ class Demande {
     "lieu_depart_id": lieuDepart,
     "destination_id": destination,
     "nbre_passagers": nbrePassagers,
-    "initiateur": initiateur,
-    "manager": manager,
-        "chauffeur" : chauffeur,
-    "chef_charroi": chefCharroi,
-    "longitude": longitude,
-    "latitude": latitude,
-    "longitudelDepart": longitudelDepart,
-    "latitudeDepart": latitudeDepart,
-    "create_at": "${createAt.year.toString().padLeft(4, '0')}-${createAt.month.toString().padLeft(2, '0')}-${createAt.day.toString().padLeft(2, '0')}",
+    "user_id": user,
+    "manager_id": manager,
+    "charroi_id": chauffeur,
+    "longitude": longitudelDepart,
+    "latitude_depart": latitudeDepart,
+    "longitude_destination": longitudelDestination,
+    "latitude_destination": latitudeDestination,
+    "create_at":
+    "${createAt.year.toString().padLeft(4, '0')}-${createAt.month.toString().padLeft(2, '0')}-${createAt.day.toString().padLeft(2, '0')}",
   };
 }
