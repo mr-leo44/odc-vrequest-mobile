@@ -8,6 +8,8 @@ String demandeRequestToJson(DemandeRequest data) => json.encode(data.toJson());
 
 class DemandeRequest {
   String motif;
+  String ticket;
+  DateTime date;
   DateTime dateDeplacement;
   int nbrePassagers;
   int userId;
@@ -20,6 +22,8 @@ class DemandeRequest {
 
   DemandeRequest({
     required this.motif,
+    required this.ticket,
+    required this.date,
     required this.dateDeplacement,
     required this.nbrePassagers,
     required this.userId,
@@ -32,22 +36,28 @@ class DemandeRequest {
   });
 
   Map<String, dynamic> toJson() => {
-    "motif": motif,
-    "date_deplacement":
-    "${dateDeplacement.year.toString().padLeft(4, '0')}-${dateDeplacement.month.toString().padLeft(2, '0')}-${dateDeplacement.day.toString().padLeft(2, '0')}",
-    "nbre_passagers": nbrePassagers,
-    "user_id": userId,
-    "lieu_depart": lieuDepart,
-    "destination": destination,
-    "latitude_depart": latitudeDepart,
-    "longitude_depart": longitudeDepart,
-    "latitude_destination": latitudeDestination,
-    "longitude_destination": longitudeDestination,
-  };
+        "motif": motif,
+        "ticket": ticket,
+        "date_deplacement":
+            "${dateDeplacement.year.toString().padLeft(4, '0')}-${dateDeplacement.month.toString().padLeft(2, '0')}-${dateDeplacement.day.toString().padLeft(2, '0')} ${dateDeplacement.hour.toString().padLeft(2, '0')}:${dateDeplacement.minute.toString().padLeft(2, '0')}",
+        "date":
+            "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+        "nbre_passagers": nbrePassagers,
+        "user_id": userId,
+        "lieu_depart": lieuDepart,
+        "destination": destination,
+        "latitude_depart": latitudeDepart,
+        "longitude_depart": longitudeDepart,
+        "latitude_destination": latitudeDestination,
+        "longitude_destination": longitudeDestination,
+      };
 
   bool validate() {
     // Vérifier que le motif n'est pas nul ou vide
     if (motif.trim().isEmpty ?? true) {
+      return false;
+    }
+    if (ticket.trim().isEmpty ?? true) {
       return false;
     }
 
@@ -55,16 +65,25 @@ class DemandeRequest {
     if (dateDeplacement == DateTime.fromMillisecondsSinceEpoch(0)) {
       return false;
     }
+    if (date == DateTime.fromMillisecondsSinceEpoch(0)) {
+      return false;
+    }
 
     // Vérifier que le nombre de passagers est positif
     if (nbrePassagers <= 0) {
       return false;
-    }  if (userId <= 0) {
+    }
+    if (userId <= 0) {
       return false;
     }
+    /* if (userId <= 0) {
+      return false;
+    }*/
 
     // Vérifier que les lieux de départ et de destination ne sont pas nuls ou vides
-    if (lieuDepart.trim().isEmpty ?? true || destination.trim().isEmpty ?? true) {
+    if (lieuDepart.trim().isEmpty ??
+        true || destination.trim().isEmpty ??
+        true) {
       return false;
     }
 
