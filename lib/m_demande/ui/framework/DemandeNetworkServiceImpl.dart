@@ -21,15 +21,40 @@ class DemandeNetworkServiceimpl implements DemandeNetworkService {
   }
 
   @override
-  Future<String?> creerDemande(DemandeRequest data, String token) async {
-    // TODO: implement getDemande
-    throw UnimplementedError();
+  Future<bool?> creerDemande(DemandeRequest data, String token) async {
+    final client = http.Client();
+    final url = Uri.parse("$baseURL/api/demandes");
+
+    final formData = data.toJson();
+    print("formData creer demande $formData");
+
+    final response = await http.post(url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(formData));
+    print(json.encode(formData));
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    client.close();
   }
 
   @override
-  Future<Demande> getDemande(int id, String token) {
-    // TODO: implement getDemande
-    throw UnimplementedError();
+  Future<Demande?> getDemande(int id, String token) async {
+    Demande reponseFinal;
+
+    final response = await http.get(Uri.parse("$baseURL/api/demandes/$id"));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print("Les donnes sont la : ${data}");
+      reponseFinal = Demande.fromJson(data);
+      return reponseFinal;
+    } else {
+      print("echec");
+      return null;
+
+    }
+
+
   }
 
   @override

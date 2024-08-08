@@ -9,8 +9,9 @@ class ListSiteUseCase {
 
   ListSiteUseCase(this.network, this.userLocal);
 
-  Future<List<Site?>> run() async {
+  Future<List<Site>?> run() async {
     String token = await userLocal.getToken();
+
     var res = await network.listSite(token);
     return res;
   }

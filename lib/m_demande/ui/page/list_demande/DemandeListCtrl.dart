@@ -12,13 +12,15 @@ class DemandeListCtrl extends _$DemandeListCtrl {
   }
 
   void recupererListDemande() async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, isEmpty: true);
     var useCase = ref
         .watch(demandeInteractorProvider)
         .listDemandeUseCase;
     var res = await useCase.run();
     if (res != null) {
-      state = state.copyWith(isLoading: false, listDemandes: res);
+      state = state.copyWith(isLoading: false, listDemandes: res, isEmpty: false);
+    }else{
+      state = state.copyWith(isLoading: true, isEmpty: true);
     }
   }
 }

@@ -9,7 +9,7 @@ class GetDemandeUseCase {
 
   GetDemandeUseCase(this.network, this.userLocal);
 
-  Future<Demande> run(int id) async {
+  Future<Demande?> run(int id) async {
     String token = await userLocal.getToken();
     var res = await network.getDemande(id, token);
     return res;

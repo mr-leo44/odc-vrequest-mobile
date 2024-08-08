@@ -9,7 +9,7 @@ class CreerDemandeUseCase {
 
   CreerDemandeUseCase(this.network, this.userLocal);
 
-  Future<String?> run(DemandeRequest data) async {
+  Future<bool?> run(DemandeRequest data) async {
     String token = await userLocal.getToken();
     var res = await network.creerDemande(data, token);
 
