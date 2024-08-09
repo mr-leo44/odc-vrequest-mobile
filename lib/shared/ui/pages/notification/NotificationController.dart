@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:odc_mobile_project/main.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
 import 'package:odc_mobile_project/shared/business/model/Notification.dart';
-import 'package:odc_mobile_project/shared/ui/notification/NotificationState.dart';
+import 'package:odc_mobile_project/shared/ui/pages/notification/NotificationState.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part "NotificationController.g.dart";
