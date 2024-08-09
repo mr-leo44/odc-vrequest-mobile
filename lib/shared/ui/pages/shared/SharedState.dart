@@ -7,11 +7,13 @@ class SharedState {
   bool isLoading;
   Signal<List<Map<String,List<ChatModel>>>> newMessages = Signal(<Map<String, List<ChatModel>>>[]);
   User? auth;
+  Map<String, dynamic> location;
 
   SharedState({
     this.isLoading = false,
     required this.newMessages ,
     this.auth = null,
+    this.location = const <String, String>{},
   });
 
   SharedState copyWith({
@@ -19,10 +21,12 @@ class SharedState {
     Signal<List<Map<String,List<ChatModel>>>>? newMessages,
     Signal<List<ChatUsersModel>>? conversations,
     User? auth,
+    Map<String, dynamic>? location,
   }) =>
       SharedState(
         isLoading: isLoading ?? this.isLoading,
         newMessages: newMessages ?? this.newMessages,
         auth: auth ?? this.auth,
+        location: location ?? this.location,
       );
 }

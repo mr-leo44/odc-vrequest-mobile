@@ -6,7 +6,7 @@ part of 'SharedCtrl.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$sharedCtrlHash() => r'8d7cced1c66503bd84e573eb756ae5879a0674e1';
+String _$sharedCtrlHash() => r'fd38faa654e6b7ef248509756a369c3a0f75d0c7';
 
 /// See also [SharedCtrl].
 @ProviderFor(SharedCtrl)
