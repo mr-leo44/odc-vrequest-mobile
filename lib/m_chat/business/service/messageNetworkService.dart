@@ -7,7 +7,7 @@ import 'package:signals/signals_flutter.dart';
 
 abstract class MessageNetworkService {
   Signal<ChatModel> message = 
-    ChatModel.fromJson({}).toSignal();
+    Signal(ChatModel.fromJson({}));
   Signal<int> isconnected = Signal(0);
   Signal<int> isdeconnected = Signal(0);
 

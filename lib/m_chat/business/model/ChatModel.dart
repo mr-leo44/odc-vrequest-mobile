@@ -3,15 +3,15 @@ import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 
 class ChatModel {
-  final Demande demande;
-  final String avatar;
-  final User user;
-  final String message;
-  final ChatMessageType? type;
-  final DateTime time;
-  final String file;
-  final bool isPicture;
-  final bool isVideo;
+  Demande demande;
+  String avatar;
+  User user;
+  String message;
+  ChatMessageType? type;
+  DateTime time;
+  String file;
+  bool isPicture;
+  bool isVideo;
 
   ChatModel({
     required this.demande,
