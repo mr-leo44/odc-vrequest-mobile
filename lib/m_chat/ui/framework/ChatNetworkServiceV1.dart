@@ -19,7 +19,7 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
   String baseURL;
   Socket socket;
   @override
-  Signal<ChatModel> message = ChatModel.fromJson({}).toSignal();
+  Signal<ChatModel> message = Signal(ChatModel.fromJson({}));
   Signal<int> isconnected = Signal(0);
   Signal<int> isdeconnected = Signal(0);
 
@@ -133,66 +133,61 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
     var param;
     await dotenv.load(fileName: ".env");
 
-    // try {
-    if (data.isPicture || data.isVideo) {
-      param = FormData.fromMap({
-        "user_id": data.user.id.toString(),
-        "contenu": data.contenu,
-        "message_groupe_id": data.demande.id.toString(),
-        'file': await MultipartFile.fromFile(
-          data.file!.path,
-          filename: data.file!.name,
+    try {
+      if (data.isPicture || data.isVideo) {
+        param = FormData.fromMap({
+          "user_id": data.user.id.toString(),
+          "contenu": data.contenu,
+          "message_groupe_id": data.demande.id.toString(),
+          'file': await MultipartFile.fromFile(
+            data.file!.path,
+            filename: data.file!.name,
+          ),
+          "isPicture": data.isPicture ? 1 : 0,
+          "isVideo": data.isVideo ? 1 : 0,
+        });
+      } else {
+        param = FormData.fromMap({
+          "user_id": data.user.id.toString(),
+          "contenu": data.contenu,
+          "message_groupe_id": data.demande.id.toString(),
+        });
+      }
+
+      var response = await dio.post(
+        url,
+        data: param,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            //"Accept":"image"
+          },
         ),
-        "isPicture": data.isPicture ? 1 : 0,
-        "isVideo": data.isVideo ? 1 : 0,
-      });
-    } else {
-      param = FormData.fromMap({
-        "user_id": data.user.id.toString(),
-        "contenu": data.contenu,
-        "message_groupe_id": data.demande.id.toString(),
-      });
-    }
+      );
 
-    var response = await dio.post(
-      url,
-      data: param,
-      options: Options(
-        headers: {
-          "Content-Type": "application/json",
-          //"Accept":"image"
-        },
-      ),
-    );
-
-    if (response.statusCode == 200) {
-      var message_resp = json.decode(response.toString());
-      added = true;
-      if (socket.connected) {
-        socket.emit('test', 'testSendMsg');
-
-
-          var donnees = {
-            "user": data.user,
-            "contenu": message_resp["message"]["contenu"],
-            "demande": data.demande,
-            "filepath": 
-              (message_resp["message"]["filepath"] != null)
-                ? this.baseURL +
-                  "/" +
-                  dotenv.env["DISK_STORAGE"]! +
-                  "/" +
-                  message_resp["message"]["filepath"]
-                : ""
-          };
+      if (response.statusCode == 200) {
+        var message_resp = json.decode(response.toString());
+        added = true;
         
-        // socket.emit('joinRoom', donnees["demande"].toString());
+        var donnees = {
+          "user": data.user,
+          "contenu": message_resp["message"]["contenu"],
+          "demande": data.demande,
+          "filepath": 
+            (message_resp["message"]["filepath"] != null)
+              ? this.baseURL +
+                "/" +
+                dotenv.env["DISK_STORAGE"]! +
+                "/" +
+                message_resp["message"]["filepath"]
+              : ""
+        };
+        
         socket.emit('createMessage', donnees);
       }
+    } catch (e) {
+      print(e);
     }
-    // } catch (e) {
-    //   print(e);
-    // }
 
     return Future.value(added);
   }
@@ -205,10 +200,10 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
 
   @override
   Future<void> realTime(User? auth) async {
-    if (socket.connected) {
       socket.on('sendMessage', (resp) {
-        if ((auth != null) && (resp != message.value)) {
-          // print("Message received");
+        if ((auth != null) ) {
+          print(resp["contenu"]+"  "+message.value.message);
+          print("Message received ${resp["contenu"]} ");
           User user = User.fromJson(resp["user"]);
           message.value = ChatModel.fromJson({
             "demande": Demande.fromJson({
@@ -258,6 +253,7 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
                 : ChatMessageType.received,
             "time": DateTime.now(),
           });
+          print(resp["contenu"]+"  "+message.value.message);
         }
       });
       // socket.emit('test', 'testWhoIsConnected');
@@ -268,23 +264,16 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
       // socket.on('isDeconnected', (resp) {
       //   isdeconnected.value = resp;
       // });
-    }
   }
 
   @override
   Future<bool> joinRoom(Demande demande, User? auth) async {
     var joined = false;
 
-    if (socket.connected) {
-      socket.emit('test', 'testJoinRoom');
-      socket.emit('joinRoom', [demande.id.toString(), auth?.id]);
-      print("Joined");
+    socket.emit('joinRoom', [demande.id.toString(), auth?.id]);
+    print("Joined");
 
-      joined = true;
-    } else {
-      print("Not Joined");
-      joined = false;
-    }
+    joined = true;
 
     return joined;
   }
