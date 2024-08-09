@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:odc_mobile_project/shared/ui/notification/NotificationController.dart';
+import 'package:odc_mobile_project/m_user/ui/pages/accueil/AccueilPage.dart';
+import 'package:odc_mobile_project/shared/business/interactor/shared/SharedInteractor.dart';
+import 'package:odc_mobile_project/shared/ui/framework/SharedNetworkServiceV1.dart';
+import 'package:odc_mobile_project/shared/ui/pages/notification/NotificationController.dart';
+import 'package:odc_mobile_project/shared/ui/pages/notification/NotificationPage.dart';
 
 import 'package:path_provider/path_provider.dart';
 
@@ -14,7 +18,7 @@ import 'package:sembast/sembast_io.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import 'm_demande/business/interactor/demandeInteractor.dart';
-import 'm_demande/ui/framework/DemandeNetworkServiceImpl.dart';
+import 'm_demande/ui/framework/DemandeNetworkServiceImpl_deleted.dart';
 import 'm_user/business/interactor/UserInteractor.dart';
 import 'm_user/ui/framework/UserLocalServiceImpl.dart';
 import 'm_user/ui/framework/UserNetworkServiceImpl.dart';
@@ -42,6 +46,11 @@ Future<void> main() async {
 
   socket.connect();
 
+  // module chat service implementations
+  var sharedNetworkImpl = SharedNetworkServiceV1(socket);
+  var sharedInteractor =
+      SharedInteractor.build(sharedNetworkImpl);
+
   // module user service implementations
   var userNetworkImpl = UserNetworkServiceImpl(baseUrl);
   var userLocalImpl = UserLocalServiceImpl(db);
@@ -67,6 +76,7 @@ Future<void> main() async {
     userInteractorProvider.overrideWithValue(userInteractor),
     chatInteractorProvider.overrideWithValue(chatInteractor),
     demandeInteractorProvider.overrideWithValue(demandeIntercator),
+    sharedInteractorProvider.overrideWithValue(sharedInteractor)
   ], child: MyApp()));
 }
 
@@ -100,7 +110,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   //   List<Route<dynamic>> pageStack = [];
   //   pageStack.add(MaterialPageRoute(
   //       builder: (_) =>
-  //           const MyHomePage(title: 'Awesome Notifications Example App')));
+  //           AccueilPage()));
   //   if (initialRouteName == routeNotification &&
   //       NotificationController.initialAction != null) {
   //     pageStack.add(MaterialPageRoute(
@@ -115,7 +125,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   //     case routeHome:
   //       return MaterialPageRoute(
   //           builder: (_) =>
-  //               const MyHomePage(title: 'Awesome Notifications Example App'));
+  //               AccueilPage());
 
   //     case routeNotification:
   //       ReceivedAction receivedAction = settings.arguments as ReceivedAction;
@@ -129,6 +139,9 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      key: MyApp.navigatorKey,
+      // onGenerateInitialRoutes: onGenerateInitialRoutes,
+      // onGenerateRoute: onGenerateRoute,
       routerConfig: ref.watch(routerProvider),
       debugShowCheckedModeBanner: false,
       title: 'Flutter ODC Project',
