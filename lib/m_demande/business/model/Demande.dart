@@ -21,7 +21,7 @@ class Demande {
   String lieuDepart;
   String destination;
   int nbrePassagers;
-  User? initiateur ;
+  User? initiateur;
   User? manager;
   User? chauffeur;
   User? chefCharroi;
@@ -31,8 +31,6 @@ class Demande {
   double latitudeDepart;
   // double longitudelDestination;
   // double latitudeDestination;
-  String longitude;
-  String latitude;
   DateTime createAt;
 
   Demande({
@@ -59,76 +57,87 @@ class Demande {
   });
 
   factory Demande.fromJson(Map json) => Demande(
-    id: json["id"] ?? 0,
-    dateDemande: json["date_demande"] != null
-        ? DateTime.parse(json["date_demande"])
-        : DateTime.now(),
-    motif: json["motif"] ?? "",
-    ticket: json["ticket"] ?? "",
-    status: json["status"] ?? "",
-    dateDeplacement:json["date_deplacement"] != null ? DateTime.parse(json["date_deplacement"]) : DateTime.now(),
-    lieuDepart: json["lieu_depart"] ??  0,
-    destination: json["destination"] ??  0,
-    nbrePassagers: json["nbre_passagers"] ??  0,
-    chefCharroi: json["chef_charroi"] ??  null,
-    initiateur: json["initiateur"] != null
-        ? User.fromJson(json["initiateur"])
-        : User(
-        id: 0,
-        emailVerifiedAt: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now()),
-    manager: json["manager"] != null
-        ? User.fromJson(json["manager"])
-        : User(
-        id: 0,
-        emailVerifiedAt: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now()),
-    chauffeur: json["chauffeur"] != null
-        ? User.fromJson(json["chauffeur"])
-        : User(
-        id: 0,
-        emailVerifiedAt: DateTime.now(),
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now()),
-    longitude: json["longitude"].toDouble() ?? 0.0,
-    latitude: json["latitude"].toDouble() ?? 0.0,
-    // longitudelDestination: json["longitude_destination"] != null
-    //     ? json["longitude_destination"].toDouble()
-    //     : 0.0,
-    // latitudeDestination: json["latitude_destination"] != null
-    //     ? json["latitude_destination"].toDouble()
-    //     : 0.0,
-    longitudelDepart: json["longitude_depart"] != null
-        ? json["longitude_depart"].toDouble()
-        : 0.0,
-    latitudeDepart: json["latitude_depart"] != null
-        ? json["latitude_depart"].toDouble()
-        : 0.0,
-    createAt: json["create_at"] != null ? DateTime.parse(json["create_at"]) : DateTime.now(),
-  );
+        id: json["id"] ?? 0,
+        dateDemande: json["date_demande"] != null
+            ? DateTime.parse(json["date_demande"])
+            : DateTime.now(),
+        motif: json["motif"] ?? "",
+        ticket: json["ticket"] ?? "",
+        status: "${json["status"]}" ?? "",
+        dateDeplacement: json["date_deplacement"] != null
+            ? DateTime.parse(json["date_deplacement"])
+            : DateTime.now(),
+        lieuDepart: json["lieu_depart"] ?? "",
+        destination: json["destination"] ?? "",
+        nbrePassagers: json["nbrEtranger"] ?? 0,
+        chefCharroi: json["chefCharroi"] != null
+            ? User.fromJson(json["chefCharroi"])
+            : User(
+                id: 0,
+                emailVerifiedAt: DateTime.now(),
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              ),
+        initiateur: json["initiateur"] != null
+            ? User.fromJson(json["initiateur"])
+            : User(
+                id: 0,
+                emailVerifiedAt: DateTime.now(),
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              ),
+        manager: json["manager"] != null
+            ? User.fromJson(json["manager"])
+            : User(
+                id: 0,
+                emailVerifiedAt: DateTime.now(),
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              ),
+        chauffeur: json["chauffeur"] != null
+            ? User.fromJson(json["chauffeur"])
+            : User(
+                id: 0,
+                emailVerifiedAt: DateTime.now(),
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              ),
+        longitude: "${json["longitude"]}" ?? "",
+        latitude: "${json["latitude"]}" ?? "",
+        // longitudelDestination: json["longitude_destination"] != null
+        //     ? json["longitude_destination"].toDouble()
+        //     : 0.0,
+        // latitudeDestination: json["latitude_destination"] != null
+        //     ? json["latitude_destination"].toDouble()
+        //     : 0.0,
+        longitudelDepart: json["longitude_depart"] != null ? json["longitude_depart"].toDouble() : 0.0,
+        latitudeDepart: json["latitude_depart"] != null ? json["latitude_depart"].toDouble() : 0.0,
+        createAt: json["create_at"] != null
+            ? DateTime.parse(json["create_at"])
+            : DateTime.now(),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "date_demande":
-    "${dateDemande.year.toString().padLeft(4, '0')}-${dateDemande.month.toString().padLeft(2, '0')}-${dateDemande.day.toString().padLeft(2, '0')}",
-    "motif": motif,
-    "ticket": ticket,
-    "status": status,
-    "date_deplacement":
-    "${dateDeplacement.year.toString().padLeft(4, '0')}-${dateDeplacement.month.toString().padLeft(2, '0')}-${dateDeplacement.day.toString().padLeft(2, '0')}",
-    "lieu_depart_id": lieuDepart,
-    "destination_id": destination,
-    "nbre_passagers": nbrePassagers,
-    "initiateur": initiateur,
-    "manager": manager,
-        "chauffeur" : chauffeur,
-    "chef_charroi": chefCharroi,
-    "longitude": longitude,
-    "latitude": latitude,
-    "longitudelDepart": longitudelDepart,
-    "latitudeDepart": latitudeDepart,
-    "create_at": "${createAt.year.toString().padLeft(4, '0')}-${createAt.month.toString().padLeft(2, '0')}-${createAt.day.toString().padLeft(2, '0')}",
-  };
+        "id": id,
+        "date_demande":
+            "${dateDemande.year.toString().padLeft(4, '0')}-${dateDemande.month.toString().padLeft(2, '0')}-${dateDemande.day.toString().padLeft(2, '0')}",
+        "motif": motif,
+        "ticket": ticket,
+        "status": status,
+        "date_deplacement":
+            "${dateDeplacement.year.toString().padLeft(4, '0')}-${dateDeplacement.month.toString().padLeft(2, '0')}-${dateDeplacement.day.toString().padLeft(2, '0')}",
+        "lieu_depart_id": lieuDepart,
+        "destination_id": destination,
+        "nbre_passagers": nbrePassagers,
+        "initiateur": initiateur,
+        "manager": manager,
+        "chauffeur": chauffeur,
+        "chef_charroi": chefCharroi,
+        "longitude": longitude,
+        "latitude": latitude,
+        "longitudelDepart": longitudelDepart,
+        "latitudeDepart": latitudeDepart,
+        "create_at":
+            "${createAt.year.toString().padLeft(4, '0')}-${createAt.month.toString().padLeft(2, '0')}-${createAt.day.toString().padLeft(2, '0')}",
+      };
 }
