@@ -61,7 +61,7 @@ class Bubble extends StatelessWidget {
                         errorBuilder: (BuildContext context, Object error,
                             StackTrace? stackTrace) {
                           return const Center(
-                              child: Text('This image type is not supported'));
+                              child: Text('L\'image n\'est pas supporte'));
                         },
                       ),
                     ),

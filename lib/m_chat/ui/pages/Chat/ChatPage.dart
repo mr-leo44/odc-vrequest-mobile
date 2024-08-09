@@ -17,7 +17,7 @@ import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailPage.dar
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:odc_mobile_project/shared/ui/SharedCtrl.dart';
+import 'package:odc_mobile_project/shared/ui/pages/shared/SharedCtrl.dart';
 import 'package:video_player/video_player.dart';
 import 'package:popup_menu_plus/popup_menu_plus.dart';
 
@@ -48,9 +48,8 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       var ctrl = ref.read(chatCtrlProvider.notifier);
       await ctrl.getUser();
-      // await ctrl.joinRoom(widget.chatUsersModel.demande);
+      ctrl.realTime();
       ctrl.messageRealTime(widget.chatUsersModel);
-      // ctrl.realTime();
       ctrl.getList(widget.chatUsersModel);
 
       var sharedCtrl = ref.read(sharedCtrlProvider.notifier);
@@ -268,7 +267,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
     // final width = MediaQuery.of(context).size.width;
     // final bool isLargeScreen = width > 800;
     var state = ref.watch(chatCtrlProvider);
-    List<ChatModel> chatList = state.chatList.value.reversed.toList();
+    List<ChatModel> chatList = state.chatList.reversed.toList();
     // if (state.newMessage != null) {
     //   if (state.auth != null) {
     //      print(chatList.last.message);
@@ -489,9 +488,9 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
               children: [
                 Expanded(
                   child: Text(
-                    widget.chatUsersModel.demande.initiateur.username +
+                    widget.chatUsersModel.demande.initiateur.email +
                         ", " +
-                        widget.chatUsersModel.demande.chauffeur.username,
+                        widget.chatUsersModel.demande.chauffeur.email,
                     style: TextStyle(fontSize: 12),
                     softWrap: false,
                     overflow: TextOverflow.ellipsis,
