@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:odc_mobile_project/m_chat/business/model/ChatModel.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatPage.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailCtrl.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:odc_mobile_project/m_user/business/model/User.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatMaps.dart';
+import 'package:odc_mobile_project/shared/ui/pages/shared/SharedCtrl.dart';
+import 'package:latlong2/latlong.dart';
 
 class ChatDetailPage extends ConsumerStatefulWidget {
   ChatUsersModel chatUsersModel;
@@ -24,12 +26,29 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
       var ctrl = ref.read(chatDetailCtrlProvider.notifier);
       await ctrl.getUser();
       ctrl.stateConnection();
+
+      var sharedCtrl = ref.read(sharedCtrlProvider.notifier);
+      await sharedCtrl.requestLocationPermission();
+      await listenLocation();
+      await sharedCtrl.getLocation(widget.chatUsersModel.demande);
+      await sharedCtrl.locationRealTime();
     });
+  }
+
+  Future<void> listenLocation() async {
+    var state = ref.watch(chatDetailCtrlProvider);
+    var auth = state.auth?.role;
+
+    if (auth != null && auth.any((e) => e.contains('chauffeur'))) {
+      var sharedCtrl = ref.read(sharedCtrlProvider.notifier);
+      await sharedCtrl.listenLocation(widget.chatUsersModel.demande);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    var state = ref.watch(chatDetailCtrlProvider);
+    var sharedState = ref.watch(sharedCtrlProvider);
+    print(sharedState.location);
 
     return Scaffold(
       backgroundColor: const Color(0xfff6f6f6),
@@ -50,8 +69,46 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                         child: ListView(
                           children: [
                             _SingleSection(
+                              title: "Tracking",
+                              children: [
+                                Stack(
+                                  children: [
+                                    Visibility(
+                                      visible: !sharedState.isLoading,
+                                      child: ChatMaps(
+                                          demande:
+                                              widget.chatUsersModel.demande),
+                                    ),
+                                    Visibility(
+                                      visible: sharedState.isLoading,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(58.0),
+                                        child: Column(
+                                          children: [
+                                            LoadingAnimationWidget.dotsTriangle(
+                                              color: Colors.amber,
+                                              size: 40,
+                                            ),
+                                            SizedBox(
+                                              height: 8,
+                                            ),
+                                            Text("Initialisation...")
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            _SingleSection(
                               title: "Details",
                               children: [
+                                _CustomListTile(
+                                  textLeading: "Ticket",
+                                  title: widget.chatUsersModel.demande.ticket,
+                                  ref: ref,
+                                ),
                                 _CustomListTile(
                                   textLeading: "Motif",
                                   title: widget.chatUsersModel.demande.motif,
@@ -68,15 +125,6 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                   title:
                                       widget.chatUsersModel.demande.destination,
                                   ref: ref,
-                                ),
-                                _CustomListTile(
-                                  ref: ref,
-                                  textLeading: "Longitude Latitude",
-                                  title: widget.chatUsersModel.demande.longitude
-                                          .toString() +
-                                      ' , ' +
-                                      widget.chatUsersModel.demande.latitude
-                                          .toString(),
                                 ),
                                 _CustomListTile(
                                   ref: ref,
@@ -99,16 +147,16 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                   ref: ref,
                                   avatar: "assets/images/avatar_1.png",
                                   textLeading: "",
-                                  title: widget
-                                      .chatUsersModel.demande.initiateur!.username,
+                                  title: widget.chatUsersModel.demande
+                                      .initiateur!.email,
                                   subtitle: "Initiateur",
                                 ),
                                 _CustomListTile(
                                   ref: ref,
                                   avatar: "assets/images/avatar_1.png",
                                   textLeading: "",
-                                  title: widget
-                                      .chatUsersModel.demande.chauffeur!.username,
+                                  title: widget.chatUsersModel.demande
+                                      .chauffeur!.email,
                                   subtitle: "Chauffeur",
                                 ),
                               ],
@@ -175,20 +223,20 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
             widget.chatUsersModel.demande.ticket,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  widget.chatUsersModel.demande.initiateur.username +
-                      ", " +
-                      widget.chatUsersModel.demande.chauffeur.username,
-                  style: TextStyle(fontSize: 12),
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     Expanded(
+          //       child: Text(
+          //         widget.chatUsersModel.demande.initiateur.username +
+          //             ", " +
+          //             widget.chatUsersModel.demande.chauffeur.username,
+          //         style: TextStyle(fontSize: 12),
+          //         softWrap: false,
+          //         overflow: TextOverflow.ellipsis,
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     ),
@@ -231,7 +279,9 @@ class _CustomListTile extends StatelessWidget {
             title: Row(
               children: [
                 Text(title),
-                SizedBox(width: 5,),
+                SizedBox(
+                  width: 5,
+                ),
                 if ((subtitle.isNotEmpty) &&
                     (state.isconnected == state.auth?.id))
                   Positioned(
