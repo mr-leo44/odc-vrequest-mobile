@@ -17,46 +17,51 @@ class ChatCtrl extends _$ChatCtrl {
   @override
   ChatState build() {
     getUser();
-    return ChatState(
-      chatList: <ChatModel>[].toSignal(),
-    );
+    return ChatState();
   }
 
-  void messageRealTime(ChatUsersModel data){
-    var interactor = ref.watch(chatInteractorProvider);
-    effect((){
-      var message = interactor.messageRealTimeUseCase.run();
-      // if((message.user.id > 0 && message.message.isNotEmpty) && (state.auth?.id != message.user.id) ){
-      //   var actualList = state.chatList;
-      //   actualList.value.add(message);
-      //   print("receuved $message");
-      //   state = state.copyWith( chatList: actualList);
-      // }
-      // print("ChatCtrl: ${message.demande.id}");
-      getList(data);
-    });
+  void messageRealTime(ChatUsersModel data) {
+    if (state.auth != null) {
+      print("Auth : ${state.auth!.email}");
+
+      var interactor = ref.watch(chatInteractorProvider);
+      var n = 0;
+
+      effect(() {
+        var message = interactor.messageRealTimeUseCase.run();
+
+        if (message.user.email.isNotEmpty && message.message.isNotEmpty) {
+          n++;
+          var actualList = state.chatList;
+          actualList.add(message);
+
+          print("receuved $message $n");
+          state = state.copyWith(chatList: actualList);
+        }
+        // getList(data);
+      });
+    }
+    
   }
 
-  Future getUser()async{
+  Future getUser() async {
     var usecase = ref.watch(userInteractorProvider).getUserLocalUseCase;
-    var res=await usecase.run();
+    var res = await usecase.run();
     state = state.copyWith(auth: res);
   }
 
-  void realTime()async{
-    getUser();
-    // Timer.periodic(Duration(seconds: 5), (timer) async {
-      var interactor = ref.watch(chatInteractorProvider);
-      await interactor.realTimeUseCase.run(state.auth);
-    // });  
+  void realTime() async {
+    var interactor = ref.watch(chatInteractorProvider);
+    await interactor.realTimeUseCase.run(state.auth);
+    print("realTime Msg ${state.chatList}");
   }
 
   void getList(ChatUsersModel data) async {
     state = state.copyWith(isLoading: true);
     var interactor = ref.watch(chatInteractorProvider);
-    var lists =
-        await interactor.recupererListMessageDetailUseCase.run(data, state.auth);
-    state = state.copyWith(isLoading: false, chatList: lists.toSignal());
+    var lists = await interactor.recupererListMessageDetailUseCase
+        .run(data, state.auth);
+    state = state.copyWith(isLoading: false, chatList: lists);
   }
 
   Future<bool> addMessage(CreerMessageRequete data) async {
@@ -65,11 +70,10 @@ class ChatCtrl extends _$ChatCtrl {
     return res;
   }
 
-  Future<bool> joinRoom(Demande demande)async{
+  Future<bool> joinRoom(Demande demande) async {
     getUser();
     var interactor = ref.watch(chatInteractorProvider);
-    var joined =
-        await interactor.joinRoomUseCase.run(demande, state.auth);
+    var joined = await interactor.joinRoomUseCase.run(demande, state.auth);
     return joined;
   }
 }

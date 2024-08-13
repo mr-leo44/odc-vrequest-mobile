@@ -5,7 +5,7 @@ import 'package:signals/signals_flutter.dart';
 
 class ChatState {
   bool isLoading;
-  Signal<List<ChatModel>> chatList = Signal(<ChatModel>[]);
+  List<ChatModel> chatList = <ChatModel>[];
   // List<ChatModel> chatList = <ChatModel>[];
   ChatModel? newMessage ;
   User? auth;
@@ -13,7 +13,7 @@ class ChatState {
   ChatState({
     this.isLoading = false,
     // required this.chatList,
-    required this.chatList,
+    this.chatList = const <ChatModel>[],
     this.newMessage = null ,
     this.auth = null,
   });
@@ -21,7 +21,7 @@ class ChatState {
   ChatState copyWith({
     bool? isLoading,
     // Signal<List<ChatModel>>? chatList,
-    Signal<List<ChatModel>>? chatList,
+    List<ChatModel>? chatList,
     ChatModel? newMessage ,
     User? auth,
   }) =>

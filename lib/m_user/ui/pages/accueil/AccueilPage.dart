@@ -1,12 +1,15 @@
+import 'dart:async';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:odc_mobile_project/m_demande/business/interactor/demandeInteractor.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/accueil/AccueilPageCtrl.dart';
 import 'package:odc_mobile_project/shared/business/model/Notification.dart';
-import 'package:odc_mobile_project/shared/ui/SharedCtrl.dart';
-import 'package:odc_mobile_project/shared/ui/notification/NotificationController.dart';
+import 'package:odc_mobile_project/shared/ui/pages/shared/SharedCtrl.dart';
+import 'package:odc_mobile_project/shared/ui/pages/notification/NotificationController.dart';
 
 import '../../../../navigation/routers.dart';
 import '../profil/ProfilPageCtrl.dart';
@@ -54,7 +57,10 @@ class _AccueilPageState extends ConsumerState<AccueilPage> {
     width = MediaQuery.of(context).size.width;
 
     var notifState = ref.watch(notificationControllerProvider);
-    print("NotifState: ${notifState.initialAction}");
+    // print("NotifState: ${notifState.initialAction}");
+
+    var sharedState = ref.watch(sharedCtrlProvider);
+    print("sharedState: ${sharedState.location}");
 
     return Scaffold(
         appBar: _entete(),
@@ -102,7 +108,7 @@ class _AccueilPageState extends ConsumerState<AccueilPage> {
                                   fontWeight: FontWeight.w500,
                                   letterSpacing: 1,
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         )
@@ -153,51 +159,29 @@ class _AccueilPageState extends ConsumerState<AccueilPage> {
                                             spreadRadius: 1,
                                             blurRadius: 6)
                                       ]),
-                                  child: InkWell(
-                                    onTap: () => NotificationController
-                                        .createNewNotification(NotificationPush(
-                                            title: "Manu Tshibs",
-                                            body: "Bomboclat",
-                                            notificationActionButtons: [
-                                          NotificationActionButton(
-                                              key: 'REDIRECT', label: 'Ouvrir'),
-                                          NotificationActionButton(
-                                              key: 'REPLY',
-                                              label: 'Repondre',
-                                              requireInputText: true,
-                                              actionType:
-                                                  ActionType.SilentAction),
-                                          NotificationActionButton(
-                                              key: 'DISMISS',
-                                              label: 'Dismiss',
-                                              actionType:
-                                                  ActionType.DismissAction,
-                                              isDangerousOption: true)
-                                        ])),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Image.asset(
-                                          imageData[index],
-                                          width: 80,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Image.asset(
+                                        imageData[index],
+                                        width: 80,
+                                      ),
+                                      Text(
+                                        "$demande",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                        Text(
-                                          "$demande",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                      ),
+                                      Text(
+                                        "Demande en attente",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                        Text(
-                                          "Demande en attente",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );
@@ -681,11 +665,15 @@ class _AccueilPageState extends ConsumerState<AccueilPage> {
               leading: SizedBox(
                 width: 140,
                 child: Text(
-                  "${index + 1}     ${motif[index]['motif']}",
+                  // "${index + 1}     ${motif[index]['motif']}",
+                  "",
                   style: TextStyle(fontSize: 18),
                 ),
               ),
-              title: Text(motif[index]['date'], style: TextStyle(fontSize: 18)),
+              title: Text(
+                // motif[index]['date']\
+                ""
+              , style: TextStyle(fontSize: 18)),
               trailing: Icon(Icons.arrow_right),
             );
           }
