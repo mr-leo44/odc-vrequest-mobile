@@ -13,6 +13,7 @@ class DemandeRequest {
   DateTime dateDeplacement;
   int nbrePassagers;
   int userId;
+  int managerId;
   String lieuDepart;
   String destination;
   double longitudeDepart;
@@ -27,6 +28,7 @@ class DemandeRequest {
     required this.dateDeplacement,
     required this.nbrePassagers,
     required this.userId,
+    required this.managerId,
     this.lieuDepart = "",
     this.destination = "",
     this.latitudeDepart = 0.0,
@@ -44,6 +46,7 @@ class DemandeRequest {
             "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
         "nbre_passagers": nbrePassagers,
         "user_id": userId,
+        "manager_id": managerId,
         "lieu_depart": lieuDepart,
         "destination": destination,
         "latitude_depart": latitudeDepart,
@@ -74,6 +77,9 @@ class DemandeRequest {
       return false;
     }
     if (userId <= 0) {
+      return false;
+    }
+    if (managerId <= 0) {
       return false;
     }
     /* if (userId <= 0) {
