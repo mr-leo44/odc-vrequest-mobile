@@ -78,7 +78,7 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${demande?.user!.nom} ${demande?.user!.prenom}",
+                          "${demande?.initiateur!.nom} ${demande?.initiateur!.prenom}",
                           style: TextStyle(
                               fontSize: 30, fontWeight: FontWeight.w500),
                         ),

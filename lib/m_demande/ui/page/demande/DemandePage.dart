@@ -154,6 +154,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
                           ? int.parse(nbre_passagers_ctrl.text)
                           : 0,
                       userId: state.user!.id,
+                      managerId: state.user!.manager!.id,
                       lieuDepart: lieuDepart != null ? lieuDepart!.nom : "",
                       latitudeDepart:
                           lieuDepart != null ? lieuDepart!.latitude : 0.00,

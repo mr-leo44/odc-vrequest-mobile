@@ -69,7 +69,7 @@ class Demande {
             : DateTime.now(),
         lieuDepart: json["lieu_depart"] ?? "",
         destination: json["destination"] ?? "",
-        nbrePassagers: json["nbrEtranger"] ?? 0,
+        nbrePassagers: json["nbrEtranger"] != null ? int.parse(json["nbrEtranger"]) : 0,
         chefCharroi: json["chefCharroi"] != null
             ? User.fromJson(json["chefCharroi"])
             : User(
