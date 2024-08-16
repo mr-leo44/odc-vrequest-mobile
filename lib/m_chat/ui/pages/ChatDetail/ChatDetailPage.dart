@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -8,7 +9,6 @@ import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailCtrl.dar
 import 'package:flutter/cupertino.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatMaps.dart';
 import 'package:odc_mobile_project/shared/ui/pages/shared/SharedCtrl.dart';
-import 'package:latlong2/latlong.dart';
 
 class ChatDetailPage extends ConsumerStatefulWidget {
   ChatUsersModel chatUsersModel;
@@ -20,6 +20,8 @@ class ChatDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
+  bool canSwitch = false;
+
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -49,6 +51,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
   Widget build(BuildContext context) {
     var sharedState = ref.watch(sharedCtrlProvider);
     print(sharedState.location);
+    var auth = sharedState.auth?.role;
 
     return Scaffold(
       backgroundColor: const Color(0xfff6f6f6),
@@ -104,39 +107,53 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                             _SingleSection(
                               title: "Details",
                               children: [
-                                _CustomListTile(
-                                  textLeading: "Ticket",
-                                  title: widget.chatUsersModel.demande.ticket,
-                                  ref: ref,
+                                ListTile(
+                                  title: Text('Ticket'),
+                                  leading: Icon(Icons.tag),
+                                  trailing: Text(
+                                    widget.chatUsersModel.demande.ticket,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  onTap: () {},
                                 ),
-                                _CustomListTile(
-                                  textLeading: "Motif",
-                                  title: widget.chatUsersModel.demande.motif,
-                                  ref: ref,
+                                ListTile(
+                                  title: Text('Motif'),
+                                  leading: Icon(Icons.text_snippet_outlined),
+                                  trailing: Text(
+                                    widget.chatUsersModel.demande.motif,
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  onTap: () {},
                                 ),
-                                _CustomListTile(
-                                  textLeading: "Lieu depart",
-                                  title:
-                                      widget.chatUsersModel.demande.lieuDepart,
-                                  ref: ref,
+                                ListTile(
+                                  title: Text('Date de deplacement'),
+                                  leading: Icon(Icons.calendar_month),
+                                  trailing: Text(
+                                    DateFormat('dd/MM/yyyy - HH:mm').format(
+                                        widget.chatUsersModel.demande
+                                            .dateDeplacement),
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  onTap: () {},
                                 ),
-                                _CustomListTile(
-                                  textLeading: "Lieu destination",
-                                  title:
-                                      widget.chatUsersModel.demande.destination,
-                                  ref: ref,
-                                ),
-                                _CustomListTile(
-                                  ref: ref,
-                                  textLeading: "Date de deplacement",
-                                  title: DateFormat('dd/MM/yyyy - HH:mm')
-                                      .format(widget.chatUsersModel.demande
-                                          .dateDeplacement),
-                                ),
-                                _CustomListTile(
-                                  ref: ref,
-                                  textLeading: "Status",
-                                  title: widget.chatUsersModel.demande.status,
+                                if (auth != null && auth.any((e) => e.contains('chauffeur')))
+                                ListTile(
+                                  title: Text("Status"),
+                                  leading: Icon(Icons.start),
+                                  trailing: CupertinoSwitch(
+                                      value: canSwitch,
+                                      onChanged: (val) {
+                                        HapticFeedback.selectionClick();
+                                        
+                                        setState(() {
+                                          if (canSwitch == true) {
+                                            canSwitch = false;
+                                          } else {
+                                            canSwitch = true;
+                                          }
+                                        });
+                                      }),
+                                  onTap: () {},
                                 ),
                               ],
                             ),
@@ -147,16 +164,16 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                   ref: ref,
                                   avatar: "assets/images/avatar_1.png",
                                   textLeading: "",
-                                  title: widget.chatUsersModel.demande
-                                      .initiateur!.email,
+                                  title: widget
+                                      .chatUsersModel.demande.initiateur!.email,
                                   subtitle: "Initiateur",
                                 ),
                                 _CustomListTile(
                                   ref: ref,
                                   avatar: "assets/images/avatar_1.png",
                                   textLeading: "",
-                                  title: widget.chatUsersModel.demande
-                                      .chauffeur!.email,
+                                  title: widget
+                                      .chatUsersModel.demande.chauffeur!.email,
                                   subtitle: "Chauffeur",
                                 ),
                               ],
