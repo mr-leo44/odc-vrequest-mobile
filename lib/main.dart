@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:odc_mobile_project/m_demande/ui/framework/DemandeNetworkServiceImpl.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/accueil/AccueilPage.dart';
 import 'package:odc_mobile_project/shared/business/interactor/shared/SharedInteractor.dart';
 import 'package:odc_mobile_project/shared/ui/framework/SharedNetworkServiceV1.dart';
 import 'package:odc_mobile_project/shared/ui/pages/notification/NotificationController.dart';
-import 'package:odc_mobile_project/shared/ui/pages/notification/NotificationPage.dart';
 
 import 'package:path_provider/path_provider.dart';
 
@@ -18,15 +18,11 @@ import 'package:sembast/sembast_io.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import 'm_demande/business/interactor/demandeInteractor.dart';
-import 'm_demande/ui/framework/DemandeNetworkServiceImpl_deleted.dart';
 import 'm_user/business/interactor/UserInteractor.dart';
 import 'm_user/ui/framework/UserLocalServiceImpl.dart';
 import 'm_user/ui/framework/UserNetworkServiceImpl.dart';
 import 'navigation/routers.dart';
 import 'package:path/path.dart';
-
-import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:palette_generator/palette_generator.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +33,8 @@ Future<void> main() async {
   DatabaseFactory dbFactory = databaseFactoryIo;
   Database db = await dbFactory.openDatabase(dbPath);
   var baseUrl = dotenv.env['BASE_URL'] ?? "";
+  var baseUrlOpenmapstreet = dotenv.env['BASE_URL_OPENSTREETMAP'] ?? "";
+  var apiOpenmapstreet = dotenv.env['API_OPENSTREETMAP'] ?? "";
   var socketUrl = dotenv.env['SOCKET_URL'] ?? "";
 
   Socket socket = io(socketUrl, <String, dynamic>{
@@ -57,12 +55,12 @@ Future<void> main() async {
   var userInteractor = UserInteractor.build(userNetworkImpl, userLocalImpl);
 
   // module demande service implementations
-  var demandeNetworkImpl = DemandeNetworkServiceImpl(baseUrl);
+  var demandeNetworkImpl = DemandeNetworkServiceimpl(baseUrl);
   var demandeIntercator =
       DemandeInteractor.build(demandeNetworkImpl, userLocalImpl);
 
   // module chat service implementations
-  var chatNetworkImpl = ChatNetworkServiceV1(baseUrl, socket);
+  var chatNetworkImpl = ChatNetworkServiceV1(baseUrl, socket, baseUrlOpenmapstreet, apiOpenmapstreet);
   var chatLocalImpl = ChatLocalServiceV1(baseUrl);
   var chatInteractor =
       ChatInteractor.build(userNetworkImpl, chatNetworkImpl, chatLocalImpl);
