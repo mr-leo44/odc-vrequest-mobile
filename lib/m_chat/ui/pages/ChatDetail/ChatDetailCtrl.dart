@@ -3,6 +3,7 @@ import 'package:odc_mobile_project/m_user/business/interactor/UserInteractor.dar
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailState.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
 part "ChatDetailCtrl.g.dart";
 
@@ -28,6 +29,12 @@ class ChatDetailCtrl extends _$ChatDetailCtrl {
       print(isconnected);
       state = state.copyWith(isconnected: isconnected, isdeconnected: isdeconnected);
     });
+  }
+
+  Future getRouteUrl(String startPoint, String endPoint)async {
+    var interactor = ref.watch(chatInteractorProvider);
+    var points = await interactor.getRouteUrlUseCase.run(startPoint, endPoint);
+    state = state.copyWith(drawRoute: points);
   }
 }
 

@@ -13,11 +13,17 @@ import 'package:signals/signals_flutter.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
 
 class ChatNetworkServiceV1 implements MessageNetworkService {
-  ChatNetworkServiceV1(this.baseURL, this.socket);
+
+  ChatNetworkServiceV1(this.baseURL, this.socket, this.baseUrlOpenmapstreet, this.apiOpenmapstreet);
   String baseURL;
+  String baseUrlOpenmapstreet;
+  String apiOpenmapstreet;
   Socket socket;
+
   @override
   Signal<ChatModel> message = Signal(ChatModel.fromJson({}));
   Signal<int> isconnected = Signal(0);
@@ -33,7 +39,6 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
 
       if (((response.statusCode == 200) || (response.statusCode == 201)) &&
           (response.headers["content-type"] == "application/json")) {
-            
         List result = json.decode(response.body);
         var responseFinal = result.map((e) {
           User lastSender = User.fromJson(e["lastSender"]);
@@ -47,6 +52,10 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
             "status": e["demande"]["status"],
             "longitude": e["demande"]["longitude"],
             "latitude": e["demande"]["latitude"],
+            "longitudelDestination": e["demande"]["longitudelDestination"],
+            "latitudeDestination": e["demande"]["latitudeDestination"],
+            "longitudelDepart": e["demande"]["longitudelDepart"],
+            "latitudeDepart": e["demande"]["latitudeDepart"],
             "initiateur": e["demande"]["initiateur"],
             "chauffeur": e["demande"]["chauffeur"],
             "nbrEtranger": int.parse(e["demande"]["nbrEtranger"]),
@@ -168,21 +177,20 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
       if (response.statusCode == 200) {
         var message_resp = json.decode(response.toString());
         added = true;
-        
+
         var donnees = {
           "user": data.user,
           "contenu": message_resp["message"]["contenu"],
           "demande": data.demande,
-          "filepath": 
-            (message_resp["message"]["filepath"] != null)
+          "filepath": (message_resp["message"]["filepath"] != null)
               ? this.baseURL +
-                "/" +
-                dotenv.env["DISK_STORAGE"]! +
-                "/" +
-                message_resp["message"]["filepath"]
+                  "/" +
+                  dotenv.env["DISK_STORAGE"]! +
+                  "/" +
+                  message_resp["message"]["filepath"]
               : ""
         };
-        
+
         socket.emit('createMessage', donnees);
       }
     } catch (e) {
@@ -200,70 +208,74 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
 
   @override
   Future<void> realTime(User? auth) async {
-      socket.on('sendMessage', (resp) {
-        if ((auth != null) ) {
-          print(resp["contenu"]+"  "+message.value.message);
-          print("Message received ${resp["contenu"]} ");
-          User user = User.fromJson(resp["user"]);
-          message.value = ChatModel.fromJson({
-            "demande": Demande.fromJson({
-              "id": resp["demande"]["id"],
-              "date_demande": resp["demande"]["date_demande"],
-              "motif": resp["demande"]["motif"],
-              "status": resp["demande"]["status"],
-              "date_deplacement": resp["demande"]["date_deplacement"],
-              "lieu_depart": resp["demande"]["lieuDepart"],
-              "destination": resp["demande"]["destination"],
-              "nbre_passagers": resp["demande"]["nbre_passagers"],
-              "initiateur": {
-                "id": resp["demande"]["initiateur"]["id"],
-                "first_name": resp["demande"]["initiateur"]["first_name"],
-                "username": resp["demande"]["initiateur"]["username"],
-                "last_name": resp["demande"]["initiateur"]["last_name"],
-                "email": resp["demande"]["initiateur"]["email"],
-                "phone": resp["demande"]["initiateur"]["phone"],
-                "email_verified_at": resp["demande"]["initiateur"]
-                    ["email_verified_at"],
-                "created_at": resp["demande"]["initiateur"]["created_at"],
-                "updated_at": resp["demande"]["initiateur"]["updated_at"],
-                "role": resp["demande"]["initiateur"]["role"],
-              },
-              "chauffeur": {
-                "id": resp["demande"]["chauffeur"]["id"],
-                "first_name": resp["demande"]["chauffeur"]["first_name"],
-                "username": resp["demande"]["chauffeur"]["username"],
-                "last_name": resp["demande"]["chauffeur"]["last_name"],
-                "email": resp["demande"]["chauffeur"]["email"],
-                "phone": resp["demande"]["chauffeur"]["phone"],
-                "email_verified_at": resp["demande"]["chauffeur"]
-                    ["email_verified_at"],
-                "created_at": resp["demande"]["chauffeur"]["created_at"],
-                "updated_at": resp["demande"]["chauffeur"]["updated_at"],
-                "role": resp["demande"]["chauffeur"]["role"],
-              },
-              "longitude": resp["demande"]["longitude"],
-              "latitude": resp["demande"]["latitude"],
-              "create_at": resp["demande"]["create_at"],
-            }),
-            "user": user,
-            "contenu": resp["contenu"],
-            "file": resp["filepath"],
-            "type": (user.id == auth.id)
-                ? ChatMessageType.sent
-                : ChatMessageType.received,
-            "time": DateTime.now(),
-          });
-          print(resp["contenu"]+"  "+message.value.message);
-        }
-      });
-      // socket.emit('test', 'testWhoIsConnected');
-      // socket.on('isConnected', (resp) {
-      //   isconnected.value = resp;
-      // });
-      // socket.emit('test', 'testWhoIsDeconnected');
-      // socket.on('isDeconnected', (resp) {
-      //   isdeconnected.value = resp;
-      // });
+    socket.on('sendMessage', (resp) {
+      if ((auth != null)) {
+        print(resp["contenu"] + "  " + message.value.message);
+        print("Message received ${resp["contenu"]} ");
+        User user = User.fromJson(resp["user"]);
+        message.value = ChatModel.fromJson({
+          "demande": Demande.fromJson({
+            "id": resp["demande"]["id"],
+            "date_demande": resp["demande"]["date_demande"],
+            "motif": resp["demande"]["motif"],
+            "status": resp["demande"]["status"],
+            "date_deplacement": resp["demande"]["date_deplacement"],
+            "lieu_depart": resp["demande"]["lieuDepart"],
+            "destination": resp["demande"]["destination"],
+            "nbre_passagers": resp["demande"]["nbre_passagers"],
+            "initiateur": {
+              "id": resp["demande"]["initiateur"]["id"],
+              "first_name": resp["demande"]["initiateur"]["first_name"],
+              "username": resp["demande"]["initiateur"]["username"],
+              "last_name": resp["demande"]["initiateur"]["last_name"],
+              "email": resp["demande"]["initiateur"]["email"],
+              "phone": resp["demande"]["initiateur"]["phone"],
+              "email_verified_at": resp["demande"]["initiateur"]
+                  ["email_verified_at"],
+              "created_at": resp["demande"]["initiateur"]["created_at"],
+              "updated_at": resp["demande"]["initiateur"]["updated_at"],
+              "role": resp["demande"]["initiateur"]["role"],
+            },
+            "chauffeur": {
+              "id": resp["demande"]["chauffeur"]["id"],
+              "first_name": resp["demande"]["chauffeur"]["first_name"],
+              "username": resp["demande"]["chauffeur"]["username"],
+              "last_name": resp["demande"]["chauffeur"]["last_name"],
+              "email": resp["demande"]["chauffeur"]["email"],
+              "phone": resp["demande"]["chauffeur"]["phone"],
+              "email_verified_at": resp["demande"]["chauffeur"]
+                  ["email_verified_at"],
+              "created_at": resp["demande"]["chauffeur"]["created_at"],
+              "updated_at": resp["demande"]["chauffeur"]["updated_at"],
+              "role": resp["demande"]["chauffeur"]["role"],
+            },
+            "longitude": resp["demande"]["longitude"],
+            "latitude": resp["demande"]["latitude"],
+            "longitudelDestination": resp["demande"]["longitudelDestination"],
+            "latitudeDestination": resp["demande"]["latitudeDestination"],
+            "longitudelDepart": resp["demande"]["longitudelDepart"],
+            "latitudeDepart": resp["demande"]["latitudeDepart"],
+            "create_at": resp["demande"]["create_at"],
+          }),
+          "user": user,
+          "contenu": resp["contenu"],
+          "file": resp["filepath"],
+          "type": (user.id == auth.id)
+              ? ChatMessageType.sent
+              : ChatMessageType.received,
+          "time": DateTime.now(),
+        });
+        print(resp["contenu"] + "  " + message.value.message);
+      }
+    });
+    // socket.emit('test', 'testWhoIsConnected');
+    // socket.on('isConnected', (resp) {
+    //   isconnected.value = resp;
+    // });
+    // socket.emit('test', 'testWhoIsDeconnected');
+    // socket.on('isDeconnected', (resp) {
+    //   isdeconnected.value = resp;
+    // });
   }
 
   @override
@@ -276,5 +288,27 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
     joined = true;
 
     return joined;
+  }
+  
+  @override
+  Future<List<LatLng>> getRouteUrl(String startPoint, String endPoint) async {
+    var response = await http.get(Uri.parse('${this.baseUrlOpenmapstreet}?api_key=${this.apiOpenmapstreet}&start=$startPoint&end=$endPoint'));
+    List listOfPoints = [];
+    List<LatLng> points = [];
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      var data = jsonDecode(response.body);
+      listOfPoints = data['features'][0]['geometry']['coordinates'];
+      points = listOfPoints
+          .map((p) => LatLng(p[1].toDouble(), p[0].toDouble()))
+          .toList();
+
+      return Future.value(points);
+    }else{
+      print(response.body);
+      return Future.value(points);
+    }
+    
   }
 }
