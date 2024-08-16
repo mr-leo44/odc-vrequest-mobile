@@ -9,7 +9,6 @@ import 'package:odc_mobile_project/utils/misc/tile_providers.dart';
 import 'package:odc_mobile_project/utils/plugins/zoombuttons_plugin.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
-import 'package:odc_mobile_project/utils/api_open_route_service.dart';
 import 'dart:convert';
 
 typedef HitValue = ({String title, String subtitle});
