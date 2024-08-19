@@ -6,7 +6,7 @@ part of 'ChatCtrl.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$chatCtrlHash() => r'a8ff53561245dd9945ed37950191c130514c39b1';
+String _$chatCtrlHash() => r'30ff5f7c19af115492e242f0cbc62e95fd585f96';
 
 /// See also [ChatCtrl].
 @ProviderFor(ChatCtrl)

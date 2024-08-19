@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
 import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_1.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/AspectRatioVideo.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/Formatter.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/chat_message_type.dart';
 
@@ -42,9 +43,9 @@ class Bubble extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: crossAlignmentOnType,
                 children: [
-                  if (chat.type.name == 'received')
+                  if (chat.type == ChatMessageType.received)
                     Text(
-                      chat.user.name,
+                      chat.user!.username,
                       style: TextStyle(
                           color: Color(0xFF007AFF),
                           fontWeight: FontWeight.bold),
@@ -52,6 +53,27 @@ class Bubble extends StatelessWidget {
                   SizedBox(
                     height: 3,
                   ),
+                  if (chat.isPicture)
+                    Semantics(
+                      label: 'picked_image',
+                      child: Image.network(
+                        chat.file,
+                        errorBuilder: (BuildContext context, Object error,
+                            StackTrace? stackTrace) {
+                          return const Center(
+                              child: Text('L\'image n\'est pas supporte'));
+                        },
+                      ),
+                    ),
+                  if (chat.isVideo)
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child:  Image.asset(
+                        "assets/icons/play.png",
+                        width: 25,
+                      ),
+                    ),
+                  SizedBox(height: 2),
                   Card(
                     shadowColor: Colors.transparent,
                     elevation: 30,
@@ -64,11 +86,11 @@ class Bubble extends StatelessWidget {
                   SizedBox(
                     height: 8,
                   ),
-                  if (chat.type.name == 'received')
+                  if (chat.type == ChatMessageType.received)
                     Text(
-                      "Chauffeur",
+                      chat.user.role.isNotEmpty ? chat.user.role.first : '',
                       style: TextStyle(
-                        color:  Color(0xFF007AFF),
+                        color: Color(0xFF007AFF),
                         fontWeight: FontWeight.bold,
                         fontSize: 10,
                       ),
@@ -95,6 +117,8 @@ class Bubble extends StatelessWidget {
         return Colors.white;
       case ChatMessageType.received:
         return const Color(0xFF0F0F0F);
+      case null:
+        return Colors.black;
     }
   }
 
@@ -104,6 +128,8 @@ class Bubble extends StatelessWidget {
         return const Color(0xFFE7E7ED);
       case ChatMessageType.sent:
         return const Color(0xFF007AFF);
+      case null:
+        return Colors.black;
     }
   }
 
@@ -112,6 +138,8 @@ class Bubble extends StatelessWidget {
       case ChatMessageType.sent:
         return ChatBubbleClipper1(type: BubbleType.sendBubble);
       case ChatMessageType.received:
+        return ChatBubbleClipper1(type: BubbleType.receiverBubble);
+      case null:
         return ChatBubbleClipper1(type: BubbleType.receiverBubble);
     }
   }
@@ -122,6 +150,8 @@ class Bubble extends StatelessWidget {
         return CrossAxisAlignment.end;
       case ChatMessageType.received:
         return CrossAxisAlignment.start;
+      case null:
+        return CrossAxisAlignment.start;
     }
   }
 
@@ -129,9 +159,10 @@ class Bubble extends StatelessWidget {
     switch (chat.type) {
       case ChatMessageType.received:
         return MainAxisAlignment.start;
-
       case ChatMessageType.sent:
         return MainAxisAlignment.end;
+      case null:
+        return MainAxisAlignment.start;
     }
   }
 
@@ -140,6 +171,13 @@ class Bubble extends StatelessWidget {
       case ChatMessageType.sent:
         return const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 24);
       case ChatMessageType.received:
+        return const EdgeInsets.only(
+          top: 10,
+          bottom: 10,
+          left: 24,
+          right: 10,
+        );
+      case null:
         return const EdgeInsets.only(
           top: 10,
           bottom: 10,

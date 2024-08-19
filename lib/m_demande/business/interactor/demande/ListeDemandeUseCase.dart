@@ -10,7 +10,7 @@ class ListDemandeUseCase {
 
   ListDemandeUseCase(this.network, this.userLocal);
 
-  Future<List<Demande?>> run() async {
+  Future<List<Demande>> run() async {
     String token = await userLocal.getToken();
     var res = await network.listDemande(token);
     return res;
