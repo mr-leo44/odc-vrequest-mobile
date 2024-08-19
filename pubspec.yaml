@@ -72,6 +72,7 @@ dependencies:
   url_strategy: ^0.3.0
   flutter_map_cancellable_tile_provider: ^3.0.0
   flutter_map_geojson: ^1.0.8
+  flutter_async_autocomplete: ^0.1.1
 
 dev_dependencies:
   flutter_test:
