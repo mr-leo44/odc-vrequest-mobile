@@ -23,4 +23,9 @@ class DetailsDemandeCtrl extends _$DetailsDemandeCtrl {
       state = state.copyWith(isEmpty: true);
     }
   }
+
+  void annulerDemande(int id) async {
+    var useCase = ref.watch(demandeInteractorProvider).annulerDemandeUseCase;
+    var res = await useCase.run(id);
+  }
 }
