@@ -4,6 +4,7 @@ import 'package:odc_mobile_project/m_chat/business/model/creerMessageRequete.dar
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 import 'package:signals/signals_flutter.dart';
+import 'package:latlong2/latlong.dart';
 
 abstract class MessageNetworkService {
   Signal<ChatModel> message = 
@@ -19,4 +20,5 @@ abstract class MessageNetworkService {
   Future<List<ChatModel>> recupererListMessageDetail(ChatUsersModel data, User? auth);
   Future<void> realTime(User? auth);
   Future<bool> joinRoom(Demande demande, User? auth);
+  Future<List<LatLng>> getRouteUrl(String startPoint, String endPoint);
 }

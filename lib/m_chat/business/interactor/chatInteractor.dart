@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:odc_mobile_project/m_chat/business/interactor/GetRouteUrlUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/IsConnectedUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/IsDeconnectedUseCase.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/JoinRoomUseCase.dart';
@@ -22,6 +23,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'chatInteractor.g.dart';
 
 class ChatInteractor {
+  GetRouteUrlUseCase getRouteUrlUseCase;
   CreerMessageUseCase creerMessageUseCase;
   RecupererListMessageDetailUseCase recupererListMessageDetailUseCase;
   RecupererListMessageGroupeUseCase recupererListMessageGroupeUseCase;
@@ -39,6 +41,7 @@ class ChatInteractor {
   IsConnectedUseCase isConnectedUseCase;
 
   ChatInteractor._(
+    this.getRouteUrlUseCase,
     this.isConnectedUseCase,
     this.isDeconnectedUseCase,
     this.joinRoomUseCase,
@@ -59,6 +62,7 @@ class ChatInteractor {
   static build(UserNetworkService user, MessageNetworkService network,
       MessageLocalService local) {
     return ChatInteractor._(
+      GetRouteUrlUseCase(network),
       IsConnectedUseCase(network),
       IsDeconnectedUseCase(network),
       JoinRoomUseCase(network),

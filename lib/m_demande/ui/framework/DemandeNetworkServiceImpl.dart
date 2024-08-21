@@ -16,8 +16,19 @@ class DemandeNetworkServiceimpl implements DemandeNetworkService {
 
   @override
   Future<String?> annulerDemande(int id, String token) async {
-    // TODO: implement getDemande
-    throw UnimplementedError();
+    final client = http.Client();
+    final url = Uri.parse("$baseURL/api/cancelDemande");
+    final formData = {"id": id};
+    print("formData creer demande $formData");
+
+    final response = await http.post(url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(formData));
+    print(json.encode(formData));
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    client.close();
   }
 
   @override
@@ -51,10 +62,7 @@ class DemandeNetworkServiceimpl implements DemandeNetworkService {
     } else {
       print("echec");
       return null;
-
     }
-
-
   }
 
   @override
@@ -102,5 +110,29 @@ class DemandeNetworkServiceimpl implements DemandeNetworkService {
     ];
 
     return reponseFinal;
+  }
+
+  @override
+  Future<List<Demande>> getAllDemande(int id) {
+    // TODO: implement getAllDemande
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Demande>> getDemandeTraite(int id) {
+    // TODO: implement getDemandeTraite
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List> lastDemande(int id) {
+    // TODO: implement lastDemande
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Map<String, dynamic>> nombreDemande(int id) {
+    // TODO: implement nombreDemande
+    throw UnimplementedError();
   }
 }

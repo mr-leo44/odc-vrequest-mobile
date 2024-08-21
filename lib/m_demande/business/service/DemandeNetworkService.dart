@@ -12,4 +12,8 @@ abstract class DemandeNetworkService {
   Future<Demande?> getDemande(int id, String token);
 
   Future<List<Site>> listSite(String token);
+  Future<Map<String,dynamic>> nombreDemande(int id);
+  Future<List> lastDemande(int id);
+  Future<List<Demande>> getAllDemande(int id);
+  Future<List<Demande>> getDemandeTraite(int id);
 }

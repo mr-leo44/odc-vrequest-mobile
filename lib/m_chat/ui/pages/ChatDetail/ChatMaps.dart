@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailCtrl.dart';
@@ -7,6 +8,10 @@ import 'package:odc_mobile_project/shared/ui/pages/shared/SharedCtrl.dart';
 import 'package:odc_mobile_project/utils/misc/tile_providers.dart';
 import 'package:odc_mobile_project/utils/plugins/zoombuttons_plugin.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+typedef HitValue = ({String title, String subtitle});
 
 class ChatMaps extends ConsumerStatefulWidget {
   Demande demande;
@@ -20,34 +25,31 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
     with TickerProviderStateMixin {
   Alignment selectedAlignment = Alignment.topCenter;
   bool counterRotate = false;
+  double sizeMap = 300 ;
 
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      var ctrl = ref.read(chatDetailCtrlProvider.notifier);
       var sharedCtrl = ref.read(sharedCtrlProvider.notifier);
+
+      var sharedState = ref.watch(sharedCtrlProvider);
+      print("Longitude: ${sharedState.location["longitude"]}");
+      await ctrl.getRouteUrl(
+          "${sharedState.location["longitude"]},${sharedState.location["latitude"]}",
+          "${widget.demande.longitudelDestination},${widget.demande.latitudeDestination}");
     });
   }
 
-  static const alignments = {
-    315: Alignment.topLeft,
-    0: Alignment.topCenter,
-    45: Alignment.topRight,
-    270: Alignment.centerLeft,
-    null: Alignment.center,
-    90: Alignment.centerRight,
-    225: Alignment.bottomLeft,
-    180: Alignment.bottomCenter,
-    135: Alignment.bottomRight,
-  };
-
   static final MapController _mapController = MapController();
 
-  Marker buildPin(LatLng point, Color color) => Marker(
+  Marker buildPin(LatLng point, Widget marker) => Marker(
         point: point,
         width: 60,
         height: 60,
         child: GestureDetector(
-          child: Icon(Icons.location_pin, size: 60, color: color),
+          onTap: () => _animatedMapMove(point, 17),
+          child: marker,
         ),
       );
 
@@ -113,28 +115,116 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
   Widget build(BuildContext context) {
     var sharedState = ref.watch(sharedCtrlProvider);
     var pointLocation = LatLng(
-        double.parse(sharedState.location["latitude"] ?? "51.51868093513547"),
-        double.parse(
-            sharedState.location["longitude"] ?? "-0.12835376940892318"));
+      double.parse(sharedState.location["latitude"] ??
+          widget.demande.latitudeDepart.toString()),
+      double.parse(sharedState.location["longitude"] ??
+          widget.demande.longitudelDepart.toString()),
+    );
+    var startPointLocation =
+        LatLng(widget.demande.latitudeDepart, widget.demande.longitudelDepart);
+    var finalPointLocation = LatLng(widget.demande.latitudeDestination,
+        widget.demande.longitudelDestination);
 
     var customMarkers = <Marker>[
-      // buildPin(
-      //     const LatLng(51.51868093513547, -0.12835376940892318), Colors.green),
-      buildPin(pointLocation, Colors.green),
+      buildPin(pointLocation, Image.asset("images/car.png")),
+      buildPin(
+        startPointLocation,
+        Icon(
+          Icons.location_on,
+          color: Colors.green,
+          size: 40,
+        ),
+      ),
+      buildPin(
+        finalPointLocation,
+        Icon(
+          Icons.flag,
+          size: 40,
+          color: Colors.red,
+        ),
+      ),
     ];
 
-    // final bounds = LatLngBounds.fromPoints([
-    //   pointLocation,
-    // ]);
+    final _polylinesRaw = <Polyline<HitValue>>[
+      Polyline(
+        points: [
+          pointLocation,
+          finalPointLocation,
+        ],
+        strokeWidth: 10,
+        color: Colors.orange,
+        pattern: StrokePattern.dotted(
+          spacingFactor: 3,
+        ),
+        borderStrokeWidth: 8,
+        borderColor: Colors.blue.withOpacity(0.5),
+      ),
+    ];
+    late final _polylines =
+        Map.fromEntries(_polylinesRaw.map((e) => MapEntry(e.hitValue, e)));
+
+    var ctrlState = ref.watch(chatDetailCtrlProvider);
 
     return Column(
       children: [
-        MaterialButton(
-          onPressed: () => _animatedMapMove(pointLocation, 17),
-          child: Icon(Icons.location_searching ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            MaterialButton(
+              onPressed: () {
+                HapticFeedback.selectionClick();
+
+                _animatedMapMove(pointLocation, 17);
+              },
+              child: Image.asset(
+                "images/car.png",
+                height: 40,
+              ),
+            ),
+            MaterialButton(
+              onPressed: () {
+                HapticFeedback.selectionClick();
+
+                _animatedMapMove(startPointLocation, 17);
+              },
+              child: Icon(
+                Icons.location_on,
+                color: Colors.green,
+              ),
+            ),
+            MaterialButton(
+              onPressed: () {
+                HapticFeedback.selectionClick();
+
+                _animatedMapMove(finalPointLocation, 17);
+              },
+              child: Icon(
+                Icons.flag,
+                color: Colors.red,
+              ),
+            ),
+            MaterialButton(
+              onPressed: () {
+                HapticFeedback.selectionClick();
+
+                final bounds = LatLngBounds.fromPoints([
+                  pointLocation,
+                  startPointLocation,
+                  finalPointLocation,
+                ]);
+
+                final constrained = CameraFit.bounds(
+                  bounds: bounds,
+                ).fit(_mapController.camera);
+                _animatedMapMove(constrained.center, constrained.zoom - 0.2);
+              },
+              child: Icon(Icons.center_focus_strong),
+            ),
+          ],
         ),
         SizedBox(
-          height: 300,
+          height: sizeMap,
           child: FlutterMap(
             mapController: _mapController,
             options: MapOptions(
@@ -159,13 +249,38 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
                 padding: 10,
                 alignment: Alignment.bottomLeft,
               ),
+              PolylineLayer(
+                polylines: [
+                  Polyline(
+                      points: ctrlState.drawRoute,
+                      color: Colors.blue.withOpacity(0.5),
+                      strokeWidth: 8),
+                ],
+              ),
             ],
           ),
         ),
         Card(
           child: Column(
             children: [
-              ListTile(title: Text('Scrolling inside the map')),
+              ListTile(title: Text('Defiler a l\'interieur de la carte')),
+              ListTile(
+                title: (sizeMap >= 500) ? Text('Retraicir') : Text('Agrandir'),
+                trailing: MaterialButton(
+                  onPressed: () {
+                    HapticFeedback.selectionClick();
+                    setState(() {
+                      if(sizeMap >= 500){
+                        sizeMap = 300;
+                      }else{
+                        sizeMap = 500;
+                      }
+                      
+                    });
+                  },
+                  child: (sizeMap >= 500) ? Icon(Icons.splitscreen) : Icon(Icons.fit_screen)  ,
+                ),
+              )
             ],
           ),
         ),
