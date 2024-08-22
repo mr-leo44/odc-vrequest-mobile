@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/login/LoginCtrl.dart';
+import 'package:odc_mobile_project/m_user/ui/pages/profil/ProfilPageCtrl.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -118,10 +121,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               }
 
             }
+            else{
+              _showMessageBox(context);
+            }
+
 
 
           },
-            child: Text("Envoyer"),
+            child: Text("Se connecter"),
             style: ElevatedButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: 150),
                 backgroundColor: Colors.orange,
@@ -144,5 +151,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     var state = ref.watch(loginCtrlProvider);
     return Visibility(
         visible: state.isLoading, child: CircularProgressIndicator());
+  }
+  void _showMessageBox(BuildContext context) {
+    showDialog(
+      context: context, // Provide the context of your widget
+      builder: (_) {
+        return AlertDialog(
+          title: const Text("Resultat"),
+          content: const Text("username or password incorrect"),
+          actions: [
+            ElevatedButton(
+              onPressed: Navigator.of(context).pop,
+              child: const Text("Close"),
+
+            ),
+          ],
+        );
+      },
+    );
   }
 }
