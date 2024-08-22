@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailCtrl.dart';
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/shared/ui/pages/shared/SharedCtrl.dart';
 import 'package:odc_mobile_project/utils/misc/tile_providers.dart';
 import 'package:odc_mobile_project/utils/plugins/zoombuttons_plugin.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 typedef HitValue = ({String title, String subtitle});
 
@@ -126,7 +125,9 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
         widget.demande.longitudelDestination);
 
     var customMarkers = <Marker>[
+      if(sharedState.location["longitude"] != null)
       buildPin(pointLocation, Image.asset("images/car.png")),
+
       buildPin(
         startPointLocation,
         Icon(
@@ -175,11 +176,34 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
               onPressed: () {
                 HapticFeedback.selectionClick();
 
-                _animatedMapMove(pointLocation, 17);
+                if(sharedState.location["longitude"] != null){
+                  _animatedMapMove(pointLocation, 17);
+                }
               },
-              child: Image.asset(
-                "images/car.png",
-                height: 40,
+              child: Column(
+                children: [
+                  Image.asset(
+                    "images/car.png",
+                    width: 25,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        'Vehicule',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      if (sharedState.isLoading)
+                        SizedBox(
+                          width: 3,
+                        ),
+                      if (sharedState.isLoading)
+                        LoadingAnimationWidget.dotsTriangle(
+                          color: Colors.amber,
+                          size: 10,
+                        ),
+                    ],
+                  ),
+                ],
               ),
             ),
             MaterialButton(
@@ -188,9 +212,17 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
 
                 _animatedMapMove(startPointLocation, 17);
               },
-              child: Icon(
-                Icons.location_on,
-                color: Colors.green,
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.location_on,
+                    color: Colors.green,
+                  ),
+                  Text(
+                    'Point de depart',
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ],
               ),
             ),
             MaterialButton(
@@ -199,9 +231,17 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
 
                 _animatedMapMove(finalPointLocation, 17);
               },
-              child: Icon(
-                Icons.flag,
-                color: Colors.red,
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.flag,
+                    color: Colors.red,
+                  ),
+                  Text(
+                    'Point d\'arriver',
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ],
               ),
             ),
             MaterialButton(
@@ -209,7 +249,9 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
                 HapticFeedback.selectionClick();
 
                 final bounds = LatLngBounds.fromPoints([
+                  if(sharedState.location["longitude"] != null)
                   pointLocation,
+                  
                   startPointLocation,
                   finalPointLocation,
                 ]);
@@ -219,7 +261,15 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
                 ).fit(_mapController.camera);
                 _animatedMapMove(constrained.center, constrained.zoom - 0.2);
               },
-              child: Icon(Icons.center_focus_strong),
+              child: Column(
+                children: [
+                  Icon(Icons.center_focus_strong),
+                  Text(
+                    'Centrer',
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
