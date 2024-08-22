@@ -76,12 +76,8 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                               children: [
                                 Stack(
                                   children: [
-                                    Visibility(
-                                      visible: !sharedState.isLoading,
-                                      child: ChatMaps(
-                                          demande:
-                                              widget.chatUsersModel.demande),
-                                    ),
+                                    ChatMaps(
+                                        demande: widget.chatUsersModel.demande),
                                     Visibility(
                                       visible: sharedState.isLoading,
                                       child: Padding(
@@ -95,7 +91,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                             SizedBox(
                                               height: 8,
                                             ),
-                                            Text("Initialisation...")
+                                            Text("Recherche Vehicule...")
                                           ],
                                         ),
                                       ),
@@ -136,25 +132,26 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage> {
                                   ),
                                   onTap: () {},
                                 ),
-                                if (auth != null && auth.any((e) => e.contains('chauffeur')))
-                                ListTile(
-                                  title: Text("Status"),
-                                  leading: Icon(Icons.start),
-                                  trailing: CupertinoSwitch(
-                                      value: canSwitch,
-                                      onChanged: (val) {
-                                        HapticFeedback.selectionClick();
-                                        
-                                        setState(() {
-                                          if (canSwitch == true) {
-                                            canSwitch = false;
-                                          } else {
-                                            canSwitch = true;
-                                          }
-                                        });
-                                      }),
-                                  onTap: () {},
-                                ),
+                                if (auth != null &&
+                                    auth.any((e) => e.contains('chauffeur')))
+                                  ListTile(
+                                    title: Text("Status"),
+                                    leading: Icon(Icons.start),
+                                    trailing: CupertinoSwitch(
+                                        value: canSwitch,
+                                        onChanged: (val) {
+                                          HapticFeedback.selectionClick();
+
+                                          setState(() {
+                                            if (canSwitch == true) {
+                                              canSwitch = false;
+                                            } else {
+                                              canSwitch = true;
+                                            }
+                                          });
+                                        }),
+                                    onTap: () {},
+                                  ),
                               ],
                             ),
                             _SingleSection(
