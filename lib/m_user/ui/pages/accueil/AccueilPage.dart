@@ -631,7 +631,7 @@ class _AccueilPageState extends ConsumerState<AccueilPage> {
                 var dis = ref.read(profilPageCtrlProvider.notifier);
                 var rep = await dis.disconnect();
                 if (rep) {
-                  context.goNamed(Urls.home.name);
+                  context.goNamed(Urls.auth.name);
                 }
               },
               style: TextButton.styleFrom(
@@ -665,14 +665,12 @@ class _AccueilPageState extends ConsumerState<AccueilPage> {
               leading: SizedBox(
                 width: 140,
                 child: Text(
-                  // "${index + 1}     ${motif[index]['motif']}",
-                  "",
+                  "${index + 1}     ${motif[index]['motif']}",
                   style: TextStyle(fontSize: 18),
                 ),
               ),
               title: Text(
-                // motif[index]['date']\
-                ""
+                motif[index]['date']
               , style: TextStyle(fontSize: 18)),
               trailing: Icon(Icons.arrow_right),
             );
