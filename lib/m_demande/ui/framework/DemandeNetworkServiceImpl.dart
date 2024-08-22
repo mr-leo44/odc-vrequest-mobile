@@ -113,26 +113,61 @@ class DemandeNetworkServiceimpl implements DemandeNetworkService {
   }
 
   @override
-  Future<List<Demande>> getAllDemande(int id) {
-    // TODO: implement getAllDemande
-    throw UnimplementedError();
+  Future<Map<String,dynamic>> nombreDemande(int id) async{
+    var res = await http.post(Uri.parse("$baseURL/api/user-demande"),
+        body: {"id": id.toString()});
+    print(res.body);
+    var rep = json.decode(res.body)  ;
+
+    return rep;
   }
 
   @override
-  Future<List<Demande>> getDemandeTraite(int id) {
-    // TODO: implement getDemandeTraite
-    throw UnimplementedError();
+  Future<List> lastDemande(int id) async{
+    var res = await http.post(Uri.parse("$baseURL/api/last-demande"),
+        body : {"id" : id.toString()});
+    List decodedResponse = json.decode(res.body) as List;
+    //List<String> nameList = decodedResponse.map((item) => item.toString()).toList();
+    print("response $decodedResponse");
+    return decodedResponse;
+
   }
 
   @override
-  Future<List> lastDemande(int id) {
-    // TODO: implement lastDemande
-    throw UnimplementedError();
+  Future<List<Demande>> getAllDemande(int id) async{
+    List<Demande> reponseFinal = [];
+    final response = await http.post(Uri.parse("$baseURL/api/get-all-demande"),
+        body: {'id':id.toString()});
+    final data = jsonDecode(response.body) as List<dynamic>;
+
+    if (response.statusCode == 200) {
+      for (int i = 0; i < data.length; i++) {
+        var item = data[i]['demande'];
+        reponseFinal.add(Demande.fromJson(item));
+      }
+
+
+    }
+
+    return reponseFinal;
   }
 
   @override
-  Future<Map<String, dynamic>> nombreDemande(int id) {
-    // TODO: implement nombreDemande
-    throw UnimplementedError();
+  Future<List<Demande>> getDemandeTraite(int id) async{
+    List<Demande> reponseFinal = [];
+    final response = await http.post(Uri.parse("$baseURL/api/get-demande-traite"),
+        body: {'id':id.toString()});
+    final data = jsonDecode(response.body) as List<dynamic>;
+
+    if (response.statusCode == 200) {
+      for (int i = 0; i < data.length; i++) {
+        var item = data[i]['demande'];
+        reponseFinal.add(Demande.fromJson(item));
+      }
+
+
+    }
+
+    return reponseFinal;
   }
 }
