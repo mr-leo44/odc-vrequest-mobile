@@ -26,34 +26,37 @@ class _CompteProfilPageState extends ConsumerState<CompteProfilPage> {
   }
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-     appBar: AppBar(
-       title: Center(child: Text("Compte")),
-       backgroundColor: Colors.orange,
-       foregroundColor: Colors.black,
-       elevation: 0,
-       actions: [
-         IconButton(
-           onPressed: () {},
-           icon: Icon(Icons.sync),
-         )
-       ],
-     ),
-     body: Column(
-       children: [
-         SizedBox(height: 30,),
-         Center(
-            child: CircleAvatar(
-            radius: 50.0,
-            backgroundImage: NetworkImage(
-           'https://static.vecteezy.com/system/resources/thumbnails/012/986/755/small/abstract-circle-logo-icon-free-png.png'),
-     ),
-   ),
-         SizedBox(height: 30,),
-         _card()
-       ],
-     ),
-   );
+    return Scaffold(
+        appBar: AppBar(
+          title: Center(child: Text("Compte")),
+          backgroundColor: Colors.orange,
+          foregroundColor: Colors.black,
+          elevation: 0,
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.sync),
+            )
+          ],
+        ),
+        body: ListView(
+            children: [Column(
+              children: [
+                SizedBox(height: 30,),
+                Center(
+                  child: CircleAvatar(
+                    radius: 50.0,
+                    backgroundImage: NetworkImage(
+                        'https://static.vecteezy.com/system/resources/thumbnails/012/986/755/small/abstract-circle-logo-icon-free-png.png'),
+                  ),
+                ),
+                SizedBox(height: 30,),
+                _card()
+              ],
+            ),
+            ]
+        )
+    );
   }
   Widget _card(){
     var state = ref.watch(profilPageCtrlProvider);
@@ -72,9 +75,9 @@ class _CompteProfilPageState extends ConsumerState<CompteProfilPage> {
             title: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Text(username,
-              style: TextStyle(
-                fontWeight: FontWeight.bold
-              ),),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold
+                ),),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -88,11 +91,11 @@ class _CompteProfilPageState extends ConsumerState<CompteProfilPage> {
 
           ListTile(
             title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(prenom,
-              style: TextStyle(
-              fontWeight: FontWeight.bold),
-            )),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(prenom,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold),
+                )),
             subtitle: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Text('firstname'),
@@ -103,11 +106,11 @@ class _CompteProfilPageState extends ConsumerState<CompteProfilPage> {
           Divider(),
           ListTile(
             title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(nom,
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(nom,
                   style: TextStyle(
-                  fontWeight: FontWeight.bold),
-            )),
+                      fontWeight: FontWeight.bold),
+                )),
             subtitle: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Text('lastname'),
@@ -120,11 +123,11 @@ class _CompteProfilPageState extends ConsumerState<CompteProfilPage> {
 
           ListTile(
             title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(email,
-    style: TextStyle(
-    fontWeight: FontWeight.bold),
-            )),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(email,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold),
+                )),
             subtitle: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Text('email'),
@@ -137,11 +140,11 @@ class _CompteProfilPageState extends ConsumerState<CompteProfilPage> {
 
           ListTile(
             title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Text(phone,
-              style: TextStyle(
-    fontWeight: FontWeight.bold),
-            )),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Text(phone,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold),
+                )),
             subtitle: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Text('phone'),
