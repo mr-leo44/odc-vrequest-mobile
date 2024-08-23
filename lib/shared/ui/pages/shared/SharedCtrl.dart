@@ -72,30 +72,32 @@ class SharedCtrl extends _$SharedCtrl {
         });
       }
 
-      if ((message.user.id != state.auth!.id)) {
-        NotificationController.createNewNotification(NotificationPush(
-            title: message.user.username,
-            body: message.message.isNotEmpty ? message.message : "Piece jointe",
-            bigPicture: message.file.isNotEmpty ? message.file : "",
-            payload: {
-              "payloadId": message.demande.ticket.toString()
-            },
-            notificationActionButtons: [
-              // NotificationActionButton(key: 'REDIRECT', label: 'Ouvrir'),
-              NotificationActionButton(
-                  key: 'REPLY',
-                  label: 'Repondre',
-                  requireInputText: true,
-                  actionType: ActionType.SilentAction),
-              NotificationActionButton(
-                  key: 'DISMISS',
-                  label: 'Dismiss',
-                  actionType: ActionType.DismissAction,
-                  isDangerousOption: true)
-            ]));
+      if(message.user.id != 0){
+        if ((message.user.id != state.auth!.id)) {
+          NotificationController.createNewNotification(NotificationPush(
+              title: message.user.username,
+              body: message.message.isNotEmpty ? message.message : "",
+              bigPicture: message.file.isNotEmpty ? message.file : "",
+              payload: {
+                "payloadId": message.demande.ticket.toString()
+              },
+              notificationActionButtons: [
+                // NotificationActionButton(key: 'REDIRECT', label: 'Ouvrir'),
+                NotificationActionButton(
+                    key: 'REPLY',
+                    label: 'Repondre',
+                    requireInputText: true,
+                    actionType: ActionType.SilentAction),
+                NotificationActionButton(
+                    key: 'DISMISS',
+                    label: 'Dismiss',
+                    actionType: ActionType.DismissAction,
+                    isDangerousOption: true)
+              ]));
+        }
+        state = state.copyWith(newMessages: nm.toSignal());
+        print("SharedState: ${state.newMessages.value}");
       }
-      state = state.copyWith(newMessages: nm.toSignal());
-      print("SharedState: ${state.newMessages.value}");
     });
 
     await completer.future;

@@ -50,7 +50,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           centerTitle: true,
-          backgroundColor: Colors.orange,
+          backgroundColor: Color(0xFFFF4500),
         ),
         body: SingleChildScrollView(child: _formulaire()),
       ),
@@ -131,7 +131,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
                 icon: Icon(Icons.map),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black,
-                  backgroundColor: Colors.orange[500],
+                  backgroundColor: Color(0xFFFF4500),
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -165,7 +165,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
             ),
             if (state.isLoading)
               CircularProgressIndicator(
-                color: Colors.orange,
+                color: Color(0xFFFF4500),
                 strokeWidth: 5,
               ),
             if (!state.isLoading)
@@ -203,7 +203,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
                 icon: Icon(Icons.send),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.black,
-                  backgroundColor: Colors.orange,
+                  backgroundColor: Color(0xFFFF4500),
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -304,15 +304,15 @@ class _DemandePageState extends ConsumerState<DemandePage> {
       decoration: InputDecoration(
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.orange, width: 1.5),
+          borderSide: const BorderSide(color: Color(0xFFFF4500), width: 1.5),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.orange, width: 1.5),
+          borderSide: const BorderSide(color: Color(0xFFFF4500), width: 1.5),
         ),
       ),
       padding: EdgeInsets.all(2.0),
-      dropdownColor: Colors.orange,
+      dropdownColor: Color(0xFFFF4500),
     );
   }
 
@@ -356,7 +356,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
             },
             minWidth: double.infinity,
             fontSize: 16,
-            activeBgColor: [Colors.orange],
+            activeBgColor: [Color(0xFFFF4500)],
             activeFgColor: Colors.black,
           ),
         ],

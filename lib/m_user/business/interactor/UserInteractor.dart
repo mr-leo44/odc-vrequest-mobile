@@ -1,4 +1,7 @@
 
+import 'package:odc_mobile_project/m_user/business/interactor/user/GetListOnboardUseCase.dart';
+import 'package:odc_mobile_project/m_user/business/interactor/user/GetStatusOnboardUseCase.dart';
+import 'package:odc_mobile_project/m_user/business/interactor/user/TerminateOnboardUseCase.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,6 +20,9 @@ import 'user/SoumettreManagerUseCase.dart';
 part "UserInteractor.g.dart";
 
 class UserInteractor{
+  TerminateOnboardUseCase terminateOnboardUseCase;
+  GetListOnboardUseCase getListOnboardUseCase;
+  GetStatusOnboardUseCase getStatusOnboardUseCase;
   Authenticateusecase authenticateusecase;
   DisconnectUseCase  disconnectUseCase;
   GetTokenUseCase getTokenUseCase;
@@ -29,6 +35,9 @@ class UserInteractor{
 
 
   UserInteractor._(
+    this.terminateOnboardUseCase,
+    this.getListOnboardUseCase,
+    this.getStatusOnboardUseCase,
       this.authenticateusecase,
       this.disconnectUseCase,
       this.getTokenUseCase,
@@ -42,6 +51,9 @@ class UserInteractor{
 
   static build(UserNetworkService network, UserLocalService local ){
     return UserInteractor._(
+      TerminateOnboardUseCase(local),
+      GetListOnboardUseCase(local),
+      GetStatusOnboardUseCase(local),
         Authenticateusecase(network, local),
         DisconnectUseCase(local),
         GetTokenUseCase(local),

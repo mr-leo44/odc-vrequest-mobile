@@ -16,7 +16,7 @@ class ProfilPageCtrl extends _$ProfilPageCtrl {
 
   void getUser()  async{
     var usecase = ref.watch(userInteractorProvider).getUserLocalUseCase;
-   var res=await usecase.run();
+    var res=await usecase.run();
     state = state.copyWith(user: res);
 
   }
@@ -26,7 +26,7 @@ class ProfilPageCtrl extends _$ProfilPageCtrl {
     var usecase = ref.watch(userInteractorProvider).disconnectUseCase;
     await usecase.run();
 
-   return true;
+    return true;
 
   }
 }

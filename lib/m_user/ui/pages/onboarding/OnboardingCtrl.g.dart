@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'DemandeListCtrl.dart';
+part of 'OnboardingCtrl.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$demandeListCtrlHash() => r'daecb58d65d503b29edf7405d7b6a98af9d38288';
+String _$onboardingCtrlHash() => r'84ae917a52fd067dfabf086fd18820eae0412b89';
 
-/// See also [DemandeListCtrl].
-@ProviderFor(DemandeListCtrl)
-final demandeListCtrlProvider =
-    AutoDisposeNotifierProvider<DemandeListCtrl, DemandeListState>.internal(
-  DemandeListCtrl.new,
-  name: r'demandeListCtrlProvider',
+/// See also [OnboardingCtrl].
+@ProviderFor(OnboardingCtrl)
+final onboardingCtrlProvider =
+    AutoDisposeNotifierProvider<OnboardingCtrl, OnboardingState>.internal(
+  OnboardingCtrl.new,
+  name: r'onboardingCtrlProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$demandeListCtrlHash,
+      : _$onboardingCtrlHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$DemandeListCtrl = AutoDisposeNotifier<DemandeListState>;
+typedef _$OnboardingCtrl = AutoDisposeNotifier<OnboardingState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
