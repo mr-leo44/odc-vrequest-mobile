@@ -34,11 +34,11 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Listes des demandes",
+          "(${state.nbreDemande}) Demandes",
           style: Theme.of(context).textTheme.titleLarge,
         ),
         centerTitle: true,
-        backgroundColor: Colors.orange,
+        backgroundColor: Color(0xFFFF4500),
         actions: [
           IconButton(
               onPressed: () {
@@ -115,8 +115,7 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
                         children: [
                           Row(
                             children: [
-                              Text("Status:"),
-                              Text("${demande.status}",
+                              Text(_getStatus(demande.status),
                                   style: TextStyle(
                                       color: _getStatusColor(demande.status)))
                             ],
@@ -190,6 +189,17 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
         return Colors.red;
       default:
         return Colors.grey;
+    }
+  }
+
+  String _getStatus(String status) {
+    switch (status.toLowerCase()) {
+      case '0':
+        return "En attente";
+      case '1':
+        return "Traitée";
+      default:
+        return 'En attente';
     }
   }
 }
