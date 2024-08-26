@@ -42,9 +42,7 @@ class User {
     nom: json["last_name"] ?? "",
     email: json["email"] ?? "",
     phone: json["phone"] ?? "",
-    manager: json['manager'] != null
-        ? User.fromJson(json['manager'] as Map<String, dynamic>)
-        : null,
+    manager: json['manager'] != null ? User.fromJson(json['manager'] as Map<String, dynamic>) : null,
     emailVerifiedAt: json["email_verified_at"] != null
         ? DateTime.parse(json["email_verified_at"])
         : DateTime.now(),
@@ -54,7 +52,7 @@ class User {
     updatedAt: json["updated_at"] != null
         ? DateTime.parse(json["updated_at"] ?? "")
         : DateTime.now(),
-    role: json["role"] != null ? [json["role"].toString()] : [],
+    role: json["role"] != null ? List.from(json["role"])  : [],
   );
 
   Map<String, dynamic> toJson() => {

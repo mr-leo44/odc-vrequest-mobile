@@ -45,7 +45,7 @@ class AuthenticateResponse {
   });
 
   factory AuthenticateResponse.fromJson(Map json) => AuthenticateResponse(
-    id: json["id"],
+    id: json["id"] ?? 0,
     prenom: json["first_name"] ?? "",
     username: json["username"] ?? "",
     nom: json["last_name"] ?? "",
@@ -57,7 +57,7 @@ class AuthenticateResponse {
     createdAt: json["created_at"]!=null? DateTime.parse(json["created_at"] ?? ""): DateTime.now(),
     updatedAt: json["updated_at"]!=null? DateTime.parse(json["updated_at"] ?? "") : DateTime.now(),
     token: json["token"] ?? "",
-    role: json["role"] != null ? [json["role"].toString()] : [],
+    role: json["role"] != null ? List.from(json["role"])  : [],
   );
 
   Map<String, dynamic> toJson() => {

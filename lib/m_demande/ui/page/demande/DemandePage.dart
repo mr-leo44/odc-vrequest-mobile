@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:odc_mobile_project/m_demande/business/model/Site.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:odc_mobile_project/m_demande/ui/page/map_page/MapCtrl.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
 import '../../../business/model/DemandeRequest.dart';
 import '../../composant/MyTextField.dart';
@@ -58,6 +59,9 @@ class _DemandePageState extends ConsumerState<DemandePage> {
 
   _formulaire() {
     var state = ref.watch(demandeCtrlProvider);
+    var state2 = ref.watch(mapCtrlProvider);
+    var lieuDepart_ctrl = TextEditingController(text: state2.lieuDepart?.nom);
+    var destination_ctrl = TextEditingController(text: state2.destnation?.nom);
     return Padding(
       padding: const EdgeInsets.all(25.0),
       child: Container(
@@ -74,7 +78,6 @@ class _DemandePageState extends ConsumerState<DemandePage> {
               height: 35,
             ),
             MyTextField(
-              type: TextInputType.text,
               ctrl: motif_ctrl,
               hint: "Quel est le motif de la course",
               label: "Motif*",
@@ -89,7 +92,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
               hint: "La date de la course",
               label: 'Date du deplacement',
               icon: Icons.date_range,
-              typeDate: true,
+              readOnly: true,
               selectDate: () => _selectDate(context),
             ),
             SizedBox(
@@ -135,6 +138,28 @@ class _DemandePageState extends ConsumerState<DemandePage> {
                   ),
                 ),
               ),
+            if (!state.switchCarte)
+            SizedBox(
+              height: 15,
+            ),
+            if (!state.switchCarte)
+            MyTextField(
+                ctrl: lieuDepart_ctrl,
+                hint: "Lieu du départ",
+                label: "Départ",
+                icon: Icons.map,
+            readOnly: true,),
+            if (!state.switchCarte)
+            SizedBox(
+              height: 15,
+            ),
+            if (!state.switchCarte)
+            MyTextField(
+                ctrl: lieuDepart_ctrl,
+                hint: "Déstination",
+                label: "Déstination",
+                icon: Icons.map,
+            readOnly: true,),
             SizedBox(
               height: 55,
             ),
@@ -146,6 +171,10 @@ class _DemandePageState extends ConsumerState<DemandePage> {
             if (!state.isLoading)
               ElevatedButton.icon(
                 onPressed: () {
+                  if(!state.switchCarte){
+                    lieuDepart = state2.lieuDepart;
+                    destination = state2.destnation;
+                  }
                   _submit(DemandeRequest(
                       motif: motif_ctrl.text ?? "",
                       ticket: _genererTicket(),
@@ -154,6 +183,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
                           ? int.parse(nbre_passagers_ctrl.text)
                           : 0,
                       userId: state.user!.id,
+                      managerId: state.user!.manager!.id,
                       lieuDepart: lieuDepart != null ? lieuDepart!.nom : "",
                       latitudeDepart:
                           lieuDepart != null ? lieuDepart!.latitude : 0.00,

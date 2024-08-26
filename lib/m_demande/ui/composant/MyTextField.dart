@@ -7,17 +7,17 @@ class MyTextField extends StatelessWidget {
   String hint;
   String label;
   IconData icon;
-  bool typeDate;
+  bool readOnly;
   dynamic selectDate;
 
   MyTextField(
       {super.key,
-      required this.type,
+      this.type = TextInputType.text,
       required this.ctrl,
       required this.hint,
       required this.label,
       required this.icon,
-      this.typeDate = false,
+      this.readOnly = false,
       this.selectDate = null});
 
   @override
@@ -68,7 +68,7 @@ class MyTextField extends StatelessWidget {
             fontWeight: FontWeight.w400,
           ),
         ),
-      readOnly: typeDate,
+      readOnly: readOnly,
       onTap: (){
         selectDate();
       },

@@ -34,24 +34,27 @@ class _TestpageState extends ConsumerState<Profilpage> {
       appBar: _enteteProfil(),
 
 
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10,),
-            Center(child: photoProfil()),
-            SizedBox(height: 30,),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0,),
-              child: _infoProfil(),
+      body: ListView(
+          children: [ Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 10,),
+                Center(child: photoProfil()),
+                SizedBox(height: 30,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0,),
+                  child: _infoProfil(),
+                ),
+                SizedBox(height: 40,),
+                _card(),
+                SizedBox(height: 40,),
+                _buildActionButtons(),
+              ],
             ),
-            SizedBox(height: 40,),
-            _card(),
-            SizedBox(height: 40,),
-            _buildActionButtons(),
-          ],
-        ),
+          )
+          ]
       ),
     );
   }
@@ -86,12 +89,26 @@ class _TestpageState extends ConsumerState<Profilpage> {
     // var res = ctrl.getUser();
     var nom = state.user?.username ?? "" ;// res.name;
     var email =state.user?.email ?? "" ;// res.email;
+    var roles = state.user?.role ?? [];//.toString() ?? "";
+    //List<String> roleName = role.replaceAll("[[[[", "").replaceAll("]]]]", "").split(",");
+    // var taille = role?.length;
+    var rolesJoined=roles.join(",");
+
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Center(child: Text(nom)),
         SizedBox(height: 8.0),
         Center(child: Text(email)),
+        Center(child: Text(rolesJoined,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 17
+          ),)),
+
+
+
       ],
     );
   }
@@ -108,10 +125,10 @@ class _TestpageState extends ConsumerState<Profilpage> {
             ListTile(
               title: TextButton(
                 onPressed: () {
-                  context.goNamed(Urls.compte.name);
+                  context.pushNamed(Urls.compte.name);
                 },
-              style: TextButton.styleFrom(
-              alignment: Alignment.centerLeft,),
+                style: TextButton.styleFrom(
+                  alignment: Alignment.centerLeft,),
                 child: Text(
                   'Mon compte',
                   style: TextStyle(
@@ -158,11 +175,11 @@ class _TestpageState extends ConsumerState<Profilpage> {
       children: [
         ElevatedButton(
           onPressed: () async{
-           var dis = ref.read(profilPageCtrlProvider.notifier);
-           var rep = await dis.disconnect();
-           if(rep){
-             context.goNamed(Urls.auth.name);
-           }
+            var dis = ref.read(profilPageCtrlProvider.notifier);
+            var rep = await dis.disconnect();
+            if(rep){
+              context.goNamed(Urls.auth.name);
+            }
 
           },
           child: Text('Se déconnecter'),

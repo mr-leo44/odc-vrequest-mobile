@@ -18,9 +18,14 @@ class DetailsDemandeCtrl extends _$DetailsDemandeCtrl {
     var res = await useCase.run(id);
     if (res != null) {
       state = state.copyWith(demande: res, isLoading: false);
-      print("updated state ${res.user!.nom}");
+      print("updated state ${res.initiateur!.nom}");
     } else {
       state = state.copyWith(isEmpty: true);
     }
+  }
+
+  void annulerDemande(int id) async {
+    var useCase = ref.watch(demandeInteractorProvider).annulerDemandeUseCase;
+    var res = await useCase.run(id);
   }
 }
