@@ -3,8 +3,7 @@ import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatPage.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailPage.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListPage.dart';
 
-import 'package:odc_mobile_project/m_demande/ui/pages/demandes/demandeEnCoursPage.dart';
-import 'package:odc_mobile_project/m_demande/ui/pages/statistique/StatPage.dart';
+
 
 import 'package:odc_mobile_project/m_demande/ui/page/demande/DemandePage.dart';
 import 'package:odc_mobile_project/m_demande/ui/page/details_demande_page/DetailsDemandePage.dart';
@@ -24,6 +23,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../m_demande/ui/page/demande_encours/demandeEnCoursPage.dart';
+import '../m_demande/ui/page/demande_traite/DemandeTraitePage.dart';
+import '../m_demande/ui/page/statistique/StatPage.dart';
 import '../m_user/ui/pages/accueil/AccueilPage.dart';
 
 part "routers.g.dart";
@@ -47,7 +49,9 @@ enum Urls {
   carte,
   demande,
 
-  detailsDemande
+  detailsDemande,
+  demandeTraite
+
 }
 
 @Riverpod(keepAlive: true)
@@ -114,6 +118,10 @@ GoRouter router(RouterRef ref) {
                 path: 'liste-demandes',
                 name: Urls.listeDemandes.name,
                 builder: (ctx, state) => DemandeListPage()),
+            GoRoute(
+                path: 'demandeTraite',
+                name: Urls.demandeTraite.name,
+                builder: (ctx, state) => DemandeTraitePage()),
             GoRoute(
                 path: 'carte',
                 name: Urls.carte.name,

@@ -1,26 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'GlobalMapCtrl.dart';
+part of 'DemandeTraiteCtrl.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$globalMapCtrlHash() => r'56ef4be47fc51fac5d10f987803327fb60650464';
+String _$demandeTraiteCtrlHash() => r'109223195ed184c9ac695d2b37ae2e795e6a6775';
 
-/// See also [GlobalMapCtrl].
-@ProviderFor(GlobalMapCtrl)
-final globalMapCtrlProvider =
-    NotifierProvider<GlobalMapCtrl, GlobalMapState>.internal(
-  GlobalMapCtrl.new,
-  name: r'globalMapCtrlProvider',
+/// See also [DemandeTraiteCtrl].
+@ProviderFor(DemandeTraiteCtrl)
+final demandeTraiteCtrlProvider =
+    AutoDisposeNotifierProvider<DemandeTraiteCtrl, DemandeTraiteState>.internal(
+  DemandeTraiteCtrl.new,
+  name: r'demandeTraiteCtrlProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$globalMapCtrlHash,
+      : _$demandeTraiteCtrlHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$GlobalMapCtrl = Notifier<GlobalMapState>;
+typedef _$DemandeTraiteCtrl = AutoDisposeNotifier<DemandeTraiteState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

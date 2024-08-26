@@ -34,7 +34,7 @@ class _ChoixManagerPageState extends ConsumerState<ChoixManagerPage> {
       body: Column(
         children: [
           SizedBox(height: 40,),
-              Image.asset("images/manager.png"),
+          Image.asset("images/intro.png"),
 
           Padding(
             padding: const EdgeInsets.all(10.0),
@@ -106,9 +106,9 @@ class _ChoixManagerPageState extends ConsumerState<ChoixManagerPage> {
 
             var soumetmanager = await res.soumettreManager(managerValue.text, id);
             if(soumetmanager){
-             await res.getNetworkUser();
+              await res.getNetworkUser();
 
-             context.goNamed(Urls.profil.name);
+              context.goNamed(Urls.accueil.name);
             }
 
 

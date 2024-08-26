@@ -1,31 +1,35 @@
 import 'package:odc_mobile_project/m_demande/business/model/Site.dart';
 
-class GlobalMapState {
+class MapState {
   bool isSelectDepart;
   bool isSelectDestination;
   bool carte;
+  int mouvement;
   Site? lieuDepart;
   Site? destnation;
 
-  GlobalMapState({
+  MapState({
    this.isSelectDepart = false,
     this.isSelectDestination = false,
     this.carte = false,
     this.lieuDepart = null,
-
+    this.mouvement =1,
     this.destnation = null,
   });
 
-  GlobalMapState copyWith({
+  MapState copyWith({
     bool? isSelectDepart,
+    bool? isSelectDestination,
     Site? lieuDepart,
     bool? carte,
+    int? mouvement,
     Site? destnation,
   }) =>
-      GlobalMapState(
+      MapState(
         isSelectDepart: isSelectDepart ?? this.isSelectDepart,
         isSelectDestination: isSelectDestination ?? this.isSelectDestination,
         carte: carte ?? this.carte,
+        mouvement: mouvement ?? this.mouvement,
         lieuDepart: lieuDepart ?? this.lieuDepart,
         destnation: destnation ?? this.destnation,
       );

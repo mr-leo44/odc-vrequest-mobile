@@ -13,11 +13,11 @@ class Authenticateusecase{
   Authenticateusecase(this.network, this.local);
 
   Future<AuthenticateResponse?> run(AuthenticateRequestBody data) async{
-     var res=await network.authenticate(data);
+    var res= await network.authenticate(data);
     if(res!=null){
-      local.saveToken(res.token);
+      await local.saveToken(res.token);
       var user=User.fromJson(res.toJson());
-      local.saveUser(user);
+      await local.saveUser(user);
     }
     return res;
   }

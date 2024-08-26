@@ -25,7 +25,7 @@ class Demande {
   User? chefCharroi;
   User? manager;
   User? chauffeur;
-    String longitude;
+  String longitude;
   String latitude;
   double longitudelDepart;
   double latitudeDepart;
@@ -46,13 +46,13 @@ class Demande {
     required this.initiateur,
     this.manager = null,
     required this.chauffeur,
-        this.longitude = "0.0",
+    this.longitude = "0.0",
     this.latitude = "0.0",
     this.longitudelDepart = 0.0,
     this.latitudeDepart = 0.0,
     this.longitudelDestination = 0.0,
     this.latitudeDestination = 0.0,
-    required this.createAt, 
+    required this.createAt,
     this.chefCharroi = null,
   });
 
@@ -69,7 +69,8 @@ class Demande {
             : DateTime.now(),
         lieuDepart: json["lieu_depart"] ?? "",
         destination: json["destination"] ?? "",
-        nbrePassagers: json["nbrEtranger"] ?? 0,
+        nbrePassagers:
+            json["nbrEtranger"] != null ? int.parse(json["nbrEtranger"]) : 0,
         chefCharroi: json["chefCharroi"] != null
             ? User.fromJson(json["chefCharroi"])
             : User(
@@ -104,14 +105,18 @@ class Demande {
               ),
         longitude: "${json["longitude"]}" ?? "",
         latitude: "${json["latitude"]}" ?? "",
-        // longitudelDestination: json["longitude_destination"] != null
-        //     ? json["longitude_destination"].toDouble()
-        //     : 0.0,
-        // latitudeDestination: json["latitude_destination"] != null
-        //     ? json["latitude_destination"].toDouble()
-        //     : 0.0,
-        longitudelDepart: json["longitude_depart"] != null ? json["longitude_depart"].toDouble() : 0.0,
-        latitudeDepart: json["latitude_depart"] != null ? json["latitude_depart"].toDouble() : 0.0,
+        longitudelDestination: json["longitudelDestination"] != null
+            ? json["longitudelDestination"].toDouble()
+            : 0.0,
+        latitudeDestination: json["latitudeDestination"] != null
+            ? json["latitudeDestination"].toDouble()
+            : 0.0,
+        longitudelDepart: json["longitude_depart"] != null
+            ? json["longitude_depart"].toDouble()
+            : 0.0,
+        latitudeDepart: json["latitude_depart"] != null
+            ? json["latitude_depart"].toDouble()
+            : 0.0,
         createAt: json["create_at"] != null
             ? DateTime.parse(json["create_at"])
             : DateTime.now(),
@@ -137,6 +142,8 @@ class Demande {
         "latitude": latitude,
         "longitudelDepart": longitudelDepart,
         "latitudeDepart": latitudeDepart,
+        "longitudelDestination": longitudelDestination,
+        "latitudeDestination": latitudeDestination,
         "create_at":
             "${createAt.year.toString().padLeft(4, '0')}-${createAt.month.toString().padLeft(2, '0')}-${createAt.day.toString().padLeft(2, '0')}",
       };
