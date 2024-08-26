@@ -1,5 +1,6 @@
 import 'package:odc_mobile_project/m_chat/business/interactor/chatInteractor.dart';
 import 'package:odc_mobile_project/m_user/business/interactor/UserInteractor.dart';
+import 'package:odc_mobile_project/shared/ui/pages/shared/SharedCtrl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailState.dart';
 import 'package:signals/signals_flutter.dart';
@@ -31,9 +32,11 @@ class ChatDetailCtrl extends _$ChatDetailCtrl {
     });
   }
 
-  Future getRouteUrl(String startPoint, String endPoint)async {
+  Future getRouteUrl(double finalLon, double finalLat)async {
+    var sharedState = ref.watch(sharedCtrlProvider);
     var interactor = ref.watch(chatInteractorProvider);
-    var points = await interactor.getRouteUrlUseCase.run(startPoint, endPoint);
+    var points = await interactor.getRouteUrlUseCase.run("${sharedState.location["longitude"]},${sharedState.location["latitude"]}", 
+                                                          "${finalLon},${finalLat}");
     state = state.copyWith(drawRoute: points);
   }
 }
