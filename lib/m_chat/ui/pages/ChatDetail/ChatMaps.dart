@@ -24,19 +24,18 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
     with TickerProviderStateMixin {
   Alignment selectedAlignment = Alignment.topCenter;
   bool counterRotate = false;
-  double sizeMap = 300 ;
+  double sizeMap = 300;
 
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       var ctrl = ref.read(chatDetailCtrlProvider.notifier);
+
       var sharedCtrl = ref.read(sharedCtrlProvider.notifier);
 
       var sharedState = ref.watch(sharedCtrlProvider);
       print("Longitude: ${sharedState.location["longitude"]}");
-      await ctrl.getRouteUrl(
-          "${sharedState.location["longitude"]},${sharedState.location["latitude"]}",
-          "${widget.demande.longitudelDestination},${widget.demande.latitudeDestination}");
+      await ctrl.getRouteUrl(widget.demande.longitudelDestination,widget.demande.latitudeDestination);
     });
   }
 
@@ -112,7 +111,9 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
 
   @override
   Widget build(BuildContext context) {
+    var ctrlState = ref.watch(chatDetailCtrlProvider);
     var sharedState = ref.watch(sharedCtrlProvider);
+
     var pointLocation = LatLng(
       double.parse(sharedState.location["latitude"] ??
           widget.demande.latitudeDepart.toString()),
@@ -125,9 +126,8 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
         widget.demande.longitudelDestination);
 
     var customMarkers = <Marker>[
-      if(sharedState.location["longitude"] != null)
-      buildPin(pointLocation, Image.asset("images/car.png")),
-
+      if (sharedState.location["longitude"] != null)
+        buildPin(pointLocation, Image.asset("images/car.png")),
       buildPin(
         startPointLocation,
         Icon(
@@ -164,8 +164,6 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
     late final _polylines =
         Map.fromEntries(_polylinesRaw.map((e) => MapEntry(e.hitValue, e)));
 
-    var ctrlState = ref.watch(chatDetailCtrlProvider);
-
     return Column(
       children: [
         Row(
@@ -176,7 +174,7 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
               onPressed: () {
                 HapticFeedback.selectionClick();
 
-                if(sharedState.location["longitude"] != null){
+                if (sharedState.location["longitude"] != null) {
                   _animatedMapMove(pointLocation, 17);
                 }
               },
@@ -249,9 +247,7 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
                 HapticFeedback.selectionClick();
 
                 final bounds = LatLngBounds.fromPoints([
-                  if(sharedState.location["longitude"] != null)
-                  pointLocation,
-                  
+                  if (sharedState.location["longitude"] != null) pointLocation,
                   startPointLocation,
                   finalPointLocation,
                 ]);
@@ -320,15 +316,16 @@ class _ChatMapsState extends ConsumerState<ChatMaps>
                   onPressed: () {
                     HapticFeedback.selectionClick();
                     setState(() {
-                      if(sizeMap >= 500){
+                      if (sizeMap >= 500) {
                         sizeMap = 300;
-                      }else{
+                      } else {
                         sizeMap = 500;
                       }
-                      
                     });
                   },
-                  child: (sizeMap >= 500) ? Icon(Icons.splitscreen) : Icon(Icons.fit_screen)  ,
+                  child: (sizeMap >= 500)
+                      ? Icon(Icons.splitscreen)
+                      : Icon(Icons.fit_screen),
                 ),
               )
             ],
