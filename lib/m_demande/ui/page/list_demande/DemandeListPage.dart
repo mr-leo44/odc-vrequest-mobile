@@ -34,13 +34,13 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
     var state = ref.watch(demandeListCtrlProvider);
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         title: Text(
           "(${state.nbreDemande}) Demandes",
-          style: Theme.of(context).textTheme.titleLarge,
+          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFFFF7900
-),
+        backgroundColor: Color(0xFFFF7900),
         actions: [
           IconButton(
               onPressed: () {
@@ -135,5 +135,4 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
           ),
         )));
   }
-
 }
