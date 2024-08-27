@@ -30,9 +30,10 @@ class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
     var state = ref.watch(demandeEnCoursCtrlProvider);
     return Scaffold(
         appBar: AppBar(
+          foregroundColor: Colors.white,
           title: Text(
             "(${state.nbrDemande}) Demandes en cours",
-            style: Theme.of(context).textTheme.titleLarge,
+            style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
           backgroundColor: Color(0xFFFF7900),
