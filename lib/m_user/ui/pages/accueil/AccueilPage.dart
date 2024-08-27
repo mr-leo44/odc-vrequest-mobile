@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:odc_mobile_project/m_demande/business/interactor/demandeInteractor.dart';
+import 'package:odc_mobile_project/m_demande/ui/composant/MyListTile.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/accueil/AccueilPageCtrl.dart';
 
 import '../../../../navigation/routers.dart';
@@ -833,29 +834,25 @@ class _AccueilPageState extends ConsumerState<AccueilPage> {
   }
   Widget _listedemande(){
     var state = ref.watch(accueilPageCtrlProvider);
-    var motif = state.last;
+    var demande = state.last;
 
 
-    return ListView.builder(
-        itemCount: motif.length,
-        shrinkWrap: true,
-        itemBuilder: (ctx, index){
-          if(motif.isNotEmpty){
-            return  ListTile(
-              leading: Text("${index+1}",
-                style: TextStyle(
-                    fontSize: 18
-                ),),
-              title: Text("${motif[index]['motif']}",style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold
-              )),
-              subtitle: Text("${motif[index]['date']}"),
-              trailing: Icon(Icons.arrow_right),
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 35),
+        child: ListView.separated(
+          itemCount: demande.length,
+          itemBuilder: (ctx, index) {
+            var _demande = demande[index];
+            return MyListTile(demande: _demande);
+          },
+          separatorBuilder: (BuildContext context, int index) {
+            return SizedBox(
+              height: 10.0,
             );
-          }
-
-        }
+          },
+        ),
+      ),
     );
   }
 }

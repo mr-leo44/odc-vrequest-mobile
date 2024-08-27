@@ -4,21 +4,24 @@ class DemandeTraiteState {
   List<Demande> listDemandes;
   bool isLoading;
   bool isEmpty;
+  int nbreDemande;
 
-  DemandeTraiteState({
-    this.listDemandes=const [],
-    this.isLoading=false,
-    this.isEmpty=false
-  });
+  DemandeTraiteState(
+      {this.listDemandes = const [],
+      this.isLoading = false,
+      this.isEmpty = false,
+      this.nbreDemande = 0});
 
   DemandeTraiteState copyWith({
     List<Demande>? listDemandes,
     bool? isLoading,
-    bool? isEmpty
+    bool? isEmpty,
+    int? nbreDemande,
   }) =>
       DemandeTraiteState(
-          listDemandes: listDemandes ?? this.listDemandes,
-          isLoading: isLoading ?? this.isLoading,
-          isEmpty: isEmpty ?? this.isEmpty
+        listDemandes: listDemandes ?? this.listDemandes,
+        isLoading: isLoading ?? this.isLoading,
+        isEmpty: isEmpty ?? this.isEmpty,
+        nbreDemande: nbreDemande ?? this.nbreDemande,
       );
 }
