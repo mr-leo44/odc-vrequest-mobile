@@ -1,19 +1,19 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
+import 'package:odc_mobile_project/m_demande/ui/composant/MyListTile.dart';
+import 'package:odc_mobile_project/navigation/routers.dart';
 
 import 'DemandeEnCoursCtrl.dart';
 
-class DemandeEnCoursPage extends ConsumerStatefulWidget{
-
+class DemandeEnCoursPage extends ConsumerStatefulWidget {
   @override
   ConsumerState<DemandeEnCoursPage> createState() => _DemandeEnCoursPage();
 }
 
 class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -22,70 +22,109 @@ class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
       // action initiale de la page et appel d'un controleur
       var ctrl = ref.read(demandeEnCoursCtrlProvider.notifier);
       ctrl.nombreDemande();
-
-
-
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-
+    var state = ref.watch(demandeEnCoursCtrlProvider);
     return Scaffold(
-        appBar: _entete(),
-
-        body: Column(
-          children: [
-            Expanded(child: _listedemande()),
+        appBar: AppBar(
+          title: Text(
+            "(${state.nbrDemande}) Demandes en cours",
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          centerTitle: true,
+          backgroundColor: Color(0xFFFF7900),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  var ctrl = ref.read(demandeEnCoursCtrlProvider.notifier);
+                  ctrl.nombreDemande();
+                },
+                icon: Icon(
+                  Icons.refresh_sharp,
+                  size: 30,
+                )),
+            IconButton(
+                onPressed: () {
+                  context.pushNamed(Urls.demande.name);
+                },
+                icon: Icon(
+                  Icons.add,
+                  size: 30,
+                ))
           ],
-        )
-    );
+        ),
+        body:Stack(
+          children: [
+            if (!state.isEmpty) _contenuPrincipal(context, ref),
+            _chargement(context, ref)
+          ],
+        ),);
   }
 
-  AppBar _entete() {
-    return AppBar(
-      title: Center(child: Text("Demande en cours")),
-      backgroundColor: Colors.orange,
-      foregroundColor: Colors.black,
-      elevation: 0,
-      actions: [
-        IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.sync),
-        )
+  _contenuPrincipal(BuildContext context, WidgetRef ref) {
+    var state = ref.watch(demandeEnCoursCtrlProvider);
+    List<Demande> demande = state.demande;
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.only(right: 25, left: 25, top: 25),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Rechercher',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              suffixIcon: Icon(Icons.search),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 35),
+            child: ListView.separated(
+              itemCount: demande.length,
+              itemBuilder: (ctx, index) {
+                var _demande = demande[index];
+                return MyListTile(demande: _demande);
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return SizedBox(
+                  height: 10.0,
+                );
+              },
+            ),
+          ),
+        ),
       ],
     );
   }
-  Widget _listedemande(){
+
+  _chargement(BuildContext context, WidgetRef ref) {
     var state = ref.watch(demandeEnCoursCtrlProvider);
-    var motif = state.demande["demandes_encours"];
-    var taille = state.demande['demande_encours'];
 
-
-
-
-    return ListView.builder(
-        itemCount: taille,
-        shrinkWrap: true,
-        itemBuilder: (ctx, index){
-          if(motif != null && motif.isNotEmpty){
-            return  ListTile(
-              leading: Text("${index+1}",
-                style: TextStyle(
-                    fontSize: 18
-                ),),
-              title: Text("${motif[index]['motif']}",style: TextStyle(
-                  fontSize: 18,
-                fontWeight: FontWeight.bold
-              )),
-              subtitle: Text("${motif[index]['date']}"),
-              trailing: Icon(Icons.arrow_right),
-            );
-          }
-
-        }
-    );
+    return Visibility(
+        visible: state.isLoading,
+        child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Aucune demande pour l'instant veillez rafraichir la page",
+                    style: TextStyle(fontSize: 18.0),
+                    textAlign: TextAlign.center,
+                  )
+                ],
+              ),
+            )));
   }
-
 }
