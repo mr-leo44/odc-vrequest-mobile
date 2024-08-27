@@ -6,7 +6,7 @@ part of 'AccueilPageCtrl.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$accueilPageCtrlHash() => r'3edb6c18b7f08a1e7980d9f080263ee0b8f65a73';
+String _$accueilPageCtrlHash() => r'dc97169fcaa9a9fd22f6a468b4fb5a61df49ec1c';
 
 /// See also [AccueilPageCtrl].
 @ProviderFor(AccueilPageCtrl)
