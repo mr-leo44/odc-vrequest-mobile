@@ -79,8 +79,8 @@ class Demande {
                 createdAt: DateTime.now(),
                 updatedAt: DateTime.now(),
               ),
-        initiateur: json["initiateur"] != null
-            ? User.fromJson(json["initiateur"])
+        initiateur: json["user"] != null
+            ? User.fromJson(json["user"])
             : User(
                 id: 0,
                 emailVerifiedAt: DateTime.now(),

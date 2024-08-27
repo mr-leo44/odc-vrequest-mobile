@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:odc_mobile_project/m_demande/ui/composant/MyListTile.dart';
 import 'package:odc_mobile_project/m_demande/ui/page/demande_traite/DemandeTraiteCtrl.dart';
 import '../../../../navigation/routers.dart';
 import '../../../business/model/Demande.dart';
@@ -35,11 +36,11 @@ class _DemandeTraitePageState extends ConsumerState<DemandeTraitePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Listes des demandes",
+          "(${state.nbreDemande}) Demandes traitées",
           style: Theme.of(context).textTheme.titleLarge,
         ),
         centerTitle: true,
-        backgroundColor: Colors.orange,
+        backgroundColor: Color(0xFFFF7900),
         actions: [
           IconButton(
               onPressed: () {
@@ -95,52 +96,7 @@ class _DemandeTraitePageState extends ConsumerState<DemandeTraitePage> {
               itemCount: _demandes.length,
               itemBuilder: (ctx, index) {
                 var demande = _demandes[index];
-                return SizedBox(
-                  height: 100,
-                  child: Card(
-                    shadowColor: Colors.black,
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        demande.motif,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                      leading: Icon(Icons.map),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text("Status:"),
-                              Text("${demande.status}",
-                                  style: TextStyle(
-                                      color: _getStatusColor(demande.status)))
-                            ],
-                          ),
-                          Text(
-                              DateFormat('dd/MM/yyyy - HH:mm')
-                                  .format(demande.dateDeplacement),
-                              style: TextStyle(fontSize: 12)),
-                        ],
-                      ),
-                      trailing: Icon(
-                        Icons.chevron_right,
-                        size: 30,
-                        color: Colors.black,
-                      ),
-                      onTap: () {
-                        context.pushNamed(Urls.detailsDemande.name,
-                            extra: demande,
-                            pathParameters: {"id": demande.id.toString()});
-                      },
-                    ),
-                  ),
-                );
+                return MyListTile(demande: demande);
               },
               separatorBuilder: (BuildContext context, int index) {
                 return SizedBox(

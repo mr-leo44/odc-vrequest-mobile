@@ -40,11 +40,11 @@ class MyTextField extends StatelessWidget {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10.0),
-            borderSide: const BorderSide(color: Colors.orange, width: 2.0),
+            borderSide: const BorderSide(color: Color(0xFFFF7900), width: 2.0),
           ),
 
           focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.orange, width: 2.0),
+            borderSide: const BorderSide(color: Color(0xFFFF7900), width: 2.0),
             borderRadius: BorderRadius.circular(10.0),
           ),
 
