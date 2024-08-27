@@ -123,13 +123,19 @@ class DemandeNetworkServiceimpl implements DemandeNetworkService {
   }
 
   @override
-  Future<List> lastDemande(int id) async{
+  Future<List<Demande>> lastDemande(int id) async{
+    List<Demande> demandes = [];
     var res = await http.post(Uri.parse("$baseURL/api/last-demande"),
         body : {"id" : id.toString()});
-    List decodedResponse = json.decode(res.body) as List;
-    //List<String> nameList = decodedResponse.map((item) => item.toString()).toList();
-    print("response $decodedResponse");
-    return decodedResponse;
+    List data = json.decode(res.body) as List;
+   print("response $data");
+    if (res.statusCode == 200) {
+      for (int i = 0; i < data.length; i++) {
+        var item = data[i];
+        demandes.add(Demande.fromJson(item));
+      }
+    }
+    return demandes;
 
   }
 
