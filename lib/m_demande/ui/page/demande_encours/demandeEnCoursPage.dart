@@ -59,7 +59,7 @@ class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
         ),
         body:Stack(
           children: [
-            if (!state.isEmpty) _contenuPrincipal(context, ref),
+            if (!state.visible) _contenuPrincipal(context, ref),
             _chargement(context, ref)
           ],
         ),);
@@ -107,7 +107,7 @@ class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
     var state = ref.watch(demandeEnCoursCtrlProvider);
 
     return Visibility(
-        visible: state.isLoading,
+        visible: state.visible,
         child: Center(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -115,12 +115,20 @@ class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
+                  if(state.isLoading)
+                    CircularProgressIndicator(),
                   SizedBox(
                     height: 10,
                   ),
+                  if(state.isLoading)
                   Text(
-                    "Aucune demande pour l'instant veillez rafraichir la page",
+                    "Chargement...",
+                    style: TextStyle(fontSize: 18.0),
+                    textAlign: TextAlign.center,
+                  ),
+                  if(state.isEmpty)
+                  Text(
+                    "Aucune demande trouvée veillez rafraichir la page",
                     style: TextStyle(fontSize: 18.0),
                     textAlign: TextAlign.center,
                   )

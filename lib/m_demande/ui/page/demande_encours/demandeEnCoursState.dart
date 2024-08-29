@@ -8,10 +8,12 @@ class DemandeEnCoursState {
   List<Demande> demande;
   bool isLoading;
   bool isEmpty;
+  bool visible;
 
   DemandeEnCoursState(
       {this.isLoading = false,
       this.isEmpty = false,
+      this.visible = false,
       this.nbrDemande = 0,
       this.user = null,
       this.demande = const []});
@@ -21,6 +23,7 @@ class DemandeEnCoursState {
           User? user,
           List<Demande>? demande,
           bool? isLoading,
+          bool? visible,
           bool,
           isEmpty}) =>
       DemandeEnCoursState(
@@ -28,5 +31,6 @@ class DemandeEnCoursState {
           user: user ?? this.user,
           demande: demande ?? this.demande,
           isLoading: isLoading ?? this.isLoading,
+          visible: visible ?? this.visible,
           isEmpty: isEmpty ?? this.isEmpty);
 }

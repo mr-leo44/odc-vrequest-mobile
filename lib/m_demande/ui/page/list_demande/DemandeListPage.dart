@@ -73,7 +73,7 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
   _contenuPrincipale(BuildContext context, WidgetRef ref) {
     var state = ref.watch(demandeListCtrlProvider);
 
-    List<Demande> _demandes = state.listDemandes;
+    List<Demande> _demandes = state.listDemandesSearch;
 
     return Column(
       children: [
@@ -87,12 +87,16 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
               ),
               suffixIcon: Icon(Icons.search),
             ),
+            onChanged: (e){
+              var ctrl = ref.read(demandeListCtrlProvider.notifier);
+              ctrl.filtre(e);
+            },
           ),
         ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 35),
-            child: ListView.separated(
+            child: (state.notFound) ? ListView.separated(
               itemCount: _demandes.length,
               itemBuilder: (ctx, index) {
                 var demande = _demandes[index];
@@ -103,6 +107,11 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
                   height: 10.0,
                 );
               },
+            ) : Center(
+              child: Text("Aucune demande correspondante", style: TextStyle(
+                fontSize: 15.0,
+                fontWeight: FontWeight.w400
+              ),),
             ),
           ),
         ),
