@@ -1,5 +1,3 @@
-
-
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -8,15 +6,16 @@ import '../../../business/interactor/demandeInteractor.dart';
 import 'demandeEnCoursState.dart';
 
 part 'DemandeEnCoursCtrl.g.dart';
-@riverpod
-class DemandeEnCoursCtrl extends _$DemandeEnCoursCtrl{
 
+@riverpod
+class DemandeEnCoursCtrl extends _$DemandeEnCoursCtrl {
   @override
-  DemandeEnCoursState build(){
+  DemandeEnCoursState build() {
     return DemandeEnCoursState();
   }
-  void nombreDemande() async{
-    state = state.copyWith(isLoading: true, isEmpty: true);
+
+  void nombreDemande() async {
+    state = state.copyWith(isLoading: true, visible: true);
     List<Demande> demandes = [];
     var usecase = ref.watch(demandeInteractorProvider).nombreDemandeUseCase;
     var res = await usecase.run();
@@ -25,17 +24,21 @@ class DemandeEnCoursCtrl extends _$DemandeEnCoursCtrl{
       var item = data[i];
       demandes.add(Demande.fromJson(item));
     }
-    if(demandes.length != 0){
-      state = state.copyWith(demande: demandes, nbrDemande: demandes.length, isLoading: false, isEmpty: false);
-    }else{
-      state = state.copyWith(isLoading: true, isEmpty: true, nbrDemande: 0);
+    if (demandes.length != 0) {
+      state = state.copyWith(
+          demande: demandes,
+          nbrDemande: demandes.length,
+          isLoading: false,
+          visible: false);
+    } else {
+      state = state.copyWith(
+          isLoading: false, isEmpty: true, nbrDemande: 0, visible: true);
     }
   }
-  void getUser()  async{
+
+  void getUser() async {
     var usecase = ref.watch(userInteractorProvider).getUserLocalUseCase;
-    var res=await usecase.run();
+    var res = await usecase.run();
     state = state.copyWith(user: res);
-
   }
-
 }
