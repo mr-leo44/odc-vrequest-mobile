@@ -4,25 +4,33 @@ class DemandeListState {
   List<Demande> listDemandes;
   bool isLoading;
   bool isEmpty;
+  bool notFound;
   int nbreDemande;
+  List<Demande> listDemandesSearch;
 
   DemandeListState({
     this.listDemandes=const [],
+    this.listDemandesSearch=const [],
     this.isLoading=false,
     this.isEmpty=false,
+    this.notFound=false,
     this.nbreDemande=0
   });
 
   DemandeListState copyWith({
     List<Demande>? listDemandes,
+    List<Demande>? listDemandesSearch,
     bool? isLoading,
     bool? isEmpty,
+    bool? notFound,
     int? nbreDemande,
   }) =>
       DemandeListState(
         listDemandes: listDemandes ?? this.listDemandes,
+        listDemandesSearch: listDemandesSearch ?? this.listDemandesSearch,
         isLoading: isLoading ?? this.isLoading,
         isEmpty: isEmpty ?? this.isEmpty,
+        notFound: notFound ?? this.notFound,
         nbreDemande: nbreDemande ?? this.nbreDemande,
 
       );
