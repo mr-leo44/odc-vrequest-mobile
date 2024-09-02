@@ -29,45 +29,45 @@ class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
   Widget build(BuildContext context) {
     var state = ref.watch(demandeEnCoursCtrlProvider);
     return Scaffold(
-        appBar: AppBar(
-          foregroundColor: Colors.white,
-          title: Text(
-            "(${state.nbrDemande}) Demandes en cours",
-            style: TextStyle(color: Colors.white),
-          ),
-          centerTitle: true,
-          backgroundColor: Color(0xFFFF7900),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  var ctrl = ref.read(demandeEnCoursCtrlProvider.notifier);
-                  ctrl.nombreDemande();
-                },
-                icon: Icon(
-                  Icons.refresh_sharp,
-                  size: 30,
-                )),
-            IconButton(
-                onPressed: () {
-                  context.pushNamed(Urls.demande.name);
-                },
-                icon: Icon(
-                  Icons.add,
-                  size: 30,
-                ))
-          ],
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        title: Text(
+          "(${state.nbrDemande}) Demandes en cours",
+          style: TextStyle(color: Colors.white),
         ),
-        body:Stack(
-          children: [
-            if (!state.visible) _contenuPrincipal(context, ref),
-            _chargement(context, ref)
-          ],
-        ),);
+        centerTitle: true,
+        backgroundColor: Color(0xFFFF7900),
+        actions: [
+          IconButton(
+              onPressed: () {
+                var ctrl = ref.read(demandeEnCoursCtrlProvider.notifier);
+                ctrl.nombreDemande();
+              },
+              icon: Icon(
+                Icons.refresh_sharp,
+                size: 30,
+              )),
+          IconButton(
+              onPressed: () {
+                context.pushNamed(Urls.demande.name);
+              },
+              icon: Icon(
+                Icons.add,
+                size: 30,
+              ))
+        ],
+      ),
+      body: Stack(
+        children: [
+          if (!state.visible) _contenuPrincipal(context, ref),
+          _chargement(context, ref)
+        ],
+      ),);
   }
 
   _contenuPrincipal(BuildContext context, WidgetRef ref) {
     var state = ref.watch(demandeEnCoursCtrlProvider);
-    List<Demande> demande = state.demande;
+    List<Demande> demande = state.listDemandesSearch;
     return Column(
       children: [
         Padding(
@@ -80,23 +80,32 @@ class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
               ),
               suffixIcon: Icon(Icons.search),
             ),
+            onChanged: (e){
+              var ctrl = ref.read(demandeEnCoursCtrlProvider.notifier);
+              ctrl.filtre(e);
+            },
           ),
         ),
         Expanded(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 35),
-            child: ListView.separated(
-              itemCount: demande.length,
-              itemBuilder: (ctx, index) {
-                var _demande = demande[index];
-                return MyListTile(demande: _demande);
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(
-                  height: 10.0,
-                );
-              },
-            ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 35),
+              child: (state.notFound) ? ListView.separated(
+                itemCount: demande.length,
+                itemBuilder: (ctx, index) {
+                  var _demande = demande[index];
+                  return MyListTile(demande: _demande);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return SizedBox(
+                    height: 10.0,
+                  );
+                },
+              ) : Center(
+                child: Text("Aucune demande correspondante", style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w400
+                ),),
+              ) ,
           ),
         ),
       ],
@@ -121,17 +130,17 @@ class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
                     height: 10,
                   ),
                   if(state.isLoading)
-                  Text(
-                    "Chargement...",
-                    style: TextStyle(fontSize: 18.0),
-                    textAlign: TextAlign.center,
-                  ),
+                    Text(
+                      "Chargement...",
+                      style: TextStyle(fontSize: 18.0),
+                      textAlign: TextAlign.center,
+                    ),
                   if(state.isEmpty)
-                  Text(
-                    "Aucune demande trouvée veillez rafraichir la page",
-                    style: TextStyle(fontSize: 18.0),
-                    textAlign: TextAlign.center,
-                  )
+                    Text(
+                      "Aucune demande trouvée veillez rafraichir la page",
+                      style: TextStyle(fontSize: 18.0),
+                      textAlign: TextAlign.center,
+                    )
                 ],
               ),
             )));

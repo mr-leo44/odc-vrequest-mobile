@@ -13,7 +13,7 @@ class DemandeListCtrl extends _$DemandeListCtrl {
   }
 
   void recupererListDemande() async {
-    state = state.copyWith(isLoading: true, isEmpty: true);
+    state = state.copyWith(isLoading: true, visible: true);
     var useCase = ref.watch(demandeInteractorProvider).getAllDemandeUseCase;
     var res = await useCase.run();
     if (res.length != 0) {
@@ -22,10 +22,11 @@ class DemandeListCtrl extends _$DemandeListCtrl {
           isLoading: false,
           listDemandes: res,
           isEmpty: false,
+          visible: false,
           nbreDemande: nbreDemande,
-          listDemandesSearch: res);
+          listDemandesSearch: res, notFound: true);
     } else {
-      state = state.copyWith(isLoading: true, isEmpty: true);
+      state = state.copyWith(isLoading: true, isEmpty: true, visible: true);
     }
   }
 

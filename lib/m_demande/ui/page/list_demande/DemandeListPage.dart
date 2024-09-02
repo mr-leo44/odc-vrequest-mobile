@@ -63,7 +63,7 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
       ),
       body: Stack(
         children: [
-          if (!state.isEmpty) _contenuPrincipale(context, ref),
+          if (!state.visible) _contenuPrincipale(context, ref),
           _chargement(context, ref)
         ],
       ),
@@ -123,25 +123,33 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
     var state = ref.watch(demandeListCtrlProvider);
 
     return Visibility(
-        visible: state.isLoading,
+        visible: state.visible,
         child: Center(
             child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(
-                height: 10,
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if(state.isLoading)
+                    CircularProgressIndicator(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  if(state.isLoading)
+                    Text(
+                      "Chargement...",
+                      style: TextStyle(fontSize: 18.0),
+                      textAlign: TextAlign.center,
+                    ),
+                  if(state.isEmpty)
+                    Text(
+                      "Aucune demande trouvée veillez rafraichir la page",
+                      style: TextStyle(fontSize: 18.0),
+                      textAlign: TextAlign.center,
+                    )
+                ],
               ),
-              Text(
-                "Aucune demande pour l'instant veillez rafraichir la page",
-                style: TextStyle(fontSize: 18.0),
-                textAlign: TextAlign.center,
-              )
-            ],
-          ),
-        )));
+            )));
   }
 }
