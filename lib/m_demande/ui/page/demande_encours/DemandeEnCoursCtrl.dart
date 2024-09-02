@@ -27,9 +27,11 @@ class DemandeEnCoursCtrl extends _$DemandeEnCoursCtrl {
     if (demandes.length != 0) {
       state = state.copyWith(
           demande: demandes,
+          listDemandesSearch: demandes,
           nbrDemande: demandes.length,
           isLoading: false,
-          visible: false);
+          visible: false,
+          notFound: true);
     } else {
       state = state.copyWith(
           isLoading: false, isEmpty: true, nbrDemande: 0, visible: true);
@@ -40,5 +42,20 @@ class DemandeEnCoursCtrl extends _$DemandeEnCoursCtrl {
     var usecase = ref.watch(userInteractorProvider).getUserLocalUseCase;
     var res = await usecase.run();
     state = state.copyWith(user: res);
+  }
+
+  void filtre(String recherche) async {
+    List<Demande> demandes = state.demande;
+
+    List<Demande> demandesCorrespondant = demandes
+        .where((demande) => demande.motif.toLowerCase().contains(recherche))
+        .toList();
+    state = state.copyWith(listDemandesSearch: demandesCorrespondant);
+
+    if (demandesCorrespondant.length != 0) {
+      state = state.copyWith(notFound: true);
+    } else {
+      state = state.copyWith(notFound: false);
+    }
   }
 }
