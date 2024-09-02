@@ -5,6 +5,7 @@ class DemandeListState {
   bool isLoading;
   bool isEmpty;
   bool notFound;
+  bool visible;
   int nbreDemande;
   List<Demande> listDemandesSearch;
 
@@ -13,6 +14,7 @@ class DemandeListState {
     this.listDemandesSearch=const [],
     this.isLoading=false,
     this.isEmpty=false,
+    this.visible=false,
     this.notFound=false,
     this.nbreDemande=0
   });
@@ -22,6 +24,7 @@ class DemandeListState {
     List<Demande>? listDemandesSearch,
     bool? isLoading,
     bool? isEmpty,
+    bool? visible,
     bool? notFound,
     int? nbreDemande,
   }) =>
@@ -30,6 +33,7 @@ class DemandeListState {
         listDemandesSearch: listDemandesSearch ?? this.listDemandesSearch,
         isLoading: isLoading ?? this.isLoading,
         isEmpty: isEmpty ?? this.isEmpty,
+        visible: visible ?? this.visible,
         notFound: notFound ?? this.notFound,
         nbreDemande: nbreDemande ?? this.nbreDemande,
 
