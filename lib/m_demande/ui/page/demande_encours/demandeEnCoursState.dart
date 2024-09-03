@@ -1,34 +1,32 @@
-
+import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 
 import '../../../../m_user/business/model/User.dart';
 
 class DemandeEnCoursState {
-
-  Map<String,dynamic> nombre;
+  int nbrDemande;
   User? user;
-  Map<String,dynamic> demande;
+  List<Demande> demande;
+  bool isLoading;
+  bool isEmpty;
 
+  DemandeEnCoursState(
+      {this.isLoading = false,
+      this.isEmpty = false,
+      this.nbrDemande = 0,
+      this.user = null,
+      this.demande = const []});
 
-  DemandeEnCoursState({
-
-    this.nombre = const {},
-    this.user = null,
-    this.demande = const {}
-
-  });
-
-  DemandeEnCoursState copyWith({
-
-    Map<String,dynamic>? nombre,
-    User? user,
-    Map<String,dynamic>? demande
-
-  }) =>
+  DemandeEnCoursState copyWith(
+          {int? nbrDemande,
+          User? user,
+          List<Demande>? demande,
+          bool? isLoading,
+          bool,
+          isEmpty}) =>
       DemandeEnCoursState(
-
-          nombre: nombre ?? this.nombre,
+          nbrDemande: nbrDemande ?? this.nbrDemande,
           user: user ?? this.user,
-          demande: demande ?? this.demande
-
-      );
+          demande: demande ?? this.demande,
+          isLoading: isLoading ?? this.isLoading,
+          isEmpty: isEmpty ?? this.isEmpty);
 }

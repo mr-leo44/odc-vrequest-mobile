@@ -1,10 +1,12 @@
+import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
+
 import '../../../business/model/User.dart';
 
 class AccueilPageState {
 
   Map<String,dynamic> nombre;
   User? user;
-  List last;
+  List<Demande> last;
 
 
   AccueilPageState({
@@ -19,7 +21,7 @@ class AccueilPageState {
 
     Map<String,dynamic>? nombre,
     User? user,
-    List? last
+    List<Demande>? last
 
   }) =>
       AccueilPageState(

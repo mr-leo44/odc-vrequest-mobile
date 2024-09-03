@@ -7,6 +7,8 @@ class ChatDetailState {
   int isdeconnected;
   User? auth;
   List<LatLng> drawRoute;
+  bool courseStarted;
+  bool courseClosed;
 
   ChatDetailState({
     this.isLoading = false,
@@ -14,6 +16,8 @@ class ChatDetailState {
     this.isdeconnected = 0,
     this.auth = null,
     this.drawRoute = const <LatLng>[],
+    this.courseStarted = false,
+    this.courseClosed = false,
   });
 
   ChatDetailState copyWith({
@@ -22,6 +26,8 @@ class ChatDetailState {
     int? isdeconnected,
     User? auth,
     List<LatLng>? drawRoute,
+    bool? courseStarted,
+    bool? courseClosed,
   }) =>
       ChatDetailState(
         isLoading: isLoading ?? this.isLoading,
@@ -29,5 +35,7 @@ class ChatDetailState {
         isdeconnected: isdeconnected ?? this.isdeconnected,
         auth: auth ?? this.auth,
         drawRoute: drawRoute ?? this.drawRoute,
+        courseStarted: courseStarted ?? this.courseStarted,
+        courseClosed: courseClosed ?? this.courseClosed,
       );
 }

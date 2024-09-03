@@ -18,7 +18,8 @@ class DemandeListCtrl extends _$DemandeListCtrl {
         .getAllDemandeUseCase;
     var res = await useCase.run();
     if (res.length != 0) {
-      state = state.copyWith(isLoading: false, listDemandes: res, isEmpty: false);
+      int nbreDemande = res.length;
+      state = state.copyWith(isLoading: false, listDemandes: res, isEmpty: false, nbreDemande:nbreDemande);
     }else{
       state = state.copyWith(isLoading: true, isEmpty: true);
     }
