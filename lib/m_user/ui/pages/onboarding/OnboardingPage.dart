@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:odc_mobile_project/m_user/business/model/OnboardingPageModel.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/onboarding/OnboardingCtrl.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
+import 'package:odc_mobile_project/utils/colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnboardingPage extends ConsumerStatefulWidget {
@@ -67,9 +68,9 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                             flex: 1,
                             child: Column(children: [
                               Padding(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(10.0),
                                 child: Text(_item.title,
-                                    style: TextStyle(color: Colors.amber, fontSize: 25, fontWeight: FontWeight.bold) ),
+                                    style: TextStyle(color: _item.textColor, fontSize: 35, fontWeight: FontWeight.bold) ),
                               ),
                               Container(
                                 constraints: BoxConstraints(maxWidth: 280),
@@ -77,7 +78,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                                     horizontal: 24.0, vertical: 8.0),
                                 child: Text(_item.description,
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400)),
+                                    style: TextStyle(color: _item.textColor, fontSize: 15, fontWeight: FontWeight.w400)),
                               )
                             ]))
                       ],
