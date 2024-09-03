@@ -10,8 +10,8 @@ class RecupererMessageGroupeUseCase{
 
     RecupererMessageGroupeUseCase(this.network, this.local);
 
-    Future<ChatUsersModel>run(int demandeId) async{
-      var res= await network.recupererMessageGroupe(demandeId);
+    Future<ChatUsersModel>run(int demandeId, String token) async{
+      var res= await network.recupererMessageGroupe(demandeId, token);
       return res;
     }
 

@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatPage.dart';
+import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_demande/ui/page/details_demande_page/DetailsDemandeCtrl.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
+import 'package:odc_mobile_project/utils/colors.dart';
 
 class DetailsDemandePage extends ConsumerStatefulWidget {
   final int id;
@@ -19,8 +23,9 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      var ctrl = ref.watch(detailsDemandeCtrlProvider.notifier);
+      var ctrl = ref.read(detailsDemandeCtrlProvider.notifier);
       ctrl.recupererDemande(widget.id);
+      ctrl.getMessages(widget.id);
     });
   }
 
@@ -45,7 +50,7 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
                 size: 30,
               )),
         ],
-        backgroundColor: Color(0xFFFF4500),
+        backgroundColor: Couleurs.primary,
       ),
       body: Stack(
         children: [
@@ -67,11 +72,13 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
 
     print("demande ${demande?.motif}");
 
+    var chatUsersModel = state.chatsUsers;
+
     return Column(
       children: [
         Container(
           width: double.infinity,
-          color: Color(0xFFFF4500),
+          color: Couleurs.primary,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
             child: Column(
@@ -107,27 +114,44 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
                     )
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      demande!.status == "1"
-                          ? "Discuter avec le chauffeur"
-                          : "En attente du début de la course",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w400, fontSize: 20),
+                  Visibility(
+                    visible: (chatUsersModel?.course.id != 0 ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          demande!.status == "1"
+                              ? "Discuter avec le chauffeur"
+                              : "En attente du début de la course",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400, fontSize: 20),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.chat,
+                            color: demande!.status == "1"
+                                ? Colors.black
+                                : Colors.grey,
+                            size: 50,
+                          ),
+                          onPressed: demande!.status == "1"
+                              ? () {
+                                  if (chatUsersModel != null) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ChatPage(
+                                          chatUsersModel: chatUsersModel,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
+                              : null,
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.chat,
-                        color:
-                            demande!.status == "1" ? Colors.black : Colors.grey,
-                        size: 50,
-                      ),
-                      onPressed: demande!.status == "1" ? () {} : null,
-                    ),
-                  ],
-                )
+                  )
               ],
             ),
           ),
@@ -219,11 +243,14 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton(
-                    onPressed: demande.status != '1' ? () {
-                      var ctrl = ref.read(detailsDemandeCtrlProvider.notifier);
-                      ctrl.annulerDemande(widget.id);
-                      context.goNamed(Urls.listeDemandes.name);
-                    } : null,
+                    onPressed: demande.status != '1'
+                        ? () {
+                            var ctrl =
+                                ref.read(detailsDemandeCtrlProvider.notifier);
+                            ctrl.annulerDemande(widget.id);
+                            context.goNamed(Urls.listeDemandes.name);
+                          }
+                        : null,
                     child: Text("Annuler"),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.white,
