@@ -1,8 +1,10 @@
+import 'package:odc_mobile_project/m_course/business/Course.dart';
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 
 class ChatUsersModel {
     String avatar;
+    Course course;
     Demande demande;
     User lastSender;
     String lastMessage;
@@ -14,6 +16,7 @@ class ChatUsersModel {
 
     ChatUsersModel({
         this.avatar = "assets/images/car3.webp",
+        required this.course,
         required this.demande,
         required this.lastSender,
         required this.lastMessage,
@@ -26,6 +29,7 @@ class ChatUsersModel {
 
     ChatUsersModel copyWith({
         String? avatar,
+        Course? course,
         Demande? demande,
         User? lastSender,
         String? lastMessage,
@@ -37,6 +41,7 @@ class ChatUsersModel {
     }) => 
         ChatUsersModel(
             avatar: avatar ?? this.avatar,
+            course: course ?? this.course ,
             demande: demande ?? this.demande ,
             lastSender: lastSender ?? this.lastSender,
             lastMessage: lastMessage ?? this.lastMessage,
@@ -49,8 +54,9 @@ class ChatUsersModel {
 
     factory ChatUsersModel.fromJson(Map json) => ChatUsersModel(
         avatar: json["avatar"] ?? "assets/images/car3.webp" ,
-        demande: json["demande"] ?? null ,
-        lastSender: json["lastSender"] ?? null ,
+        course: json["course"] ?? Course.fromJson({}),
+        demande: json["demande"] ?? Demande.fromJson({}) ,
+        lastSender: json["lastSender"] ?? User.fromJson({}) ,
         lastMessage: json["lastMessage"] ?? "" ,
         isPicture: json["isPicture"] ?? false,
         isVideo: json["isVideo"] ?? false ,
@@ -61,6 +67,7 @@ class ChatUsersModel {
 
     Map<String, dynamic> toJson() => {
         "avatar": avatar,
+        "course" : course,
         "demande": demande,
         "lastSender": lastSender,
         "lastMessage": lastMessage,
