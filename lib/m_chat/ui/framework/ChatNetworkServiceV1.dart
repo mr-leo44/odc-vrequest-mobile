@@ -7,6 +7,7 @@ import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
 import 'package:odc_mobile_project/m_chat/business/model/creerMessageRequete.dart';
 import 'package:odc_mobile_project/m_chat/business/service/messageNetworkService.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/chat_message_type.dart';
+import 'package:odc_mobile_project/m_course/business/Course.dart';
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
 import 'package:signals/signals_flutter.dart';
@@ -17,8 +18,8 @@ import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
 class ChatNetworkServiceV1 implements MessageNetworkService {
-
-  ChatNetworkServiceV1(this.baseURL, this.socket, this.baseUrlOpenmapstreet, this.apiOpenmapstreet);
+  ChatNetworkServiceV1(this.baseURL, this.socket, this.baseUrlOpenmapstreet,
+      this.apiOpenmapstreet);
   String baseURL;
   String baseUrlOpenmapstreet;
   String apiOpenmapstreet;
@@ -35,45 +36,47 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
     var url = this.baseURL + '/api/demandes';
 
     try {
-      var response = await gio.get(url);
+    var response = await gio.get(url);
 
-      if (((response.statusCode == 200) || (response.statusCode == 201)) &&
-          (response.headers["content-type"] == "application/json")) {
-        List result = json.decode(response.body);
-        var responseFinal = result.map((e) {
-          User lastSender = User.fromJson(e["lastSender"]);
-          Demande demande = Demande.fromJson({
-            "id": e["demande"]["id"],
-            "ticket": e["demande"]["ticket"],
-            "motif": e["demande"]["motif"],
-            "dateDeplacement": e["demande"]["dateDeplacement"],
-            "lieuDestination": e["demande"]["lieuDestination"],
-            "lieuDepart": e["demande"]["lieuDepart"],
-            "status": e["demande"]["status"],
-            "longitude": e["demande"]["longitude"],
-            "latitude": e["demande"]["latitude"],
-            "longitudelDestination": e["demande"]["longitudelDestination"],
-            "latitudeDestination": e["demande"]["latitudeDestination"],
-            "longitude_depart": e["demande"]["longitudelDepart"],
-            "latitude_depart": e["demande"]["latitudeDepart"],
-            "initiateur": e["demande"]["initiateur"],
-            "chauffeur": e["demande"]["chauffeur"],
-            "nbrEtranger": e["demande"]["nbrEtranger"],
-            "create_at": e["demande"]["created_at"],
-          });
-          return ChatUsersModel.fromJson({
-            "demande": demande,
-            "lastSender": lastSender,
-            "lastMessage": e["lastMessage"],
-            "isPicture": e["isPicture"] == 1 ? true : false,
-            "isVideo": e["isVideo"] == 1 ? true : false,
-            "isMessageRead": e["isMessageRead"],
-            "time": e["time"],
-            "unread": e["unread"],
-          });
-        }).toList();
-        lists = responseFinal;
-      }
+    if (((response.statusCode == 200) || (response.statusCode == 201)) &&
+        (response.headers["content-type"] == "application/json")) {
+      List result = json.decode(response.body);
+      var responseFinal = result.map((e) {
+        User lastSender = User.fromJson(e["lastSender"]);
+        Demande demande = Demande.fromJson({
+          "id": e["demande"]["id"],
+          "ticket": e["demande"]["ticket"],
+          "motif": e["demande"]["motif"],
+          "dateDeplacement": e["demande"]["dateDeplacement"],
+          "lieuDestination": e["demande"]["lieuDestination"],
+          "lieuDepart": e["demande"]["lieuDepart"],
+          "status": e["demande"]["status"],
+          "longitude": e["demande"]["longitude"],
+          "latitude": e["demande"]["latitude"],
+          "longitudelDestination": e["demande"]["longitudelDestination"],
+          "latitudeDestination": e["demande"]["latitudeDestination"],
+          "longitude_depart": e["demande"]["longitudelDepart"],
+          "latitude_depart": e["demande"]["latitudeDepart"],
+          "user": e["demande"]["user"],
+          "chauffeur": e["demande"]["chauffeur"],
+          "nbrEtranger": e["demande"]["nbrEtranger"],
+          "create_at": e["demande"]["created_at"],
+        });
+        Course course = Course.fromJson(e["course"]);
+        return ChatUsersModel.fromJson({
+          "course": course,
+          "demande": demande,
+          "lastSender": lastSender,
+          "lastMessage": e["lastMessage"],
+          "isPicture": e["isPicture"] == 1 ? true : false,
+          "isVideo": e["isVideo"] == 1 ? true : false,
+          "isMessageRead": e["isMessageRead"],
+          "time": e["time"],
+          "unread": e["unread"],
+        });
+      }).toList();
+      lists = responseFinal;
+    }
     } catch (e) {
       print(e);
     }
@@ -82,12 +85,19 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
   }
 
   @override
-  Future<ChatUsersModel> recupererMessageGroupe(int demandeId) async {
-    List<ChatUsersModel> listMessages =
-        await recupererListMessageGroupe("bjhfdf");
-    Iterable<ChatUsersModel> result =
-        listMessages.where((x) => x.demande.id == demandeId);
-    return result.single;
+  Future<ChatUsersModel> recupererMessageGroupe(
+      int demandeId, String token) async {
+    List<ChatUsersModel> listMessages = await recupererListMessageGroupe(token);
+    ChatUsersModel result = ChatUsersModel.fromJson({});
+    if (listMessages.isNotEmpty) {
+      for (var i = 0; i < listMessages.length; i++) {
+        if (listMessages[i].demande.id == demandeId) {
+          result = listMessages[i];
+        }
+      }
+    }
+
+    return result;
   }
 
   @override
@@ -223,7 +233,7 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
             "lieu_depart": resp["demande"]["lieuDepart"],
             "destination": resp["demande"]["destination"],
             "nbre_passagers": resp["demande"]["nbre_passagers"],
-            "initiateur": {
+            "user": {
               "id": resp["demande"]["initiateur"]["id"],
               "first_name": resp["demande"]["initiateur"]["first_name"],
               "username": resp["demande"]["initiateur"]["username"],
@@ -289,26 +299,110 @@ class ChatNetworkServiceV1 implements MessageNetworkService {
 
     return joined;
   }
-  
+
   @override
   Future<List<LatLng>> getRouteUrl(String startPoint, String endPoint) async {
-    var response = await http.get(Uri.parse('${this.baseUrlOpenmapstreet}?api_key=${this.apiOpenmapstreet}&start=$startPoint&end=$endPoint'));
     List listOfPoints = [];
     List<LatLng> points = [];
 
-    if (response.statusCode == 200) {
-      print(response.body);
-      var data = jsonDecode(response.body);
-      listOfPoints = data['features'][0]['geometry']['coordinates'];
-      points = listOfPoints
-          .map((p) => LatLng(p[1].toDouble(), p[0].toDouble()))
-          .toList();
+    try {
+      var response = await http.get(Uri.parse(
+          '${this.baseUrlOpenmapstreet}?api_key=${this.apiOpenmapstreet}&start=$startPoint&end=$endPoint'));
 
-      return Future.value(points);
-    }else{
-      print(response.body);
-      return Future.value(points);
+      if (response.statusCode == 200) {
+        print(response.body);
+        var data = jsonDecode(response.body);
+        listOfPoints = data['features'][0]['geometry']['coordinates'];
+        points = listOfPoints
+            .map((p) => LatLng(p[1].toDouble(), p[0].toDouble()))
+            .toList();
+      } else {
+        print(response.body);
+      }
+    } catch (e) {
+      print(e);
     }
-    
+
+    return Future.value(points);
+  }
+
+  @override
+  Future<bool> startCourse(Course course) async {
+    Dio dio = Dio();
+    bool started = false;
+
+    var url = this.baseURL + '/api/course/status';
+    var param;
+    await dotenv.load(fileName: ".env");
+
+    try {
+      param = FormData.fromMap({"course_id": course.id, "started_at": 1});
+
+      var response = await dio.post(
+        url,
+        data: param,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            //"Accept":"image"
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var resp = json.decode(response.toString());
+        started = true;
+
+        var donnees = {
+          "course": course,
+        };
+
+        // socket.emit('startCourse', donnees);
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return Future.value(started);
+  }
+
+  @override
+  Future<bool> closeCourse(Course course) async {
+    Dio dio = Dio();
+    bool closed = false;
+
+    var url = this.baseURL + '/api/course/status';
+    var param;
+    await dotenv.load(fileName: ".env");
+
+    try {
+      param = FormData.fromMap({"course_id": course.id, "ended_at": 1});
+
+      var response = await dio.post(
+        url,
+        data: param,
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+            //"Accept":"image"
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var resp = json.decode(response.toString());
+        closed = true;
+
+        var donnees = {
+          "course": course,
+        };
+
+        // socket.emit('startCourse', donnees);
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    return Future.value(closed);
   }
 }
