@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
+import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatPage.dart';
+import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_demande/ui/page/details_demande_page/DetailsDemandeCtrl.dart';
 import 'package:odc_mobile_project/m_demande/ui/page/details_demande_page/DetailsDemandePageMap.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
+import 'package:odc_mobile_project/utils/colors.dart';
 
 class DetailsDemandePage extends ConsumerStatefulWidget {
   final int id;
@@ -20,8 +24,9 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      var ctrl = ref.watch(detailsDemandeCtrlProvider.notifier);
+      var ctrl = ref.read(detailsDemandeCtrlProvider.notifier);
       ctrl.recupererDemande(widget.id);
+      ctrl.getMessages(widget.id);
     });
   }
 
@@ -47,7 +52,7 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
                 size: 30,
               )),
         ],
-        backgroundColor: Color(0xFFFF7900),
+        backgroundColor: Couleurs.primary,
       ),
       body: Stack(
         children: [
@@ -68,6 +73,8 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
     var screenWidth = size.width;
 
     print("demande ${demande?.motif}");
+
+    var chatUsersModel = state.chatsUsers;
 
     return SingleChildScrollView(
       child: Column(
