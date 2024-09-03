@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 import 'package:odc_mobile_project/m_chat/business/interactor/chatInteractor.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatModel.dart';
+import 'package:odc_mobile_project/m_course/business/Course.dart';
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_user/business/interactor/UserInteractor.dart';
 import 'package:odc_mobile_project/shared/business/interactor/shared/SharedInteractor.dart';
@@ -72,7 +73,8 @@ class SharedCtrl extends _$SharedCtrl {
         });
       }
 
-      if(message.user.id != 0){
+      print(state.auth!.id);
+      if (message.user.id != 0) {
         if ((message.user.id != state.auth!.id)) {
           NotificationController.createNewNotification(NotificationPush(
               title: message.user.username,
@@ -145,14 +147,60 @@ class SharedCtrl extends _$SharedCtrl {
     print("getLocation ${state.location}");
   }
 
-  Future<void> locationRealTime()async{
+  Future<void> locationRealTime() async {
     var interactor = ref.watch(sharedInteractorProvider);
     effect(() async {
       state = state.copyWith(isLoading: true);
-      Map<String, dynamic> location = await interactor.locationRealTimeUseCase.run();
-      if(location.isNotEmpty){
+      Map<String, dynamic> location =
+          await interactor.locationRealTimeUseCase.run();
+      if (location.isNotEmpty) {
         state = state.copyWith(location: location, isLoading: false);
       }
+    });
+  }
+
+  Future<void> courseStarted() async {
+    var interactor = ref.watch(sharedInteractorProvider);
+    effect(() async {
+      Course course = await interactor.startCourseRealTimeUseCase.run();
+      NotificationController.createNewNotification(NotificationPush(
+          title: "Une course a debute",
+          body: "Une course a debute",
+          // bigPicture: "",
+          payload: {
+            "payloadId": course.demande.ticket.toString()
+          },
+          notificationActionButtons: [
+            NotificationActionButton(key: 'REDIRECT', label: 'Voir'),
+            NotificationActionButton(
+                key: 'DISMISS',
+                label: 'Dismiss',
+                actionType: ActionType.DismissAction,
+                isDangerousOption: true)
+          ]));
+      
+    });
+  }
+
+  Future<void> courseClosed() async {
+    var interactor = ref.watch(sharedInteractorProvider);
+    effect(() async {
+      Course course = await interactor.startCourseRealTimeUseCase.run();
+      NotificationController.createNewNotification(NotificationPush(
+          title: "Une course est termine",
+          body: "Une course est termine",
+          // bigPicture: "",
+          payload: {
+            "payloadId": course.demande.ticket.toString()
+          },
+          notificationActionButtons: [
+            NotificationActionButton(key: 'REDIRECT', label: 'Voir'),
+            NotificationActionButton(
+                key: 'DISMISS',
+                label: 'Dismiss',
+                actionType: ActionType.DismissAction,
+                isDangerousOption: true)
+          ]));
     });
   }
 
@@ -166,8 +214,8 @@ class SharedCtrl extends _$SharedCtrl {
     }).listen((currentLocation) async {
       var interactor = ref.watch(sharedInteractorProvider);
       Map<String, dynamic> _location = {
-        "longitude" : await currentLocation.longitude.toString(),
-        "latitude" : await currentLocation.latitude.toString(),
+        "longitude": await currentLocation.longitude.toString(),
+        "latitude": await currentLocation.latitude.toString(),
       };
       await interactor.sendLocationUseCase.run(_location, demande);
     });
