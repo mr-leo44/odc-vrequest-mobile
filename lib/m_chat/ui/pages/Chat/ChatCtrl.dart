@@ -33,12 +33,14 @@ class ChatCtrl extends _$ChatCtrl {
         if (message.user.email.isNotEmpty && message.message.isNotEmpty) {
           n++;
           var actualList = state.chatList;
-          actualList.add(message);
+          // actualList.add(message);
 
           print("receuved $message $n");
-          state = state.copyWith(chatList: actualList);
+          // state = state.copyWith(chatList: actualList);
+
+          getList(data);
         }
-        // getList(data);
+
       });
     }
     
