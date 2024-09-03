@@ -18,6 +18,7 @@ import 'package:odc_mobile_project/m_user/business/model/User.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:odc_mobile_project/shared/ui/pages/shared/SharedCtrl.dart';
+import 'package:odc_mobile_project/utils/colors.dart';
 import 'package:video_player/video_player.dart';
 import 'package:popup_menu_plus/popup_menu_plus.dart';
 
@@ -304,21 +305,31 @@ class _ChatPageState extends ConsumerState<ChatPage> {
               onTap: () {
                 FocusScope.of(context).unfocus();
               },
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  reverse: true,
-                  padding: const EdgeInsets.only(top: 12, bottom: 20) +
-                      const EdgeInsets.symmetric(horizontal: 12),
-                  separatorBuilder: (_, __) => const SizedBox(
-                    height: 12,
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    onError: (exception, stackTrace) => Colors.white,
+                    opacity: 0.8,
+                    image: AssetImage("assets/images/orange.jpeg"),
+                    fit: BoxFit.cover,
                   ),
-                  controller: scrollController,
-                  itemBuilder: (context, index) {
-                    return Bubble(chat: chatList[index]);
-                  },
-                  itemCount: chatList.length,
+                ),
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    reverse: true,
+                    padding: const EdgeInsets.only(top: 12, bottom: 20) +
+                        const EdgeInsets.symmetric(horizontal: 12),
+                    separatorBuilder: (_, __) => const SizedBox(
+                      height: 12,
+                    ),
+                    controller: scrollController,
+                    itemBuilder: (context, index) {
+                      return Bubble(chat: chatList[index]);
+                    },
+                    itemCount: chatList.length,
+                  ),
                 ),
               ),
             ),
@@ -328,7 +339,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
             child: Container(
               color: Colors.transparent,
               constraints: const BoxConstraints(minHeight: 48),
-              margin: EdgeInsets.only(bottom: 5, top: 5),
+              margin: EdgeInsets.only(bottom: 3, top: 3),
               padding: EdgeInsets.all(5),
               width: double.infinity,
               child: Stack(
@@ -404,10 +415,10 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 
   void attachMenu() {
     menu = PopupMenu(
-      config: const MenuConfig(
+      config: MenuConfig(
         // backgroundColor: Colors.green,
-        lineColor: Colors.orangeAccent,
-        highlightColor: Colors.orangeAccent,
+        lineColor: Couleurs.primary,
+        highlightColor: Couleurs.primary,
       ),
       context: context,
       items: [
@@ -430,6 +441,12 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 }
 
 AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
+  var title = widget.chatUsersModel.demande.initiateur!.prenom +
+      " " +
+      widget.chatUsersModel.demande.initiateur!.nom +
+      " #" +
+      widget.chatUsersModel.demande.id.toString();
+
   return AppBar(
     leadingWidth: 80,
     automaticallyImplyLeading: true,
@@ -440,12 +457,15 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
         IconButton(
           padding: EdgeInsets.zero,
           onPressed: () => context.pushNamed(Urls.chatList.name),
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(
+            Icons.arrow_back,
+          ),
         ),
         Container(
           width: 30,
           child: CircleAvatar(
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.transparent,
+
             child: ClipRRect(
               borderRadius: BorderRadius.all(
                 Radius.circular(20),
@@ -456,7 +476,8 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
         ),
       ],
     ),
-    backgroundColor: Colors.amber[700],
+    // backgroundColor: Colors.white,
+    foregroundColor: Colors.black,
     title: TouchRipple(
       onTap: () {
         HapticFeedback.selectionClick();
@@ -470,7 +491,7 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
           ),
         );
       },
-      rippleColor: Colors.white.withAlpha(65),
+      rippleColor: Colors.black.withAlpha(65),
       tapBehavior: TouchRippleBehavior(
         fadeInDuration: Duration(milliseconds: 250),
         eventCallBackableMinPercent: 1,
@@ -480,9 +501,20 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.chatUsersModel.demande.ticket,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
             Row(
               children: [
@@ -490,8 +522,8 @@ AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
                   child: Text(
                     widget.chatUsersModel.demande.initiateur.email +
                         ", " +
-                        widget.chatUsersModel.demande.chauffeur.email,
-                    style: TextStyle(fontSize: 12),
+                        widget.chatUsersModel.course.chauffeur.email,
+                    style: TextStyle(fontSize: 12, ),
                     softWrap: false,
                     overflow: TextOverflow.ellipsis,
                   ),

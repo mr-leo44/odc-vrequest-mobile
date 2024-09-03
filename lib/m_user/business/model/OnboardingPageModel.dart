@@ -11,7 +11,7 @@ class OnboardingPageModel {
     required this.title,
     required this.description,
     required this.image,
-    this.bgColor = Colors.blue,
+    this.bgColor = Colors.blueGrey,
     this.textColor = Colors.white,
   });
 }
