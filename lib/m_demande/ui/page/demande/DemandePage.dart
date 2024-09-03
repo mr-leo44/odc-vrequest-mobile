@@ -23,9 +23,9 @@ class DemandePage extends ConsumerStatefulWidget {
 class _DemandePageState extends ConsumerState<DemandePage> {
   DateTime _selectedDate = DateTime.now();
   var _date_ctrl = TextEditingController();
-  var motif_ctrl = TextEditingController(text: "Voyage");
+  var motif_ctrl = TextEditingController();
   int? index_switch = 0;
-  var nbre_passagers_ctrl = TextEditingController(text: "4");
+  var nbre_passagers_ctrl = TextEditingController();
   Site? lieuDepart;
   Site? destination;
 
