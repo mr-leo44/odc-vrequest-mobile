@@ -36,7 +36,7 @@ class User {
   });
 
   factory User.fromJson(Map json) => User(
-    id: json["id"],
+    id: json["id"] ?? 0,
     prenom: json["first_name"] ?? "",
     username: json["username"] ?? "",
     nom: json["last_name"] ?? "",
