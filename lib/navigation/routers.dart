@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatPage.dart';
-import 'package:odc_mobile_project/m_chat/ui/pages/ChatDetail/ChatDetailPage.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/ChatList/ChatListPage.dart';
-
-
 
 import 'package:odc_mobile_project/m_demande/ui/page/demande/DemandePage.dart';
 import 'package:odc_mobile_project/m_demande/ui/page/details_demande_page/DetailsDemandePage.dart';
@@ -11,7 +7,6 @@ import 'package:odc_mobile_project/m_demande/ui/page/list_demande/DemandeListPag
 import 'package:odc_mobile_project/m_demande/ui/page/map_page/MapPage.dart';
 
 import 'package:odc_mobile_project/m_user/business/interactor/UserInteractor.dart';
-import 'package:odc_mobile_project/m_user/business/model/OnboardingPageModel.dart';
 // import 'package:odc_mobile_project/m_user/ui/pages/accueil/AccueilPage.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/choixManager/ChoixManagerPage.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/compte/CompteProfilPage.dart';
@@ -19,9 +14,9 @@ import 'package:odc_mobile_project/m_user/ui/pages/introPage/IntroPage.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/onboarding/OnboardingPage.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/profil/ProfilPage.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/login/LoginPage.dart';
+import 'package:odc_mobile_project/utils/plugins/splash_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../m_demande/ui/page/demande_encours/demandeEnCoursPage.dart';
 import '../m_demande/ui/page/demande_traite/DemandeTraitePage.dart';
@@ -50,8 +45,10 @@ enum Urls {
   demande,
 
   detailsDemande,
-  demandeTraite
+  demandeTraite,
 
+  onboarding,
+  splash,
 }
 
 @Riverpod(keepAlive: true)
@@ -59,12 +56,13 @@ GoRouter router(RouterRef ref) {
   final userInteractor = ref.watch(userInteractorProvider);
   return GoRouter(
       debugLogDiagnostics: true,
-      initialLocation: "/onboarding",
+      initialLocation: "/splash",
       redirect: (context, state) async {
         var usecase = userInteractor.getUserLocalUseCase;
         var res = await usecase.run();
 
-        var getStatusOnboardUseCase = await userInteractor.getStatusOnboardUseCase.run();
+        var getStatusOnboardUseCase =
+            await userInteractor.getStatusOnboardUseCase.run();
 
         // redirection vers home page si l'utilisateur est deja connecté
         if ((res?.id != 0) && state.matchedLocation.startsWith("/auth")) {
@@ -76,7 +74,8 @@ GoRouter router(RouterRef ref) {
         //   return "/auth";
         // }
 
-        if((state.uri.toString() == '/onboarding') && (getStatusOnboardUseCase != null)){
+        if ((state.uri.toString() == '/onboarding') &&
+            (getStatusOnboardUseCase != null)) {
           return '/auth';
         }
 
@@ -84,7 +83,13 @@ GoRouter router(RouterRef ref) {
       },
       routes: <RouteBase>[
         GoRoute(
+          path: '/splash',
+          name: Urls.splash.name,
+          builder: (context, state) => SplashScreen(),
+        ),
+        GoRoute(
           path: '/onboarding',
+          name: Urls.onboarding.name,
           builder: (context, state) => OnboardingPage(),
         ),
         GoRoute(
