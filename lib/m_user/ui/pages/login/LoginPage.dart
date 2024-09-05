@@ -1,22 +1,27 @@
-import 'dart:async';
-
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:odc_mobile_project/m_user/ui/pages/login/LoginCtrl.dart';
-import 'package:odc_mobile_project/m_user/ui/pages/profil/ProfilPageCtrl.dart';
 import 'package:odc_mobile_project/navigation/routers.dart';
+import 'package:odc_mobile_project/utils/components/components.dart';
+import 'package:odc_mobile_project/utils/widgets/widgets.dart';
+import 'package:odc_mobile_project/utils/colors.dart';
+import 'package:odc_mobile_project/utils/size_config.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  ConsumerState createState() => _LoginPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
-  var email=TextEditingController(text: "sjayes0");
-  var password=TextEditingController(text: "123456");
+  var email = TextEditingController(text: "sjayes0");
+  var password = TextEditingController(text: "123456");
+  bool _obscureText = true;
+  final _loginFormKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -28,146 +33,203 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [_contenuPrincipale(context), _chargement(context)],
-      ),
-    );
+  Future<void> submit() async {
+    var ctrl = ref.read(loginCtrlProvider.notifier);
+    var resultat = await ctrl.authenticate(email.text, password.text);
+
+    if (resultat?.id != 0) {
+      if (resultat?.manager?.id == 0) {
+        context.goNamed(Urls.choix_manager.name);
+      } else {
+        context.goNamed(Urls.accueil.name);
+      }
+    } else {
+      _showMessageBox(context);
+    }
   }
 
-  _contenuPrincipale(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.only(),
-            child: Image.asset("images/login.png"),
-            width: 300,
-          ),
+  void obscure(){
+    setState((){
+      _obscureText = !_obscureText;
+    });
+  }
 
-          SizedBox(height: 20,),
-          Text("Authentification",
-            style: TextStyle(
-                color: Colors.orange,
-                fontWeight: FontWeight.bold,
-                fontSize: 25
-            ),),
-          SizedBox(height: 40,),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: email,
-              decoration: InputDecoration(label: Text("Email"),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.orange, // Définir la couleur de la bordure
-                      width: 2.0, // Définir l'épaisseur de la bordure
+  @override
+  Widget build(BuildContext context) {
+    AppSizes().init(context);
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Upside(
+                imgUrl: "assets/auth.png",
+                scale: 2.5,
+              ),
+              PageTitleBar(title: 'Authentification'),
+              Padding(
+                padding: const EdgeInsets.only(top: 350.0),
+                child: Container(
+                  height: AppSizes.screenHeight * 0.62,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(50),
+                      topRight: Radius.circular(50),
                     ),
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.orange, // Définir la couleur de la bordure lorsque le TextField est en focus
-                      width: 2.0,
-                    ),
-                  ),
-
-                  prefixIcon: Icon(Icons.verified_user)),
-            ),
-          ),
-          SizedBox(height: 7,),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: password,
-              obscureText: true,
-              decoration: InputDecoration(label: Text("Mot de passe"),
-                prefixIcon: Icon(Icons.lock),
-                suffixIcon: Icon(Icons.visibility_off),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.orange, // Définir la couleur de la bordure
-                    width: 2.0, // Définir l'épaisseur de la bordure
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.orange, // Définir la couleur de la bordure lorsque le TextField est en focus
-                    width: 2.0,
+                  child: Stack(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          
+                          const SizedBox(
+                            height: 55,
+                          ),
+                          iconButton(context),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          const Text(
+                            "ou utiliser votre identifiant",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontFamily: 'OpenSans',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Form(
+                            key: _loginFormKey,
+                            child: Column(
+                              children: [
+                                RoundedInputField(
+                                  hintText: "Email ou Nom d'utilisateur",
+                                  icon: Icons.email,
+                                  controller: email,
+                                ),
+                                RoundedPasswordField(
+                                  password: password,
+                                  obscureText: _obscureText,
+                                  obscure: obscure,
+                                ),
+                                // switchListTile(),
+                                SizedBox(
+                                  height: 22,
+                                ),
+                                RoundedButton(text: 'Se connecter', press: submit),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                // UnderPart(
+                                //   title: "Don't have an account?",
+                                //   navigatorText: "Register here",
+                                //   onTap: () {
+                                //     Navigator.push(
+                                //         context,
+                                //         MaterialPageRoute(
+                                //             builder: (context) =>
+                                //                 const SignUpScreen()));
+                                //   },
+                                // ),
+                                // const SizedBox(
+                                //   height: 20,
+                                // ),
+                                // Text(
+                                //   'Forgot password?',
+                                //   style: TextStyle(
+                                //       color: Colors.grey,
+                                //       fontFamily: 'OpenSans',
+                                //       fontWeight: FontWeight.w600,
+                                //       fontSize: 13),
+                                // ),
+                                
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      _chargement(context, ref),
+                    ],
                   ),
                 ),
               ),
-            ),
+              
+            ],
           ),
-
-          SizedBox(height: 50,),
-
-          ElevatedButton(onPressed: () async{
-
-            var ctrl=ref.read(loginCtrlProvider.notifier);
-            var resultat = await  ctrl.authenticate(email.text,password.text);
-
-            if(resultat?.id!=0){
-              if(resultat?.manager?.id==0){
-                context.goNamed(Urls.choix_manager.name);
-              }
-              else{
-                context.goNamed(Urls.accueil.name);
-              }
-
-            }
-            else{
-              _showMessageBox(context);
-            }
-
-
-
-          },
-            child: Text("Se connecter"),
-            style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 150),
-                backgroundColor: Colors.orange,
-                foregroundColor: Colors.white
-            ),),
-          /*
-          ElevatedButton(
-              onPressed: () {
-                context.pushNamed(Urls.test.name);
-              },
-              child: Text("Naviguer"))
-
-           */
-        ],
+        ),
       ),
     );
   }
+}
 
-  _chargement(BuildContext context) {
-    var state = ref.watch(loginCtrlProvider);
-    return Visibility(
-        visible: state.isLoading, child: CircularProgressIndicator());
-  }
-  void _showMessageBox(BuildContext context) {
-    showDialog(
-      context: context, // Provide the context of your widget
-      builder: (_) {
-        return AlertDialog(
-          title: const Text("Resultat"),
-          content: const Text("username or password incorrect"),
-          actions: [
-            ElevatedButton(
-              onPressed: Navigator.of(context).pop,
-              child: const Text("Close"),
+switchListTile() {
+  return Padding(
+    padding: const EdgeInsets.only(left: 50, right: 40),
+    child: SwitchListTile(
+      dense: true,
+      title: const Text(
+        'Se souvenir de moi',
+        style: TextStyle(fontSize: 16, fontFamily: 'OpenSans'),
+      ),
+      value: true,
+      activeColor: Couleurs.primary,
+      onChanged: (val) {},
+    ),
+  );
+}
 
-            ),
-          ],
-        );
-      },
-    );
-  }
+iconButton(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      RoundedIcon(imageUrl: "assets/images/facebook.png"),
+      SizedBox(
+        width: 20,
+      ),
+      RoundedIcon(imageUrl: "assets/images/twitter.png"),
+      SizedBox(
+        width: 20,
+      ),
+      RoundedIcon(imageUrl: "assets/images/google.jpg"),
+    ],
+  );
+}
+
+_chargement(BuildContext context, WidgetRef ref) {
+  var state = ref.watch(loginCtrlProvider);
+  return Visibility(
+    visible: state.isLoading,
+    child: Center(
+      child: LoadingAnimationWidget.dotsTriangle(
+        color: Couleurs.primary,
+        size: 40,
+      ),
+    ),
+  );
+}
+
+void _showMessageBox(BuildContext context) {
+  showDialog(
+    context: context, // Provide the context of your widget
+    builder: (_) {
+      return AlertDialog(
+        title: const Text("Resultat"),
+        content: const Text("username or password incorrect"),
+        actions: [
+          ElevatedButton(
+            onPressed: Navigator.of(context).pop,
+            child: const Text("Close"),
+          ),
+        ],
+      );
+    },
+  );
 }
