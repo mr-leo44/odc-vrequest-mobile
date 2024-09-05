@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:odc_mobile_project/m_demande/business/interactor/demandeInteractor.dart';
 
 import 'package:odc_mobile_project/m_user/ui/pages/accueil/AccueilPageCtrl.dart';
+import 'package:odc_mobile_project/utils/colors.dart';
 
 import '../../../../../navigation/routers.dart';
 import 'StatCtrl.dart';
@@ -30,18 +31,15 @@ class _StatPage extends ConsumerState<StatPage> {
 
     });
   }
+
   var height,width;
 
   List imageData = [
-
-    "images/encours.png",
-    "images/valide.png",
-
+    "assets/images/icon-progress.png",
+    "assets/images/icon-done.png",
     "images/voiture.png",
     "images/car.png",
   ];
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,48 +47,15 @@ class _StatPage extends ConsumerState<StatPage> {
     width = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: _entete(),
-
         body: ListView(
             children: [ SafeArea(
               child :Container(
-                color: Colors.orange,
+                color: Colors.white,
                 height: height,
                 width: width,
                 child: Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                      ),
-                      height: height*0.1,
-                      width: width,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              top: 20,
-                              left: 30,
-
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Statistiques ",
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500,
-                                    letterSpacing: 1,
-                                  ),),
-                                SizedBox(height: 5,),
-
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
+                    SizedBox(height: 15,),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -100,11 +65,12 @@ class _StatPage extends ConsumerState<StatPage> {
                         ),
 
                       ),
-                      height: height*0.85,
+                      height: height * 0.95,
                       width: width,
                       child: Column(
                         children: [
                           GridView.builder(
+                            padding: EdgeInsets.all(8),
                               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2,
                                   childAspectRatio: 1.1,
@@ -143,7 +109,7 @@ class _StatPage extends ConsumerState<StatPage> {
                                 ];
                                 List noms = [
                                   //"Total",
-                                  "Encours",
+                                  "En cours",
                                   "Validée",
                                   "disponible",
                                   "indisponible",
@@ -159,7 +125,7 @@ class _StatPage extends ConsumerState<StatPage> {
                                 return InkWell(
                                   onTap: (){},
                                   child: Container(
-                                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                                    margin: EdgeInsets.symmetric(vertical: 10, horizontal: 21),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
                                         color: Colors.white,
@@ -214,8 +180,8 @@ class _StatPage extends ConsumerState<StatPage> {
 
   AppBar _entete() {
     return AppBar(
-      title: Center(child: Text("Stat demande")),
-      backgroundColor: Colors.orange,
+      title: Center(child: Text("Statistiques")),
+      backgroundColor: Colors.white,
       foregroundColor: Colors.black,
       elevation: 0,
       actions: [
