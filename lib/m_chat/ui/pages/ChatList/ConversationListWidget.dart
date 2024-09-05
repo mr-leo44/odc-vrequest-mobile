@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:odc_mobile_project/m_chat/business/model/ChatUsersModel.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatCtrl.dart';
 import 'package:odc_mobile_project/m_chat/ui/pages/Chat/ChatPage.dart';
+import 'package:odc_mobile_project/utils/colors.dart';
 
 class ConversationListWidget extends ConsumerStatefulWidget {
   ChatUsersModel chatUsersModel;
@@ -17,7 +18,10 @@ class _ConversationlistState extends ConsumerState<ConversationListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    
+    var title = widget.chatUsersModel.demande.initiateur!.prenom+" "+
+                            widget.chatUsersModel.demande.initiateur!.nom+" #"+
+                            widget.chatUsersModel.demande.id.toString();
+
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -53,7 +57,7 @@ class _ConversationlistState extends ConsumerState<ConversationListWidget> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            widget.chatUsersModel.demande.ticket,
+                            title,
                             style: TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
@@ -87,7 +91,7 @@ class _ConversationlistState extends ConsumerState<ConversationListWidget> {
                     child: Container(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      color: Colors.amber,
+                      color: Couleurs.primary,
                       child: Text(
                         widget.chatUsersModel.unread.toString(),
                         style: TextStyle(
@@ -119,7 +123,7 @@ Widget _subTitle(widget, WidgetRef ref) {
               Icon(
                 Icons.done_all,
                 color: !chatUsersModel.isMessageRead
-                    ? Colors.amber.shade700
+                    ? Couleurs.primary
                     : Colors.grey.shade500,
                 size: 15,
               ),
@@ -133,7 +137,7 @@ Widget _subTitle(widget, WidgetRef ref) {
               Icon(
                 Icons.check,
                 color: !chatUsersModel.isMessageRead
-                    ? Colors.amber.shade700
+                    ? Couleurs.primary
                     : Colors.grey.shade500,
                 size: 15,
               ),
@@ -161,7 +165,7 @@ Widget _subTitle(widget, WidgetRef ref) {
                   softWrap: false,
                   style: TextStyle(
                     color: !widget.chatUsersModel.isMessageRead
-                        ? Colors.amber.shade700
+                        ? Couleurs.primary
                         : Colors.grey.shade500,
                     fontWeight: !widget.chatUsersModel.isMessageRead
                         ? FontWeight.bold
@@ -188,7 +192,7 @@ Widget _subTitle(widget, WidgetRef ref) {
                   softWrap: false,
                   style: TextStyle(
                     color: !widget.chatUsersModel.isMessageRead
-                        ? Colors.amber.shade700
+                        ? Couleurs.primary
                         : Colors.grey.shade500,
                     fontWeight: !widget.chatUsersModel.isMessageRead
                         ? FontWeight.bold
@@ -212,7 +216,7 @@ Widget _subTitle(widget, WidgetRef ref) {
             style: TextStyle(
                 fontSize: 13,
                 color: !chatUsersModel.isMessageRead
-                    ? Colors.amber.shade700
+                    ? Couleurs.primary
                     : Colors.grey.shade500,
                 fontWeight: !chatUsersModel.isMessageRead
                     ? FontWeight.bold
