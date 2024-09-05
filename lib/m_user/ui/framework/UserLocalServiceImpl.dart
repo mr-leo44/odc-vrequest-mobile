@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:odc_mobile_project/m_user/business/model/OnboardingPageModel.dart';
 import 'package:odc_mobile_project/m_user/business/model/User.dart';
+import 'package:odc_mobile_project/utils/colors.dart';
 import 'package:sembast/sembast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,15 +15,15 @@ class UserLocalServiceImpl implements UserLocalService {
   UserLocalServiceImpl(this.db);
 
   @override
-  Future<String> getToken() async{
-    var data =await stockage.record(tokenKey).get(db) as String?;
+  Future<String> getToken() async {
+    var data = await stockage.record(tokenKey).get(db) as String?;
     print("data token: $data");
     return Future.value(data);
   }
 
   @override
   Future<bool> saveToken(String data) async {
-    await stockage.record(tokenKey).put(db,data);
+    await stockage.record(tokenKey).put(db, data);
     return true;
   }
 
@@ -36,15 +36,15 @@ class UserLocalServiceImpl implements UserLocalService {
 
   @override
   Future<User?> getUser() async {
-    var data =await stockage.record(userKey).get(db) as Map?;
+    var data = await stockage.record(userKey).get(db) as Map?;
     print("data local uer $data");
-    return Future.value(User.fromJson(data?? {"id": 0}));
+    return Future.value(User.fromJson(data ?? {"id": 0}));
   }
 
   @override
   Future<bool> saveUser(User data) async {
     print("User ${data.toJson()}");
-    await stockage.record(userKey).put(db,data.toJson());
+    await stockage.record(userKey).put(db, data.toJson());
 
     return true;
   }
@@ -54,27 +54,36 @@ class UserLocalServiceImpl implements UserLocalService {
     List<OnboardingPageModel> onboards = [
       OnboardingPageModel(
         title: 'Vrequest',
-        description: 'Gestion optimale de la demande de charroi et une meilleure accessibilité des véhicules aux personnes sollicitant le service.',
+        description:
+            'Gestion optimale de la demande de charroi et une meilleure accessibilité des véhicules aux personnes sollicitant le service.',
         image: 'assets/logo.png',
+        bgColor: Colors.blueGrey,
+        textColor: Colors.white,
       ),
       OnboardingPageModel(
         title: 'Courses',
-        description: 'Permet d\'assigner des véhicules de service aux personnes sollicitant un déplacement dans le cadre d'
-                      'une activité professionnelle.',
+        description:
+            'Permet d\'assigner des véhicules de service aux personnes sollicitant un déplacement dans le cadre d'
+            'une activité professionnelle.',
         image: 'images/intro.png',
-        bgColor: Colors.cyan,
+        bgColor: Colors.teal,
+        textColor: Colors.white,
       ),
       OnboardingPageModel(
         title: 'Geolocalisation',
-        description: 'Permet de suivre la position des véhicules en temps réel.',
+        description:
+            'Permet de suivre la position des véhicules en temps réel.',
         image: 'images/car.png',
-        bgColor: Colors.teal,
+        bgColor: Colors.blueGrey,
+        textColor: Colors.white,
       ),
       OnboardingPageModel(
         title: 'Messagerie Instantanée',
-        description: 'Permet d\'entamer une messagerie instantanée avec le chauffeur assigné a votre course.',
+        description:
+            'Permet d\'entamer une messagerie instantanée avec le chauffeur assigné a votre course.',
         image: 'assets/images/chat.avif',
-        bgColor: Colors.blueGrey,
+        bgColor: Colors.teal,
+        textColor: Colors.white,
       ),
     ];
 
@@ -86,11 +95,11 @@ class UserLocalServiceImpl implements UserLocalService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return await prefs.getBool('onboarding');
   }
-  
+
   @override
   Future terminateOnboard() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('onboarding',true);
+    prefs.setBool('onboarding', true);
   }
 }
 
