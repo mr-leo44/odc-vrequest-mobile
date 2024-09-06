@@ -5,9 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:odc_mobile_project/m_demande/ui/composant/MyListTile.dart';
+import 'package:odc_mobile_project/utils/size_config.dart';
 import '../../../../navigation/routers.dart';
 import '../../../business/model/Demande.dart';
 import 'DemandeListCtrl.dart';
+import 'package:odc_mobile_project/utils/layouts/header.dart';
+import 'package:odc_mobile_project/utils/bottom_nav.dart';
 
 class DemandeListPage extends ConsumerStatefulWidget {
   const DemandeListPage({super.key});
@@ -18,6 +21,8 @@ class DemandeListPage extends ConsumerStatefulWidget {
 
 class _DemandeListPageState extends ConsumerState<DemandeListPage> {
   final TextEditingController _searchController = TextEditingController();
+  int _currentIndex = 1;
+  final PageController pageController = PageController();
 
   @override
   void initState() {
@@ -31,14 +36,22 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
 
   @override
   Widget build(BuildContext context) {
+    AppSizes().init(context);
     var state = ref.watch(demandeListCtrlProvider);
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: Text(
-          "(${state.nbreDemande}) Demandes",
-          style: TextStyle(color: Colors.white),
+        automaticallyImplyLeading: false,
+        foregroundColor: Colors.black,
+        title: Header.header(
+          context,
+          Text(
+            "Demandes (${state.nbreDemande})",
+          ),
         ),
+        // title: Text(
+        //   "(${state.nbreDemande}) Demandes",
+        //   style: TextStyle(color: Colors.white),
+        // ),
         centerTitle: true,
         backgroundColor: Color(0xFFFF7900),
         actions: [
@@ -61,11 +74,38 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
               ))
         ],
       ),
-      body: Stack(
-        children: [
-          if (!state.visible) _contenuPrincipale(context, ref),
-          _chargement(context, ref)
-        ],
+      body: Container(
+        height: AppSizes.screenHeight,
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Stack(
+            children: [
+              Container(
+                height: AppSizes.screenHeight * 0.89,
+                child: ListView(
+                  children: [
+                    Container(
+                      height: AppSizes.screenHeight * 0.84,
+                      child: Stack(
+                        children: [
+                          if (!state.visible) _contenuPrincipale(context, ref),
+                          _chargement(context, ref)
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Bottom_nav.bottomNav(
+                    context, ref, _currentIndex, pageController),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -87,7 +127,7 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
               ),
               suffixIcon: Icon(Icons.search),
             ),
-            onChanged: (e){
+            onChanged: (e) {
               var ctrl = ref.read(demandeListCtrlProvider.notifier);
               ctrl.filtre(e);
             },
@@ -96,23 +136,26 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 35),
-            child: (state.notFound) ? ListView.separated(
-              itemCount: _demandes.length,
-              itemBuilder: (ctx, index) {
-                var demande = _demandes[index];
-                return MyListTile(demande: demande);
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return SizedBox(
-                  height: 10.0,
-                );
-              },
-            ) : Center(
-              child: Text("Aucune demande correspondante", style: TextStyle(
-                fontSize: 15.0,
-                fontWeight: FontWeight.w400
-              ),),
-            ),
+            child: (state.notFound)
+                ? ListView.separated(
+                    itemCount: _demandes.length,
+                    itemBuilder: (ctx, index) {
+                      var demande = _demandes[index];
+                      return MyListTile(demande: demande);
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return SizedBox(
+                        height: 10.0,
+                      );
+                    },
+                  )
+                : Center(
+                    child: Text(
+                      "Aucune demande correspondante",
+                      style: TextStyle(
+                          fontSize: 15.0, fontWeight: FontWeight.w400),
+                    ),
+                  ),
           ),
         ),
       ],
@@ -126,30 +169,29 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
         visible: state.visible,
         child: Center(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if(state.isLoading)
-                    CircularProgressIndicator(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  if(state.isLoading)
-                    Text(
-                      "Chargement...",
-                      style: TextStyle(fontSize: 18.0),
-                      textAlign: TextAlign.center,
-                    ),
-                  if(state.isEmpty)
-                    Text(
-                      "Aucune demande trouvée veillez rafraichir la page",
-                      style: TextStyle(fontSize: 18.0),
-                      textAlign: TextAlign.center,
-                    )
-                ],
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (state.isLoading) CircularProgressIndicator(),
+              SizedBox(
+                height: 10,
               ),
-            )));
+              if (state.isLoading)
+                Text(
+                  "Chargement...",
+                  style: TextStyle(fontSize: 18.0),
+                  textAlign: TextAlign.center,
+                ),
+              if (state.isEmpty)
+                Text(
+                  "Aucune demande trouvée veillez rafraichir la page",
+                  style: TextStyle(fontSize: 18.0),
+                  textAlign: TextAlign.center,
+                )
+            ],
+          ),
+        )));
   }
 }
