@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:odc_mobile_project/m_demande/business/interactor/demande/AnnulerDamandeUseCase.dart';
 import 'package:odc_mobile_project/m_demande/business/interactor/demande/CreerDemandeUseCase.dart';
 import 'package:odc_mobile_project/m_demande/business/interactor/demande/GetDemandeUseCase.dart';
+import 'package:odc_mobile_project/m_demande/business/interactor/demande/GetUserByName.dart';
 import 'package:odc_mobile_project/m_demande/business/interactor/demande/ListeDemandeUseCase.dart';
 import 'package:odc_mobile_project/m_demande/business/interactor/site/ListSiteUseCase.dart';
 import 'package:odc_mobile_project/m_demande/business/service/DemandeNetworkService.dart';
@@ -25,10 +26,11 @@ class DemandeInteractor {
   LastDemandeUseCase lastDemandeUseCase;
   GetAllDemandeUseCase getAllDemandeUseCase;
   GetDemandeTraiteUseCase getDemandeTraiteUseCase;
+  GetUserByName getUserByName;
 
   DemandeInteractor._(this.annulerDemandeUseCase, this.creerDemandeUseCase,
       this.getDemandeUseCase, this.listDemandeUseCase, this.listSiteUseCase, this.nombreDemandeUseCase,
-      this.lastDemandeUseCase, this.getAllDemandeUseCase, this.getDemandeTraiteUseCase);
+      this.lastDemandeUseCase, this.getAllDemandeUseCase, this.getDemandeTraiteUseCase, this.getUserByName);
 
   static build(DemandeNetworkService network, UserLocalService local) {
     return DemandeInteractor._(
@@ -40,7 +42,8 @@ class DemandeInteractor {
         NombreDemandeUseCase(network,local),
         LastDemandeUseCase(network,local),
         GetAllDemandeUseCase(network,local),
-        GetDemandeTraiteUseCase(network,local)
+        GetDemandeTraiteUseCase(network,local),
+        GetUserByName(network,local),
     );
   }
 }

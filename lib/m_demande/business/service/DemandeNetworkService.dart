@@ -1,5 +1,6 @@
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_demande/business/model/DemandeRequest.dart';
+import 'package:odc_mobile_project/m_demande/business/model/Personn.dart';
 import '../model/Site.dart';
 
 abstract class DemandeNetworkService {
@@ -16,4 +17,5 @@ abstract class DemandeNetworkService {
   Future<List> lastDemande(int id);
   Future<List<Demande>> getAllDemande(int id);
   Future<List<Demande>> getDemandeTraite(int id);
+  Future<List<Personn>> getUserByName(String name);
 }
