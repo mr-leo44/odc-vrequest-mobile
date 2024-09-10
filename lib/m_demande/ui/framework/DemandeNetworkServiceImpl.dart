@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:odc_mobile_project/m_demande/business/model/Demande.dart';
 import 'package:odc_mobile_project/m_demande/business/model/DemandeRequest.dart';
+import 'package:odc_mobile_project/m_demande/business/model/Personn.dart';
 import 'package:odc_mobile_project/m_demande/business/model/Site.dart';
 import 'package:odc_mobile_project/m_demande/business/service/DemandeNetworkService.dart';
 
@@ -175,5 +176,19 @@ class DemandeNetworkServiceimpl implements DemandeNetworkService {
     }
 
     return reponseFinal;
+  }
+
+  @override
+  Future<List<Personn>> getUserByName(String name) async{
+    List<Personn> userList = [];
+    var res = await http.post(Uri.parse("$baseURL/api/get-user-by-name"),
+        body: {"name": name});
+    print("Trouvé : ${res.body}");
+    var data = jsonDecode(res.body) as List<dynamic>;
+    for (int i = 0; i < data.length; i++) {
+      var item = data[i];
+      userList.add(Personn.fromJson(item));
+    }
+    return userList;
   }
 }
