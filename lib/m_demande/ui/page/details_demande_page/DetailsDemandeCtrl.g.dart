@@ -7,7 +7,7 @@ part of 'DetailsDemandeCtrl.dart';
 // **************************************************************************
 
 String _$detailsDemandeCtrlHash() =>
-    r'55727c0b93c628c6e027c701f559513bb4c76e7b';
+    r'c22e6cff25519a744ed43921955f02045c795392';
 
 /// See also [DetailsDemandeCtrl].
 @ProviderFor(DetailsDemandeCtrl)

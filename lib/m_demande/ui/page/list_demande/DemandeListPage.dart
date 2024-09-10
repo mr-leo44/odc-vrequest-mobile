@@ -41,7 +41,6 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        foregroundColor: Colors.black,
         title: Header.header(
           context,
           Text(
@@ -53,7 +52,6 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
         //   style: TextStyle(color: Colors.white),
         // ),
         centerTitle: true,
-        backgroundColor: Color(0xFFFF7900),
         actions: [
           IconButton(
               onPressed: () {

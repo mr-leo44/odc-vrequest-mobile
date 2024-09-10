@@ -6,7 +6,7 @@ part of 'DemandeListCtrl.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$demandeListCtrlHash() => r'daecb58d65d503b29edf7405d7b6a98af9d38288';
+String _$demandeListCtrlHash() => r'0a68edf500201bad0703d3feab55df9ce38012f4';
 
 /// See also [DemandeListCtrl].
 @ProviderFor(DemandeListCtrl)

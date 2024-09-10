@@ -65,6 +65,7 @@ class _MyAutoCompleteLocationState extends State<MyAutoCompleteLocation> {
       inputKey: key,
       onTapItem: (Site location) {
         setState(() {
+          widget.autoController.text = location.nom;
           selectedLocation =
               "selected item : Lat (${location.latitude}), Lon (${location.longitude})";
         });
@@ -94,11 +95,11 @@ class _MyAutoCompleteLocationState extends State<MyAutoCompleteLocation> {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(color: Colors.orange, width: 2.0),
+          borderSide: const BorderSide(width: 2.0),
         ),
 
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.orange, width: 2.0),
+          borderSide: const BorderSide(width: 2.0),
           borderRadius: BorderRadius.circular(10.0),
         ),
 

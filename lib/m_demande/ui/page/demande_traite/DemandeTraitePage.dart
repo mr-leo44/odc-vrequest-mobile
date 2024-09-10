@@ -34,13 +34,10 @@ class _DemandeTraitePageState extends ConsumerState<DemandeTraitePage> {
     var state = ref.watch(demandeTraiteCtrlProvider);
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.white,
         title: Text(
           "(${state.nbreDemande}) Demandes traitées",
-          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFFFF7900),
         actions: [
           IconButton(
               onPressed: () {

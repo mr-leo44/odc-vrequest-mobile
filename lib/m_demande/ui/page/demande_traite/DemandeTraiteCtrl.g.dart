@@ -6,7 +6,7 @@ part of 'DemandeTraiteCtrl.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$demandeTraiteCtrlHash() => r'8807f7d6b9361af3013487d403151462fcba9d51';
+String _$demandeTraiteCtrlHash() => r'218185d200f0f13732b7c2828f83aded85a2d329';
 
 /// See also [DemandeTraiteCtrl].
 @ProviderFor(DemandeTraiteCtrl)

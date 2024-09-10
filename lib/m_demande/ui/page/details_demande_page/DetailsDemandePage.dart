@@ -35,10 +35,8 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
     var state = ref.watch(detailsDemandeCtrlProvider);
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.white,
         title: Text(
           "Ma Demande",
-          style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
         actions: [
@@ -52,7 +50,6 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
                 size: 30,
               )),
         ],
-        backgroundColor: Couleurs.primary,
       ),
       body: Stack(
         children: [
