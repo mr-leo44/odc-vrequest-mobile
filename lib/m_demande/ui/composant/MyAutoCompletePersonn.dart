@@ -2,74 +2,54 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_async_autocomplete/flutter_async_autocomplete.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:odc_mobile_project/m_demande/business/model/Personn.dart';
+import 'package:odc_mobile_project/m_demande/ui/page/demande/DemandeCtrl.dart';
 
 import '../../api/api_autocomplete_open_map_street.dart';
 import '../../business/model/Site.dart';
 
-class MyAutoCompleteLocation extends StatefulWidget {
+class MyAutoCompletePersonn extends ConsumerStatefulWidget {
   final String label;
   final IconData icon;
-  Function(Site location) onTap;
-  Function(int num) mouvement;
+  Function(Personn personn) onTap;
   TextEditingController autoController;
-  int num;
 
-  MyAutoCompleteLocation(
+  MyAutoCompletePersonn(
       {Key? key,
-      required this.autoController,
-      required this.icon,
-      required this.label,
-      required this.onTap,
-      required this.mouvement,
-      required this.num})
+        required this.autoController,
+        required this.icon,
+        required this.label,
+        required this.onTap,})
       : super(key: key);
 
   @override
-  State<MyAutoCompleteLocation> createState() => _MyAutoCompleteLocationState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyAutoCompletePersonnState();
 }
 
-class _MyAutoCompleteLocationState extends State<MyAutoCompleteLocation> {
+class _MyAutoCompletePersonnState extends ConsumerState<MyAutoCompletePersonn> {
   var key = GlobalKey();
   String selectedLocation = "";
 
-  Future<List<Site>> getResult(search) async {
-    var response = await http.get(getRouteUrl(search));
-    List<Site> result = [];
+  Future<List<Personn>> getResult(search) async {
+    List<Personn> result = [];
 
-    if (response.statusCode == 200) {
-      print("Suucces " + response.body);
-      var data = jsonDecode(response.body);
-
-      data
-          .map(
-            (p) => result.add(Site(
-                nom: p["display_name"],
-                latitude: double.parse(p["lat"]),
-                longitude: double.parse(p["lon"]))),
-          )
-          .toList();
-
-      await Future.delayed(const Duration(microseconds: 500));
-    } else {
-      print("Error " + response.body);
-    }
-
+    var ctrl = ref.read(demandeCtrlProvider.notifier);
+    result = await ctrl.getNameUser(search);
     return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    return AsyncAutocomplete<Site>(
+    return AsyncAutocomplete<Personn>(
       controller: widget.autoController,
       inputKey: key,
-      onTapItem: (Site location) {
+      onTapItem: (Personn personn) {
         setState(() {
-          widget.autoController.text = location.nom;
-          selectedLocation =
-              "selected item : Lat (${location.latitude}), Lon (${location.longitude})";
-        });
-        widget.onTap(location);
+          widget.autoController.text = personn.nom;
+       });
+        widget.onTap(personn);
       },
       suggestionBuilder: (data) => ListTile(
         title: Text(data.nom),
@@ -78,17 +58,6 @@ class _MyAutoCompleteLocationState extends State<MyAutoCompleteLocation> {
       asyncSuggestions: (searchValue) => getResult(searchValue),
       decoration: InputDecoration(
         focusColor: Colors.white,
-        suffixIcon: IconButton(
-          onPressed: () {
-            int numero = widget.num;
-            widget.mouvement(numero);
-            print("le nouveau mouvement est : $numero");
-          },
-          icon: Icon(
-            Icons.location_searching_sharp,
-          ),
-          iconSize: 25,
-        ),
         prefixIcon: Icon(widget.icon),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -103,7 +72,7 @@ class _MyAutoCompleteLocationState extends State<MyAutoCompleteLocation> {
           borderRadius: BorderRadius.circular(10.0),
         ),
 
-        hintText: "Entrez une adresse",
+        hintText: "Entrez un nom",
 
         //make hint text
         hintStyle: TextStyle(

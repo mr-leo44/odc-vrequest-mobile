@@ -60,16 +60,17 @@ class _MyListTileState extends State<MyListTile> {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500
-                              ),
+                                  fontSize: 16, fontWeight: FontWeight.w500),
                             ),
                             Text(_getStatus(demande.status),
                                 style: TextStyle(
-                                    color: _getStatusColor(demande.status))),
+                                    color: demande.status != '1'
+                                        ? Colors.grey
+                                        : Colors.green,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16.00)),
                             Text(
-                               "Date et heure  du déplacement : ${ DateFormat('dd/MM/yyyy - HH:mm')
-                                   .format(demande.dateDeplacement)}",
+                                "Date et heure  du déplacement : ${DateFormat('dd/MM/yyyy - HH:mm').format(demande.dateDeplacement)}",
                                 style: TextStyle(fontSize: 12)),
                           ],
                         ),
@@ -93,20 +94,6 @@ class _MyListTileState extends State<MyListTile> {
         ),
       ),
     );
-  }
-
-  Color _getStatusColor(String status) {
-    print(status.toLowerCase());
-    switch (status.toLowerCase()) {
-      case ' en attente':
-        return Colors.orange;
-      case 'achevé':
-        return Colors.green;
-      case 'raté':
-        return Colors.red;
-      default:
-        return Colors.grey;
-    }
   }
 
   String _getStatus(String status) {
