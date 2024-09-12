@@ -26,4 +26,13 @@ class Personn {
     "id": id,
     "nom": nom,
   };
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Personn && other.id == id; // Comparaison par ID
+  }
+
+  @override
+  int get hashCode => id.hashCode; // Utilisation de l'ID pour le hash
 }

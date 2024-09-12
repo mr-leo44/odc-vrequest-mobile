@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:odc_mobile_project/m_demande/business/model/Personn.dart';
+
 String demandeRequestToJson(DemandeRequest data) => json.encode(data.toJson());
 
 class DemandeRequest {
@@ -20,22 +22,23 @@ class DemandeRequest {
   double latitudeDepart;
   double latitudeDestination;
   double longitudeDestination;
+  List<Personn> passagers;
 
-  DemandeRequest({
-    required this.motif,
-    required this.ticket,
-    required this.date,
-    required this.dateDeplacement,
-    required this.nbrePassagers,
-    required this.userId,
-    required this.managerId,
-    this.lieuDepart = "",
-    this.destination = "",
-    this.latitudeDepart = 0.0,
-    this.longitudeDepart = 0.0,
-    this.latitudeDestination = 0.0,
-    this.longitudeDestination = 0.0,
-  });
+  DemandeRequest(
+      {required this.motif,
+      required this.ticket,
+      required this.date,
+      required this.dateDeplacement,
+      required this.nbrePassagers,
+      required this.userId,
+      required this.managerId,
+      this.lieuDepart = "",
+      this.destination = "",
+      this.latitudeDepart = 0.0,
+      this.longitudeDepart = 0.0,
+      this.latitudeDestination = 0.0,
+      this.longitudeDestination = 0.0,
+      this.passagers = const []});
 
   Map<String, dynamic> toJson() => {
         "motif": motif,
@@ -53,6 +56,7 @@ class DemandeRequest {
         "longitude_depart": longitudeDepart,
         "latitude_destination": latitudeDestination,
         "longitude_destination": longitudeDestination,
+        "passagers": passagers
       };
 
   bool validate() {
@@ -99,6 +103,9 @@ class DemandeRequest {
     }
 
     if (longitudeDestination == 0.0 && latitudeDestination == 0.0) {
+      return false;
+    }
+    if(passagers.isEmpty){
       return false;
     }
 

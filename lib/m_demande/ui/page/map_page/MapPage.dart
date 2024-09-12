@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,13 +27,10 @@ class MapPageState extends ConsumerState<MapPage>
   static const _inProgressId = 'AnimatedMapController#MoveInProgress';
   static const _finishedId = 'AnimatedMapController#MoveFinished';
 
-  static const _london = LatLng(51.5, -0.09);
-  static const _paris = LatLng(48.8566, 2.3522);
-  static const _dublin = LatLng(53.3498, -6.2603);
   String initText = 'Map centered to';
 
   // Define start center
-  proj4.Point point = proj4.Point(x: 65.05166470332148, y: -19.171744826394896);
+  proj4.Point point = proj4.Point(x: 15.271774, y: -4.322693);
 
   Marker buildPin(LatLng point, Widget icon) => Marker(
         point: point,
@@ -49,27 +47,6 @@ class MapPageState extends ConsumerState<MapPage>
           child: icon,
         ),
       );
-
-  static const _markers = [
-    Marker(
-      width: 80,
-      height: 80,
-      point: _london,
-      child: FlutterLogo(key: ValueKey('blue')),
-    ),
-    Marker(
-      width: 80,
-      height: 80,
-      point: _dublin,
-      child: FlutterLogo(key: ValueKey('green')),
-    ),
-    Marker(
-      width: 80,
-      height: 80,
-      point: _paris,
-      child: FlutterLogo(key: ValueKey('purple')),
-    ),
-  ];
 
   final mapController = MapController();
 
@@ -130,30 +107,67 @@ class MapPageState extends ConsumerState<MapPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: Text("Choisir sur la carte"),
-        backgroundColor: Colors.orange,
         centerTitle: true,
+      ),*/
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          style: ElevatedButton.styleFrom(
+            overlayColor: Colors.black,
+            backgroundColor: Colors.green,
+            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              const SizedBox(width: 8.0),
+              Text(
+                "Confirmer",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 8.0),
+            ],
+          ),
+        ),
       ),
-      body: Column(
-        children: [_autoComplete(), _carte()],
+      body: Stack(
+        children: [
+          _carte(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 45.0),
+            child: _autoComplete(),
+          ),
+        ],
       ),
     );
   }
 
   _carte() {
     var state = ref.watch(mapCtrlProvider);
-    var depart = state.lieuDepart ??
-        Site(latitude: 51.51868093513547, longitude: -0.12835376940892318);
+    var depart =
+        state.lieuDepart ?? Site(latitude: -4.322693, longitude: 15.271774);
     var destination = state.destnation ??
         Site(latitude: 53.33360293799854, longitude: -6.284001062079881);
-    int movement = state.mouvement;
     late var departMarker = buildPin(LatLng(depart.latitude, depart.longitude),
         Icon(Icons.location_pin, size: 60, color: Colors.green));
 
     late var destinationMarker = buildPin(
         LatLng(destination.latitude, destination.longitude),
-        Icon(Icons.location_pin, size: 60, color: Colors.black));
+        Icon(Icons.flag_rounded, size: 60, color: Colors.red));
     return Flexible(
       child: FlutterMap(
         mapController: mapController,
@@ -162,17 +176,21 @@ class MapPageState extends ConsumerState<MapPage>
             print("leiu : ${p.longitude}");
             initText = 'You clicked at';
             point = proj4.Point(x: p.latitude, y: p.longitude);
-            if (movement == 1) {
-              departMarker = buildPin(
-                  p, Icon(Icons.location_pin, size: 60, color: Colors.green));
+            if (state.mouvement == 1) {
+              HapticFeedback.selectionClick();
+              var ctrl = ref.read(mapCtrlProvider.notifier);
+              ctrl.recupereLieuDepart( Site(latitude: p.latitude, longitude: p.longitude));
+              _animatedMapMove(p, 17);
             } else {
-              destinationMarker = buildPin(
-                  p, Icon(Icons.location_pin, size: 60, color: Colors.black));
+              HapticFeedback.selectionClick();
+              var ctrl = ref.read(mapCtrlProvider.notifier);
+              ctrl.recpereDestination( Site(latitude: p.latitude, longitude: p.longitude));
+              _animatedMapMove(p, 17);
             }
           }),
-          initialCenter: LatLng(51.5, -0.09),
-          initialZoom: 7,
-          maxZoom: 20,
+          initialCenter: LatLng(-4.322693, 15.271774),
+          initialZoom: 17,
+          maxZoom: 25,
           minZoom: 3,
         ),
         children: [
@@ -183,7 +201,7 @@ class MapPageState extends ConsumerState<MapPage>
             tileUpdateTransformer: _animatedMoveTileUpdateTransformer,
           ),
           MarkerLayer(
-            markers: [departMarker, destinationMarker],
+            markers: <Marker>[destinationMarker, departMarker],
             rotate: counterRotate,
             alignment: selectedAlignment,
           ),
@@ -203,10 +221,13 @@ class MapPageState extends ConsumerState<MapPage>
           MyAutoCompleteLocation(
             autoController: lieuDepart_ctrl,
             label: "Lieu du départ",
-            icon: Icons.date_range,
+            icon: Icons.location_on,
             onTap: (location) {
-              var ctrl = ref.read(mapCtrlProvider.notifier);
-              ctrl.recupereLieuDepart(location);
+              setState(() {
+                var ctrl = ref.read(mapCtrlProvider.notifier);
+                ctrl.recupereLieuDepart(location);
+                lieuDepart_ctrl.text = location.nom;
+              });
             },
             num: 1,
             mouvement: (num) {
@@ -215,15 +236,18 @@ class MapPageState extends ConsumerState<MapPage>
             },
           ),
           SizedBox(
-            height: 5,
+            height: 10.0,
           ),
           MyAutoCompleteLocation(
             autoController: destination_ctrl,
             label: "Déstination",
-            icon: Icons.date_range,
+            icon: Icons.flag_rounded,
             onTap: (location) {
-              var ctrl = ref.read(mapCtrlProvider.notifier);
-              ctrl.recpereDestination(location);
+              setState(() {
+                var ctrl = ref.read(mapCtrlProvider.notifier);
+                ctrl.recpereDestination(location);
+                destination_ctrl.text = location.nom;
+              });
             },
             num: 2,
             mouvement: (num) {
