@@ -265,7 +265,7 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
                         var ctrl =
                             ref.read(detailsDemandeCtrlProvider.notifier);
                         ctrl.annulerDemande(widget.id);
-                        context.goNamed(Urls.listeDemandes.name);
+                        Navigator.pop(context);
                       }
                     : null,
                 child: Text("Annuler"),
