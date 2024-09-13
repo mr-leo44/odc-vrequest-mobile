@@ -21,7 +21,7 @@ class Site {
 
   factory Site.fromJson(Map<String, dynamic> json) => Site(
     id: json["id"] ?? 0,
-    nom: json["name"] ?? "",
+    nom: json["nom"] ?? "",
     longitude: json["longitude"] != null ? json["longitude"].toDouble() : 0.0,
     latitude: json["latitude"] != null ? json["latitude"].toDouble() : 0.0,
   );

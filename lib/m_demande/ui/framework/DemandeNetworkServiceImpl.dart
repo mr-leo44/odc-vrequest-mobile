@@ -83,32 +83,15 @@ class DemandeNetworkServiceimpl implements DemandeNetworkService {
 
   @override
   Future<List<Site>> listSite(String token) async {
-    var reponseFinal = [
-      Site.fromJson({
-        "id": 1,
-        "name": "Palais du peuple",
-        "longitude": 50.0,
-        "latitude": 60.0,
-      }),
-      Site.fromJson({
-        "id": 2,
-        "name": "Victoire",
-        "longitude": 15.0,
-        "latitude": 25.0,
-      }),
-      Site.fromJson({
-        "id": 3,
-        "name": "Aéroport",
-        "longitude": 27.0,
-        "latitude": 10.0,
-      }),
-      Site.fromJson({
-        "id": 4,
-        "name": "Echangeur",
-        "longitude": 35.0,
-        "latitude": 23.0,
-      }),
-    ];
+    List<Site> reponseFinal = [];
+    final response = await http.get(Uri.parse("$baseURL/api/get-sites"));
+    final data = jsonDecode(response.body) as List<dynamic>;
+    if (response.statusCode == 200) {
+      for (int i = 0; i < data.length; i++) {
+        var item = data[i];
+        reponseFinal.add(Site.fromJson(item));
+      }
+    }
 
     return reponseFinal;
   }
