@@ -304,9 +304,15 @@ class _DemandePageState extends ConsumerState<DemandePage> {
             children: [
               Icon(Icons.location_on, color: Colors.black, size: 24),
               SizedBox(width: 8),
-              Text(
-                site.nom,
-                style: TextStyle(color: Colors.black),
+              // Utiliser un Container pour limiter la largeur et éviter le débordement
+              Container(
+                width: 250, // Ajustez la largeur selon vos besoins
+                child: Text(
+                  site.nom,
+                  style: TextStyle(color: Colors.black),
+                  overflow: TextOverflow.ellipsis, // Gérer le débordement
+                  maxLines: 1, // Limiter à une ligne
+                ),
               ),
             ],
           ),
