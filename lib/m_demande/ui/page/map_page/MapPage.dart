@@ -227,12 +227,15 @@ class MapPageState extends ConsumerState<MapPage>
                 var ctrl = ref.read(mapCtrlProvider.notifier);
                 ctrl.recupereLieuDepart(location);
                 lieuDepart_ctrl.text = location.nom;
+                _animatedMapMove(LatLng(location.latitude, location.longitude), 17);
               });
             },
             num: 1,
             mouvement: (num) {
+              var location = state.lieuDepart;
               var ctrl = ref.read(mapCtrlProvider.notifier);
               ctrl.changerMouvement(num);
+              _animatedMapMove(LatLng(location!.latitude, location.longitude), 17);
             },
           ),
           SizedBox(
@@ -247,12 +250,15 @@ class MapPageState extends ConsumerState<MapPage>
                 var ctrl = ref.read(mapCtrlProvider.notifier);
                 ctrl.recpereDestination(location);
                 destination_ctrl.text = location.nom;
+                _animatedMapMove(LatLng(location.latitude, location.longitude), 17);
               });
             },
             num: 2,
             mouvement: (num) {
+              var location = state.destnation;
               var ctrl = ref.read(mapCtrlProvider.notifier);
               ctrl.changerMouvement(num);
+              _animatedMapMove(LatLng(location!.latitude, location.longitude), 17);
             },
           ),
         ],

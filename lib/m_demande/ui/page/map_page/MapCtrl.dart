@@ -3,6 +3,7 @@ import 'package:odc_mobile_project/m_demande/ui/page/map_page/MapState.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'MapCtrl.g.dart';
+
 @Riverpod(keepAlive: true)
 class MapCtrl extends _$MapCtrl {
   @override
@@ -10,15 +11,19 @@ class MapCtrl extends _$MapCtrl {
     return MapState();
   }
 
-void recupereLieuDepart(Site site){
+  void recupereLieuDepart(Site site) {
     state = state.copyWith(isSelectDepart: true, lieuDepart: site);
-}
+  }
 
-void recpereDestination(Site site){
+  void recpereDestination(Site site) {
     state = state.copyWith(isSelectDestination: true, destnation: site);
-}
-void changerMouvement(int num){
-    state = state.copyWith(mouvement: num);
-}
+  }
 
+  void changerMouvement(int num) {
+    state = state.copyWith(mouvement: num);
+  }
+
+  void renitialiserPage(){
+
+  }
 }
