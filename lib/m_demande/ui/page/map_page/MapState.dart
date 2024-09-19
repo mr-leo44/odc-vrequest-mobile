@@ -6,7 +6,7 @@ class MapState {
   bool carte;
   int mouvement;
   Site? lieuDepart;
-  Site? destnation;
+  Site? destination;
 
   MapState({
    this.isSelectDepart = false,
@@ -14,7 +14,7 @@ class MapState {
     this.carte = false,
     this.lieuDepart = null,
     this.mouvement =1,
-    this.destnation = null,
+    this.destination = null,
   });
 
   MapState copyWith({
@@ -23,7 +23,7 @@ class MapState {
     Site? lieuDepart,
     bool? carte,
     int? mouvement,
-    Site? destnation,
+    Site? destination,
   }) =>
       MapState(
         isSelectDepart: isSelectDepart ?? this.isSelectDepart,
@@ -31,6 +31,6 @@ class MapState {
         carte: carte ?? this.carte,
         mouvement: mouvement ?? this.mouvement,
         lieuDepart: lieuDepart ?? this.lieuDepart,
-        destnation: destnation ?? this.destnation,
+        destination: destination ?? this.destination,
       );
 }
