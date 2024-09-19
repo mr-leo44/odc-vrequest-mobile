@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:odc_mobile_project/m_demande/api/api_autocomplete_open_map_street.dart';
 import 'package:odc_mobile_project/m_demande/business/model/Site.dart';
 import 'package:odc_mobile_project/m_demande/ui/composant/MyAutoCompleteLocation.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:odc_mobile_project/m_demande/ui/page/map_page/MapCtrl.dart';
 import 'package:proj4dart/proj4dart.dart' as proj4;
+import 'package:http/http.dart' as http;
 
 class MapPage extends ConsumerStatefulWidget {
   static const String route = '/map_controller_animated';
@@ -28,6 +32,8 @@ class MapPageState extends ConsumerState<MapPage>
   static const _finishedId = 'AnimatedMapController#MoveFinished';
 
   String initText = 'Map centered to';
+  var lieuDepart_ctrl = TextEditingController();
+  var destination_ctrl = TextEditingController();
 
   // Define start center
   proj4.Point point = proj4.Point(x: 15.271774, y: -4.322693);
@@ -104,6 +110,17 @@ class MapPageState extends ConsumerState<MapPage>
     controller.forward();
   }
 
+  Future<String> _getNomLieu(double lat, double lng) async {
+    var response = await http.get(getRouteUrl2(lat, lng));
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      print("Nom : " + data['display_name']);
+      return data['display_name'];
+    }
+
+    return 'Not found';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,7 +177,7 @@ class MapPageState extends ConsumerState<MapPage>
     var state = ref.watch(mapCtrlProvider);
     var depart =
         state.lieuDepart ?? Site(latitude: -4.322693, longitude: 15.271774);
-    var destination = state.destnation ??
+    var destination = state.destination ??
         Site(latitude: 53.33360293799854, longitude: -6.284001062079881);
     late var departMarker = buildPin(LatLng(depart.latitude, depart.longitude),
         Icon(Icons.location_pin, size: 60, color: Colors.green));
@@ -172,22 +189,36 @@ class MapPageState extends ConsumerState<MapPage>
       child: FlutterMap(
         mapController: mapController,
         options: MapOptions(
-          onTap: (tapPosition, p) => setState(() {
-            print("leiu : ${p.longitude}");
+          onTap: (tapPosition, p) async {
+            print("Lieu : ${p.longitude}");
             initText = 'You clicked at';
             point = proj4.Point(x: p.latitude, y: p.longitude);
-            if (state.mouvement == 1) {
-              HapticFeedback.selectionClick();
-              var ctrl = ref.read(mapCtrlProvider.notifier);
-              ctrl.recupereLieuDepart( Site(latitude: p.latitude, longitude: p.longitude));
+
+            HapticFeedback.selectionClick();
+            var ctrl = ref.read(mapCtrlProvider.notifier);
+
+            var nom = await _getNomLieu(p.latitude, p.longitude);
+            print("Nom du lieu est ${nom}");
+
+            setState(() {
+              lieuDepart_ctrl.text = nom;
+              if (state.mouvement == 1) {
+                ctrl.recupereLieuDepart(Site(
+                  latitude: p.latitude,
+                  longitude: p.longitude,
+                  nom: nom,
+                ));
+              } else {
+                destination_ctrl.text = nom;
+                ctrl.recupereDestination(Site(
+                  latitude: p.latitude,
+                  longitude: p.longitude,
+                  nom: nom,
+                ));
+              }
               _animatedMapMove(p, 17);
-            } else {
-              HapticFeedback.selectionClick();
-              var ctrl = ref.read(mapCtrlProvider.notifier);
-              ctrl.recpereDestination( Site(latitude: p.latitude, longitude: p.longitude));
-              _animatedMapMove(p, 17);
-            }
-          }),
+            });
+          },
           initialCenter: LatLng(-4.322693, 15.271774),
           initialZoom: 17,
           maxZoom: 25,
@@ -212,8 +243,6 @@ class MapPageState extends ConsumerState<MapPage>
 
   _autoComplete() {
     var state = ref.read(mapCtrlProvider);
-    var lieuDepart_ctrl = TextEditingController(text: state.lieuDepart?.nom);
-    var destination_ctrl = TextEditingController(text: state.destnation?.nom);
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Column(
@@ -227,7 +256,8 @@ class MapPageState extends ConsumerState<MapPage>
                 var ctrl = ref.read(mapCtrlProvider.notifier);
                 ctrl.recupereLieuDepart(location);
                 lieuDepart_ctrl.text = location.nom;
-                _animatedMapMove(LatLng(location.latitude, location.longitude), 17);
+                _animatedMapMove(
+                    LatLng(location.latitude, location.longitude), 17);
               });
             },
             num: 1,
@@ -235,7 +265,8 @@ class MapPageState extends ConsumerState<MapPage>
               var location = state.lieuDepart;
               var ctrl = ref.read(mapCtrlProvider.notifier);
               ctrl.changerMouvement(num);
-              _animatedMapMove(LatLng(location!.latitude, location.longitude), 17);
+              _animatedMapMove(
+                  LatLng(location!.latitude, location.longitude), 17);
             },
           ),
           SizedBox(
@@ -248,17 +279,19 @@ class MapPageState extends ConsumerState<MapPage>
             onTap: (location) {
               setState(() {
                 var ctrl = ref.read(mapCtrlProvider.notifier);
-                ctrl.recpereDestination(location);
+                ctrl.recupereDestination(location);
                 destination_ctrl.text = location.nom;
-                _animatedMapMove(LatLng(location.latitude, location.longitude), 17);
+                _animatedMapMove(
+                    LatLng(location.latitude, location.longitude), 17);
               });
             },
             num: 2,
             mouvement: (num) {
-              var location = state.destnation;
+              var location = state.destination;
               var ctrl = ref.read(mapCtrlProvider.notifier);
               ctrl.changerMouvement(num);
-              _animatedMapMove(LatLng(location!.latitude, location.longitude), 17);
+              _animatedMapMove(
+                  LatLng(location!.latitude, location.longitude), 17);
             },
           ),
         ],
