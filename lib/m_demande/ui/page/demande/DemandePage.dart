@@ -59,47 +59,51 @@ class _DemandePageState extends ConsumerState<DemandePage> {
   Widget build(BuildContext context) {
     var state = ref.watch(demandeCtrlProvider);
     return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Formulaire de la demande"),
-          centerTitle: true,
-          // backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-        ),
-        body: state.page == 1 ? _formulaire() : _passagers(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: Row(
-            children: [
-              if (state.page == 2)
-                FloatingActionButton(
-                  onPressed: () {
-                    var ctrl = ref.read(demandeCtrlProvider.notifier);
-                    ctrl.changePage();
-                  },
-                  backgroundColor: Colors.grey,
-                  foregroundColor: Colors.white,
-                  child: Icon(Icons.navigate_before),
-                ),
-              Spacer(),
-              if (state.page == 2)
-                /*ElevatedButton(onPressed: null, child: Text('Envoyer'))*/
-                _submitButton(),
-              if (state.page == 1)
-                FloatingActionButton(
-                  onPressed: () {
-                    var ctrl = ref.read(demandeCtrlProvider.notifier);
-                    ctrl.changePage();
-                  },
-                  child: Icon(Icons.navigate_next),
-                  backgroundColor: Couleurs.primary,
-                  foregroundColor: Colors.white,
-                ),
-            ],
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("Formulaire de la demande"),
+            centerTitle: true,
+            // backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
           ),
+          body: state.page == 1 ? _formulaire() : _passagers(),
+          floatingActionButtonLocation: FloatingActionButtonLocation
+              .centerDocked,
+          floatingActionButton: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              child: Row(
+                  children: [
+                  if (state.page == 2)
+              FloatingActionButton(
+              onPressed: ()
+          {
+          var ctrl = ref.read(demandeCtrlProvider.notifier);
+          ctrl.changePage();
+          },
+          backgroundColor: Colors.grey,
+          foregroundColor: Colors.white,
+          child: Icon(Icons.navigate_before),
         ),
-      ),
+        Spacer(),
+        if (state.page == 2)
+    /*ElevatedButton(onPressed: null, child: Text('Envoyer'))*/
+    _submitButton()
+    ,
+    if (state.page == 1)
+    FloatingActionButton(
+    onPressed: () {
+    var ctrl = ref.read(demandeCtrlProvider.notifier);
+    ctrl.changePage();
+    },
+    child: Icon(Icons.navigate_next),
+    backgroundColor: Couleurs.primary,
+    foregroundColor: Colors.white,
+    ),
+    ],
+    ),
+    ),
+    )
+    ,
     );
   }
 
@@ -107,7 +111,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
     var state = ref.watch(demandeCtrlProvider);
     var state2 = ref.watch(mapCtrlProvider);
     var lieuDepart_ctrl = TextEditingController(text: state2.lieuDepart?.nom);
-    var destination_ctrl = TextEditingController(text: state2.destnation?.nom);
+    var destination_ctrl = TextEditingController(text: state2.destination?.nom);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(25.0),
@@ -271,6 +275,8 @@ class _DemandePageState extends ConsumerState<DemandePage> {
       var reponse = await ctrl.demandeByForm(data);
 
       if (reponse == true) {
+        var ctrl = ref.read(mapCtrlProvider.notifier);
+        ctrl.renitialiserPage();
         context.goNamed(Urls.listeDemandes.name);
         _toast("Démande soumise avec succès", Colors.green);
       } else {
@@ -350,7 +356,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
     var ctrl = ref.read(demandeCtrlProvider.notifier);
     return Container(
       child: // Here, default theme colors are used for activeBgColor, activeFgColor, inactiveBgColor and inactiveFgColor
-          Column(
+      Column(
         children: [
           Text(
             "Choisir un lieu",
@@ -402,7 +408,7 @@ class _DemandePageState extends ConsumerState<DemandePage> {
       onPressed: () {
         if (!state.switchCarte) {
           lieuDepart = state2.lieuDepart;
-          destination = state2.destnation;
+          destination = state2.destination;
         }
 
         var data = DemandeRequest(
@@ -419,17 +425,17 @@ class _DemandePageState extends ConsumerState<DemandePage> {
             longitudeDepart: lieuDepart != null ? lieuDepart!.longitude : 0.00,
             destination: destination != null ? destination!.nom : "",
             latitudeDestination:
-                destination != null ? destination!.latitude : 0.00,
+            destination != null ? destination!.latitude : 0.00,
             longitudeDestination:
-                destination != null ? destination!.longitude : 0.00,
+            destination != null ? destination!.longitude : 0.00,
             date: DateTime.now(),
             passagers: _passager);
-     //   _submit(data);
+        //   _submit(data);
         for (var personne in data.passagers) {
           print('${personne.id}: ${personne.nom}');
         }
         //print("le formulaire : ${data.passagers}");
-         _submit(data);
+        _submit(data);
       },
       label: Text(
         "Envoyer",
@@ -488,7 +494,8 @@ class _DemandePageState extends ConsumerState<DemandePage> {
                         print('${p.nom} a été ajouté à la liste.');
                       } else {
                         print(
-                            '${p.nom} existe déjà dans la liste, pas d\'ajout.');
+                            '${p
+                                .nom} existe déjà dans la liste, pas d\'ajout.');
                       }
                     });
               },
