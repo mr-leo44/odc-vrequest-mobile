@@ -15,8 +15,8 @@ class MapCtrl extends _$MapCtrl {
     state = state.copyWith(isSelectDepart: true, lieuDepart: site);
   }
 
-  void recpereDestination(Site site) {
-    state = state.copyWith(isSelectDestination: true, destnation: site);
+  void recupereDestination(Site site) {
+    state = state.copyWith(isSelectDestination: true, destination: site);
   }
 
   void changerMouvement(int num) {
@@ -24,6 +24,11 @@ class MapCtrl extends _$MapCtrl {
   }
 
   void renitialiserPage(){
-
+    state = state.copyWith(
+      isSelectDepart: false,
+      isSelectDestination: false,
+      lieuDepart: null,
+      destination: null,
+    );
   }
 }
