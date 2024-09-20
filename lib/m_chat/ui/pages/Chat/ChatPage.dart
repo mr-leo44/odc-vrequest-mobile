@@ -441,11 +441,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
 }
 
 AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
-  var title = widget.chatUsersModel.demande.initiateur!.prenom +
-      " " +
-      widget.chatUsersModel.demande.initiateur!.nom +
-      " #" +
-      widget.chatUsersModel.demande.id.toString();
+  var title = widget.chatUsersModel.demande.ticket ;
 
   return AppBar(
     leadingWidth: 80,
