@@ -18,9 +18,7 @@ class _ConversationlistState extends ConsumerState<ConversationListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var title = widget.chatUsersModel.demande.initiateur!.prenom+" "+
-                            widget.chatUsersModel.demande.initiateur!.nom+" #"+
-                            widget.chatUsersModel.demande.id.toString();
+    var title = widget.chatUsersModel.demande.ticket ;
 
     return GestureDetector(
       onTap: () => Navigator.push(
