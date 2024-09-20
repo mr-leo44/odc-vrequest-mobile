@@ -241,14 +241,10 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage>
     return Scaffold(
       // backgroundColor: const Color(0xfff6f6f6),
       appBar: _appBar(context, widget, ref),
-      body: Column(
+      body: Stack(
         children: [
-          Stack(
-            children: [
-              _map(_mapController),
-              _bottomSheet(),
-            ],
-          ),
+          _map(_mapController),
+          _bottomSheet(),
         ],
       ),
     );
@@ -316,7 +312,8 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage>
     late final _polylines =
         Map.fromEntries(_polylinesRaw.map((e) => MapEntry(e.hitValue, e)));
 
-    return Flexible(
+    return Container(
+      height: double.infinity ,
       child: FlutterMap(
         mapController: _mapController,
         options: MapOptions(
@@ -397,11 +394,7 @@ class _ChatDetailPageState extends ConsumerState<ChatDetailPage>
 }
 
 AppBar _appBar(BuildContext context, widget, WidgetRef ref) {
-  var title = widget.chatUsersModel.demande.initiateur!.prenom +
-      " " +
-      widget.chatUsersModel.demande.initiateur!.nom +
-      " #" +
-      widget.chatUsersModel.demande.id.toString();
+  var title = widget.chatUsersModel.demande.ticket;
 
   return AppBar(
     leadingWidth: 80,
