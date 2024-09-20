@@ -55,11 +55,7 @@ class _ChatState extends ConsumerState<ChatListPage> {
             //       query.toLowerCase(),
             //     ),
             (item) {
-          String searchLabel = item.demande.initiateur!.prenom.toLowerCase() +
-              " " +
-              item.demande.initiateur!.nom.toLowerCase() +
-              " " +
-              item.demande.id.toString();
+          String searchLabel = item.demande.ticket ;
           if (searchLabel.contains(query.toLowerCase())) {
             return true;
           } else {
