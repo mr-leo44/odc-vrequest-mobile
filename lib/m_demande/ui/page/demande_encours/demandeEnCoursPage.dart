@@ -33,7 +33,6 @@ class _DemandeEnCoursPage extends ConsumerState<DemandeEnCoursPage> {
         title: Text(
           "(${state.nbrDemande}) Demandes en cours",
         ),
-        centerTitle: true,
         actions: [
           IconButton(
               onPressed: () {

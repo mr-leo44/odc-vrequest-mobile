@@ -36,22 +36,12 @@ class _DemandeListPageState extends ConsumerState<DemandeListPage> {
 
   @override
   Widget build(BuildContext context) {
-    AppSizes().init(context);
     var state = ref.watch(demandeListCtrlProvider);
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Header.header(
-          context,
-          Text(
-            "Demandes (${state.nbreDemande})",
-          ),
+        title:   Text(
+          "(${state.nbreDemande}) Demandes",
         ),
-        // title: Text(
-        //   "(${state.nbreDemande}) Demandes",
-        //   style: TextStyle(color: Colors.white),
-        // ),
-        centerTitle: true,
         actions: [
           IconButton(
               onPressed: () {
