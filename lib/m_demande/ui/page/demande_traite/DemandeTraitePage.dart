@@ -37,7 +37,6 @@ class _DemandeTraitePageState extends ConsumerState<DemandeTraitePage> {
         title: Text(
           "(${state.nbreDemande}) Demandes traitées",
         ),
-        centerTitle: true,
         actions: [
           IconButton(
               onPressed: () {
@@ -60,7 +59,7 @@ class _DemandeTraitePageState extends ConsumerState<DemandeTraitePage> {
       ),
       body: Stack(
         children: [
-          if (!state.visible) _contenuPrincipale(context, ref),
+          if (state.visible) _contenuPrincipale(context, ref),
           _chargement(context, ref)
         ],
       ),
@@ -120,7 +119,7 @@ class _DemandeTraitePageState extends ConsumerState<DemandeTraitePage> {
     var state = ref.watch(demandeTraiteCtrlProvider);
 
     return Visibility(
-        visible: state.visible,
+        visible: !(state.visible),
         child: Center(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
