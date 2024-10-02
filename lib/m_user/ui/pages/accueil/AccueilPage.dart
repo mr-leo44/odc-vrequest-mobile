@@ -507,7 +507,10 @@ class _AccueilPageState extends ConsumerState<AccueilPage> {
           icon: Icon(Icons.logout,color: Colors.black,),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            var ctrl = ref.read(accueilPageCtrlProvider.notifier);
+            ctrl.nombreDemande();
+          },
           icon: Icon(Icons.sync),
         )
       ],
