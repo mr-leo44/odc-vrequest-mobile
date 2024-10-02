@@ -15,6 +15,7 @@ class Demande {
   DateTime dateDemande;
   String motif;
   String status;
+  String validate;
   String ticket;
   DateTime dateDeplacement;
 
@@ -38,6 +39,7 @@ class Demande {
     required this.dateDemande,
     this.motif = "",
     this.status = "",
+    this.validate = "",
     this.ticket = "",
     required this.dateDeplacement,
     this.lieuDepart = "",
@@ -64,6 +66,7 @@ class Demande {
         motif: json["motif"] ?? "",
         ticket: json["ticket"] ?? "",
         status: "${json["status"]}" ?? "",
+        validate: "${json["is_validated"]}" ?? "",
         dateDeplacement: json["date_deplacement"] != null
             ? DateTime.parse(json["date_deplacement"])
             : DateTime.now(),
