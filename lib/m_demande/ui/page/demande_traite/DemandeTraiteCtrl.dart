@@ -14,7 +14,7 @@ class DemandeTraiteCtrl extends _$DemandeTraiteCtrl {
   }
 
   void recupererListDemande() async {
-    state = state.copyWith(isLoading: true, visible: true);
+    state = state.copyWith(isLoading: true,notFound: true);
     var useCase = ref.watch(demandeInteractorProvider).getDemandeTraiteUseCase;
     var res = await useCase.run();
     if (res.length != 0) {
@@ -23,12 +23,12 @@ class DemandeTraiteCtrl extends _$DemandeTraiteCtrl {
           isLoading: false,
           listDemandes: res,
           isEmpty: false,
-          visible: false,
+          visible: true,
           nbreDemande: nbreDemande,
           listDemandesSearch: res,
           notFound: true);
     } else {
-      state = state.copyWith(isLoading: true, isEmpty: true, visible: true);
+      state = state.copyWith(isLoading: false, isEmpty: true);
     }
   }
 

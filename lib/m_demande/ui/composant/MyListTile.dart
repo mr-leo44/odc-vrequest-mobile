@@ -43,7 +43,9 @@ class _MyListTileState extends State<MyListTile> {
                   child: Row(
                     children: [
                       Icon(
-                        Icons.assignment_rounded,
+                        demande.validate == "0"
+                            ? Icons.assignment // Icône si `validate` est vrai
+                            : Icons.assignment_turned_in_rounded,
                         size: 30,
                         color: Colors.black,
                       ),
@@ -62,15 +64,15 @@ class _MyListTileState extends State<MyListTile> {
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w500),
                             ),
-                            Text(_getStatus(demande.status),
+                            Text(_getStatus(demande.validate),
                                 style: TextStyle(
-                                    color: demande.status != '1'
+                                    color: demande.validate != '1'
                                         ? Colors.grey
                                         : Colors.green,
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16.00)),
                             Text(
-                                "Date et heure  du déplacement : ${DateFormat('dd/MM/yyyy - HH:mm').format(demande.dateDeplacement)}",
+                                "Date du déplacement : ${DateFormat('dd/MM/yyyy - HH:mm').format(demande.dateDeplacement)}",
                                 style: TextStyle(fontSize: 12)),
                           ],
                         ),
@@ -99,11 +101,11 @@ class _MyListTileState extends State<MyListTile> {
   String _getStatus(String status) {
     switch (status.toLowerCase()) {
       case '0':
-        return "En attente";
+        return "En attente de validation";
       case '1':
-        return "Traitée";
+        return "Validée";
       default:
-        return 'En attente';
+        return 'En attente de validation';
     }
   }
 }

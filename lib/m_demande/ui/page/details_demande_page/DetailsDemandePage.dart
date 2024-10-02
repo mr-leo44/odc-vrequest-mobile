@@ -260,7 +260,7 @@ class _DetailsDemandePageState extends ConsumerState<DetailsDemandePage> {
             child: Container(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: demande.status != '1'
+                onPressed: demande.validate != '1'
                     ? () {
                         var ctrl =
                             ref.read(detailsDemandeCtrlProvider.notifier);

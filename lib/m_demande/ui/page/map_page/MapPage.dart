@@ -219,6 +219,7 @@ class MapPageState extends ConsumerState<MapPage>
               _animatedMapMove(p, 17);
             });
           },
+
           initialCenter: LatLng(-4.322693, 15.271774),
           initialZoom: 17,
           maxZoom: 25,
@@ -243,6 +244,8 @@ class MapPageState extends ConsumerState<MapPage>
 
   _autoComplete() {
     var state = ref.read(mapCtrlProvider);
+    var depart = state.lieuDepart;
+    var destination = state.destination;
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Column(
@@ -294,6 +297,30 @@ class MapPageState extends ConsumerState<MapPage>
                   LatLng(location!.latitude, location.longitude), 17);
             },
           ),
+          /*MaterialButton(
+            onPressed: () {
+              HapticFeedback.selectionClick();
+
+              final bounds = LatLngBounds.fromPoints([
+               LatLng(depart!.latitude, depart.longitude),
+               LatLng(destination!.latitude, destination.longitude),
+              ]);
+
+              final constrained = CameraFit.bounds(
+                bounds: bounds,
+              ).fit(mapController.camera);
+              _animatedMapMove(constrained.center, constrained.zoom - 0.2);
+            },
+            child: Column(
+              children: [
+                Icon(Icons.center_focus_strong),
+                Text(
+                  'Centrer',
+                  style: TextStyle(fontSize: 10),
+                ),
+              ],
+            ),
+          )*/
         ],
       ),
     );
